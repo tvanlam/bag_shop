@@ -1,9 +1,10 @@
+// AuthModal.js - Sửa handleLogin để dispatch FETCH_ACCOUNT sau LOGIN và dùng response.position để check redirect.
 import React from "react";
 import { Modal, Tabs, Form, Input, Button, message, ConfigProvider } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LOGIN, selectAuthLoading, selectAuthError } from "../../redux/slices/AuthSlice";
-import { REGISTER } from "../../redux/slices/AccountSlice";
+import { REGISTER, FETCH_ACCOUNT } from "../../redux/slices/AccountSlice"; // Đảm bảo import FETCH_ACCOUNT
 
 const AuthModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
@@ -11,16 +12,20 @@ const AuthModal = ({ open, onClose }) => {
 
   const loading = useSelector(selectAuthLoading);
   const error = useSelector(selectAuthError);
-
   const [formLogin] = Form.useForm();
   const [formRegister] = Form.useForm();
 
   const handleLogin = (values) => {
     dispatch(LOGIN(values))
       .unwrap()
-      .then(() => {
+      .then(async (response) => {
         onClose?.();
         message.success("Đăng nhập thành công!");
+        // Dispatch FETCH_ACCOUNT để lấy chi tiết tài khoản nếu cần
+        await dispatch(FETCH_ACCOUNT(response.accountId)).unwrap();
+        if (response.position === "ADMIN") {
+          navigate("/admin");
+        }
       })
       .catch((err) => {
         message.error(err?.message || error || "Đăng nhập thất bại!");

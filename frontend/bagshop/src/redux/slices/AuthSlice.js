@@ -39,6 +39,7 @@ const initialState = {
   error: null,
   accessToken: null,
   accountId: null,
+  position: null,
   otp: null
 };
 
@@ -62,6 +63,7 @@ const AuthSlice = createSlice({
       state.accountId = action.payload.accountId || null;
       state.error = null;
       state.loading = false;
+      state.position = null;
       state.otp = null;
     }
   },
@@ -74,6 +76,7 @@ const AuthSlice = createSlice({
         state.error = null;
         state.accessToken = action.payload.accessToken;
         state.accountId = action.payload.accountId || null;
+        state.position = action.payload.position || null;
       })
       .addCase(LOGIN.rejected, setRejected)
 
@@ -110,6 +113,7 @@ export const selectAuthError = (state) => state.auth.error;
 export const selectAccessToken = (state) => state.auth.accessToken;
 export const selectAccountId = (state) => state.auth.accountId;
 export const selectIsAuthenticated = (state) => Boolean(state.auth.accessToken);
+export const selectPosition = (state) => state.auth.position;
 export const selectAuthInfo = (state) => ({
   accessToken: state.auth.accessToken,
   accountId: state.auth.accountId,
