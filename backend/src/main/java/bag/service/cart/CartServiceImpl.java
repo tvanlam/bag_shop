@@ -4,7 +4,9 @@ import bag.modal.dto.CartDto;
 import bag.modal.dto.CartItemDto;
 import bag.modal.entity.Account;
 import bag.modal.entity.Cart;
+import bag.modal.entity.CartItem;
 import bag.modal.entity.Product;
+import bag.modal.request.CartItemRequest;
 import bag.modal.request.CartRequest;
 import bag.repository.AccountRepository;
 import bag.repository.CartItemRepository;
@@ -56,11 +58,37 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartDto addToCart(int accountId, CartRequest request) {
         try {
+            // b1: lấy account và cart
             Account account = accountRepository.findById(accountId)
                     .orElseThrow(() -> new RuntimeException("Account " + accountId + "not found"));
             Cart cart = cartRepository.findByAccountId(accountId)
-                    .orElseThrow(() -> new RuntimeException("Account " + request.getAccountId() + "not found"));
-
+                    .orElseGet(() -> {
+                       Cart newCart = new Cart();
+                       newCart.setAccount(account);
+                       return cartRepository.save(newCart);
+                    });
+            // b2: kiểm tra product
+            for(CartItemRequest cartItemRequest : request.getItems()){
+                Product product = productRepository.findById(cartItemRequest.getProductId())
+                        .orElseThrow(() -> new RuntimeException("Product " + cartItemRequest.getProductId() + "not found"));
+                // tìm xem sp có trong cart chưa
+                var existingItem = cart.getCartItems().stream()
+                        .filter(ci -> ci.getProduct().getId() == cartItemRequest.getProductId())
+                        .findFirst();
+                // nếu có thì tăng số lượng
+                if(existingItem.isPresent()){
+                    int newQty = existingItem.get().getQuantity() + cartItemRequest.getQuantity();
+                    existingItem.get().setQuantity(newQty);
+                // nếu chưa có thì tạo mới
+                }else{
+                    var newItem = new bag.modal.entity.CartItem();
+                    newItem.setCart(cart);
+                    newItem.setQuantity(cartItemRequest.getQuantity());
+                    newItem.setProduct(product);
+                    cart.getCartItems().add(newItem);
+                }
+            }
+            cartRepository.save(cart);
             return new CartDto(cart);
         }catch(Exception e){
             throw new RuntimeException("Add to cart failed");
@@ -69,7 +97,24 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto updateCartItem(int accountId, CartRequest request) {
-        return null;
+        Cart cart = cartRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new RuntimeException("Account" + accountId + "not found"));
+        for(CartItemRequest cartItemRequest : request.getItems()){
+            CartItem existingItem = cart.getCartItems().stream()
+                    .filter(ci -> ci.getProduct().getId() == cartItemRequest.getProductId())
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Product " + cartItemRequest.getProductId() + "not found in cart"));
+            //cap nhat so luong
+            if(cartItemRequest.getQuantity() <= 0){
+                cart.getCartItems().remove(existingItem);
+                cartItemRepository.delete(existingItem);
+            }else{
+                // neu > 0, cap nhat lai so luong
+                existingItem.setQuantity(cartItemRequest.getQuantity());
+            }
+        }
+        cartRepository.save(cart);
+        return new CartDto(cart);
     }
 
     //admin operation

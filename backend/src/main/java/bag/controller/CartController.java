@@ -32,20 +32,32 @@ public class CartController {
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createCart(@RequestBody CartRequest request){
-        try{
-            return ResponseEntity.ok(cartService.createCart(request));
-        }catch(Exception e){
+    @PostMapping("/{accountId}/add")
+    public ResponseEntity<?> addToCart(@PathVariable int accountId, @RequestBody CartRequest request) {
+        try {
+            return ResponseEntity.ok(cartService.addToCart(accountId, request));
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateCart(@RequestBody CartRequest request, @PathVariable int id){
-        try{
-            return ResponseEntity.ok(cartService.updateCart(request,id));
-        }catch (Exception e){
+    @PutMapping("/{accountId}/update")
+    public ResponseEntity<?> updateCart(
+            @PathVariable int accountId,
+            @RequestBody CartRequest request) {
+        try {
+            return ResponseEntity.ok(cartService.updateCartItem(accountId, request));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCart(@PathVariable int id) {
+        try {
+            cartService.deleteCart(id);
+            return ResponseEntity.ok("Cart deleted successfully");
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
