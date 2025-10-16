@@ -1,12 +1,11 @@
-// AdminHeader.js - Sửa với Tailwind cho giao diện gọn, thanh lịch.
 import React from "react";
 import { Dropdown, Space, Menu } from "antd";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
-const AdminHeader = ({ title }) => {
+const AdminHeader = () => {
   const userMenu = (
-    <Menu className="rounded-lg shadow-md"> {/* Bo góc và shadow */}
+    <Menu className="rounded-lg shadow-md">
       <Menu.Item key="profile" icon={<UserOutlined />} className="text-gray-800 hover:bg-gray-100">
         <Link to="/profile">Hồ sơ cá nhân</Link>
       </Menu.Item>
@@ -17,10 +16,9 @@ const AdminHeader = ({ title }) => {
   );
 
   return (
-    <div className="flex justify-between items-center">
-      <h2 className="text-xl font-semibold text-gray-900">{title}</h2> {/* Chữ đậm, màu xám đậm */}
-      <Dropdown overlay={userMenu} placement="bottomRight">
-        <Space className="cursor-pointer text-gray-700 hover:text-indigo-600 transition duration-200"> {/* Hover hiệu ứng màu indigo */}
+    <div className="flex justify-between items-center w-full h-full">
+      <Dropdown menu={userMenu} placement="bottomRight" className="ml-auto">
+        <Space className="cursor-pointer text-gray-700 hover:text-indigo-600 transition duration-200">
           John Doe
           <UserOutlined className="text-lg" />
         </Space>

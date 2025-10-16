@@ -1,4 +1,3 @@
-// AdminSidebar.js - Sửa để hỗ trợ collapsed (chỉ icon), sử dụng Tailwind cho style.
 import React from "react";
 import { Menu } from "antd";
 import {
@@ -24,15 +23,15 @@ const AdminSidebar = ({ collapsed }) => {
   ];
 
   return (
-    <div className="p-4 text-white">
-      <h2 className={`text-2xl font-bold mb-6 text-center transition-all duration-300 ${collapsed ? 'hidden' : 'block'}`}>KINGKONG</h2> {/* Ẩn tiêu đề khi collapsed */}
+    <div className="h-screen bg-indigo-900 text-white p-4">
+      <h2 className={`text-2xl font-bold mb-6 text-center transition-all duration-300 ${collapsed ? 'hidden' : 'block'}`}>KINGKONG</h2>
       <Menu
         mode="inline"
         selectedKeys={[location.pathname]}
         className="bg-transparent border-none text-white"
         items={menuItems.map((item) => ({
           ...item,
-          className: `my-1 transition-all duration-300 ${collapsed ? 'justify-center' : ''}`, // Căn giữa icon khi collapsed
+          className: `my-1 transition-all duration-300 ${collapsed ? 'justify-center' : ''}`,
         }))}
       />
     </div>

@@ -1,17 +1,15 @@
-// AccountManagement.js - Thêm xử lý loading và error để tránh loading vĩnh viễn. Giữ Tailwind.
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Button, Tag, Spin, Alert } from "antd"; // Thêm Spin và Alert
-import { CREATE_ADMIN, FETCH_ACCOUNTS, selectAccounts, selectAccountLoading, selectAccountError } from "../../redux/slices/AccountSlice"; // Giả định thêm selector loading/error
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { Table, Button, Tag, Spin, Alert } from "antd";
+import { CREATE_ADMIN, FETCH_ACCOUNTS, selectAccounts, selectAccountLoading, selectAccountError } from "../../redux/slices/AccountSlice";
+import { useNavigate } from "react-router-dom";
 
 const AccountManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const accounts = useSelector(selectAccounts);
-  const loading = useSelector(selectAccountLoading); // Selector cho loading
-  const error = useSelector(selectAccountError); // Selector cho error
-  const { title } = useOutletContext();
+  const loading = useSelector(selectAccountLoading);
+  const error = useSelector(selectAccountError);
 
   useEffect(() => {
     dispatch(FETCH_ACCOUNTS());
@@ -24,7 +22,7 @@ const AccountManagement = () => {
       key: "id",
       render: (id, record) => (
         <span
-          className="text-blue-600 hover:text-blue-800 cursor-pointer underline"
+          className="text-blue-600 hover:text-blue-800 cursor-pointer underline font-medium"
           onClick={() => record.id && navigate(`/admin/customers/account-details/${record.id}`)}
         >
           {id}
@@ -35,7 +33,7 @@ const AccountManagement = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
-      render: (email) => <span className="text-gray-800">{email}</span>,
+      render: (email) => <span className="text-gray-800 font-medium">{email}</span>,
     },
     {
       title: "Status",
@@ -43,7 +41,7 @@ const AccountManagement = () => {
       key: "status",
       render: (status) => (
         <Tag
-          className="rounded-full px-2 py-1 text-sm"
+          className="rounded-full px-3 py-1 text-sm font-semibold"
           color={
             status === "ACTIVE"
               ? "green"
@@ -67,21 +65,20 @@ const AccountManagement = () => {
   };
 
   if (loading) {
-    return <Spin size="large" className="flex justify-center items-center h-64" />; // Hiển thị loading spinner
+    return <Spin size="large" className="flex justify-center items-center h-64" />;
   }
 
   if (error) {
-    return <Alert message="Lỗi tải dữ liệu" description={error} type="error" showIcon className="mb-4" />; // Hiển thị lỗi
+    return <Alert message="Lỗi tải dữ liệu" description={error} type="error" showIcon className="mb-4" />;
   }
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">{title}</h1>
-      <div className="mb-4">
+    <div className="p-6 bg-white shadow-lg rounded-xl border border-gray-200">
+      <div className="mb-6">
         <Button
           type="primary"
           onClick={handleCreateAdmin}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 shadow-md"
         >
           Tạo tài khoản admin
         </Button>
@@ -90,20 +87,13 @@ const AccountManagement = () => {
         columns={columns}
         dataSource={accounts}
         rowKey="id"
-        className="ant-table-custom"
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 10, showSizeChanger: true, pageSizeOptions: ["10", "20", "50"] }}
+        className="overflow-x-auto"
+        rowClassName="hover:bg-gray-50 transition duration-200"
+        headStyle={{ backgroundColor: "#f9fafb", color: "#374151", fontWeight: "600" }}
+        bordered={false}
+        scroll={{ x: "max-content" }}
       />
-      <style jsx>{`
-        .ant-table-custom .ant-table-thead > tr > th {
-          @apply bg-gray-100 text-gray-700 font-semibold;
-        }
-        .ant-table-custom .ant-table-tbody > tr:hover {
-          @apply bg-gray-50;
-        }
-        .ant-table-custom .ant-table-tbody > tr > td {
-          @apply border-b border-gray-200;
-        }
-      `}</style>
     </div>
   );
 };

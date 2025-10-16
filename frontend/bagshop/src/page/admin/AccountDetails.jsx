@@ -1,9 +1,8 @@
-// AccountDetails.js - Thêm xử lý loading/error tương tự, Tailwind cho giao diện.
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
-import { Button, Descriptions, Spin, Alert } from "antd"; // Thêm Spin và Alert
-import { selectAccount, DELETE_ACCOUNT, FETCH_ACCOUNT, selectAccountLoading, selectAccountError } from "../../redux/slices/AccountSlice"; // Giả định thêm selector
+import { Button, Descriptions, Spin, Alert } from "antd";
+import { selectAccount, DELETE_ACCOUNT, FETCH_ACCOUNT, selectAccountLoading, selectAccountError } from "../../redux/slices/AccountSlice";
 
 const AccountDetails = () => {
   const { id } = useParams();
@@ -39,30 +38,30 @@ const AccountDetails = () => {
   if (!account) return <Alert message="Không tìm thấy tài khoản" type="info" showIcon />;
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-lg"> {/* Container tương tự */}
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">{title}</h1>
-      <Descriptions title="Thông tin tài khoản" bordered className="mb-6">
-        <Descriptions.Item label="ID">{account.id}</Descriptions.Item>
-        <Descriptions.Item label="Username">{account.username}</Descriptions.Item>
-        <Descriptions.Item label="Email">{account.email}</Descriptions.Item>
-        <Descriptions.Item label="Phone Number">{account.phoneNumber}</Descriptions.Item>
-        <Descriptions.Item label="City">{account.city}</Descriptions.Item>
-        <Descriptions.Item label="Address">{account.address}</Descriptions.Item>
-        <Descriptions.Item label="Position">{account.position}</Descriptions.Item>
-        <Descriptions.Item label="Status">{account.status}</Descriptions.Item>
+    <div className="p-6 bg-white shadow-lg rounded-xl border border-gray-200">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">{title}</h1>
+      <Descriptions title="Thông tin tài khoản" bordered column={1} className="mb-6 bg-gray-50 rounded-md p-4 shadow-inner">
+        <Descriptions.Item label="ID" className="text-gray-700 font-medium">{account.id}</Descriptions.Item>
+        <Descriptions.Item label="Username" className="text-gray-700 font-medium">{account.username}</Descriptions.Item>
+        <Descriptions.Item label="Email" className="text-gray-700 font-medium">{account.email}</Descriptions.Item>
+        <Descriptions.Item label="Phone Number" className="text-gray-700 font-medium">{account.phoneNumber}</Descriptions.Item>
+        <Descriptions.Item label="City" className="text-gray-700 font-medium">{account.city}</Descriptions.Item>
+        <Descriptions.Item label="Address" className="text-gray-700 font-medium">{account.address}</Descriptions.Item>
+        <Descriptions.Item label="Position" className="text-gray-700 font-medium">{account.position}</Descriptions.Item>
+        <Descriptions.Item label="Status" className="text-gray-700 font-medium">{account.status}</Descriptions.Item>
       </Descriptions>
-      <div className="flex space-x-4">
+      <div className="flex space-x-4 mt-6">
         <Button
           type="primary"
           onClick={handleEdit}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 shadow-md"
         >
           Sửa
         </Button>
         <Button
           danger
           onClick={handleDelete}
-          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300"
+          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 shadow-md"
         >
           Xóa
         </Button>

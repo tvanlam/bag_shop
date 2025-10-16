@@ -9,7 +9,7 @@ import Cart from "../component/user/Cart";
 
 import PrivateRoute from "./PrivateRouter";
 import AdminLayout from "../layout/AdminLayout";
-import AccountManagement from "../page/admin/AccountManagement";
+import AccountManagement from "../page/admin/AccountManagement"
 import AccountDetails from "../page/admin/AccountDetails";
 
 const router = createBrowserRouter([
@@ -25,14 +25,15 @@ const router = createBrowserRouter([
     ],
   },
   {
-    element: <PrivateRoute requiredPosition="ADMIN" />,
+    path: "/admin",
+    element: <AdminLayout />,
     children: [
       {
-        path: "/admin",
-        element: <AdminLayout />,
+        path: "",
+        element: <PrivateRoute requiredPosition="ADMIN" />,
         children: [
-          { index: true, element: <Navigate to="/admin/dashboard" replace /> },
-          { path: "dashboard", element: <div>Dashboard Content</div> },
+          { path: "", element: <Navigate to="dashboard" replace /> },
+          { path: "dashboard", element: <div>Dashboard</div> },
           { path: "products", element: <div>Products Content</div> },
           { path: "orders", element: <div>Orders Content</div> },
           { path: "customers", element: <AccountManagement /> },
@@ -43,9 +44,8 @@ const router = createBrowserRouter([
           { path: "reviews", element: <div>Reviews Content</div> },
           { path: "settings", element: <div>Settings Content</div> },
         ],
-      },
+      }
     ],
-  },
-]);
-
+  }
+])
 export default router;

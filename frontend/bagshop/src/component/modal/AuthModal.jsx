@@ -1,10 +1,9 @@
-// AuthModal.js - Sửa handleLogin để dispatch FETCH_ACCOUNT sau LOGIN và dùng response.position để check redirect.
 import React from "react";
 import { Modal, Tabs, Form, Input, Button, message, ConfigProvider } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LOGIN, selectAuthLoading, selectAuthError } from "../../redux/slices/AuthSlice";
-import { REGISTER, FETCH_ACCOUNT } from "../../redux/slices/AccountSlice"; // Đảm bảo import FETCH_ACCOUNT
+import { REGISTER, FETCH_ACCOUNT } from "../../redux/slices/AccountSlice";
 
 const AuthModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
@@ -15,37 +14,29 @@ const AuthModal = ({ open, onClose }) => {
   const [formLogin] = Form.useForm();
   const [formRegister] = Form.useForm();
 
-  const handleLogin = (values) => {
-    dispatch(LOGIN(values))
-      .unwrap()
-      .then(async (response) => {
-        onClose?.();
-        message.success("Đăng nhập thành công!");
-        // Dispatch FETCH_ACCOUNT để lấy chi tiết tài khoản nếu cần
-        await dispatch(FETCH_ACCOUNT(response.accountId)).unwrap();
-        if (response.position === "ADMIN") {
-          navigate("/admin");
-        }
-      })
-      .catch((err) => {
-        message.error(err?.message || error || "Đăng nhập thất bại!");
-      });
+  const handleLogin = async (values) => {
+    try {
+      const response = await dispatch(LOGIN(values)).unwrap();
+      onClose?.();
+      message.success("Đăng nhập thành công!");
+      await dispatch(FETCH_ACCOUNT(response.accountId)).unwrap();
+      if (response.position === "ADMIN") {
+        navigate("/admin");
+      }
+    } catch (err) {
+      message.error(err?.message || error || "Đăng nhập thất bại!");
+    }
   };
 
-  const handleRegister = (values) => {
-    dispatch(REGISTER(values))
-      .unwrap()
-      // eslint-disable-next-line no-unused-vars
-      .then((res) => {
-        onClose?.();
-        message.success("Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.");
-        // Truyền kèm email/action sang trang verify (tuỳ bạn dùng)
-        navigate("/verify", { state: { email: values.email, action: "REGISTER" } });
-      })
-      .catch((err) => {
-        // Hiển thị lỗi trả về từ API
-        message.error(err?.message || "Đăng ký thất bại! Vui lòng thử lại.");
-      });
+  const handleRegister = async (values) => {
+    try {
+      await dispatch(REGISTER(values)).unwrap();
+      onClose?.();
+      message.success("Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.");
+      navigate("/verify", { state: { email: values.email, action: "REGISTER" } });
+    } catch (err) {
+      message.error(err?.message || "Đăng ký thất bại! Vui lòng thử lại.");
+    }
   };
 
   return (
@@ -57,44 +48,38 @@ const AuthModal = ({ open, onClose }) => {
         },
       }}
     >
-      <Modal open={open} onCancel={onClose} footer={null} centered className="rounded-2xl">
+      <Modal open={open} onCancel={onClose} footer={null} centered className="rounded-2xl overflow-hidden shadow-2xl">
         <Tabs
           defaultActiveKey="login"
           centered
-          className="custom-tabs"
+          className="custom-tabs font-bold italic text-lg"
           items={[
             {
-              label: <span className="font-semibold italic text-lg hover:text-gray-800">Đăng nhập</span>,
+              label: "Đăng nhập",
               key: "login",
               children: (
-                <Form
-                  form={formLogin}
-                  layout="vertical"
-                  onFinish={handleLogin}
-                  className="space-y-4"
-                  requiredMark={false}
-                >
+                <Form form={formLogin} layout="vertical" onFinish={handleLogin} className="space-y-4 px-4 py-2">
                   <Form.Item
                     name="username"
-                    label={<span className="font-medium italic">Tài khoản</span>}
+                    label="Tài khoản"
                     rules={[{ required: true, message: "Nhập tài khoản!" }]}
+                    className="font-medium italic"
                   >
-                    <Input placeholder="Nhập tài khoản" />
+                    <Input placeholder="Nhập tài khoản" className="rounded-md border-gray-300" />
                   </Form.Item>
-
                   <Form.Item
                     name="password"
-                    label={<span className="font-medium italic">Mật khẩu</span>}
+                    label="Mật khẩu"
                     rules={[{ required: true, message: "Nhập mật khẩu!" }]}
+                    className="font-medium italic"
                   >
-                    <Input.Password placeholder="Nhập mật khẩu" />
+                    <Input.Password placeholder="Nhập mật khẩu" className="rounded-md border-gray-300" />
                   </Form.Item>
-
                   <Button
                     type="primary"
                     htmlType="submit"
                     loading={loading}
-                    className="w-full rounded-xl font-semibold italic"
+                    className="w-full rounded-xl font-semibold italic bg-[#111] hover:bg-[#222] text-white h-10"
                   >
                     Đăng nhập
                   </Button>
@@ -102,56 +87,50 @@ const AuthModal = ({ open, onClose }) => {
               ),
             },
             {
-              label: <span className="font-semibold italic text-lg hover:text-gray-800">Đăng ký</span>,
+              label: "Đăng ký",
               key: "register",
               children: (
-                <Form
-                  form={formRegister}
-                  layout="vertical"
-                  onFinish={handleRegister}
-                  className="space-y-4"
-                  requiredMark={false}
-                >
+                <Form form={formRegister} layout="vertical" onFinish={handleRegister} className="space-y-4 px-4 py-2">
                   <Form.Item
                     name="username"
-                    label={<span className="font-medium italic">Tài khoản</span>}
+                    label="Tài khoản"
                     rules={[{ required: true, message: "Nhập tài khoản!" }]}
+                    className="font-medium italic"
                   >
-                    <Input placeholder="Nhập tài khoản" />
+                    <Input placeholder="Nhập tài khoản" className="rounded-md border-gray-300" />
                   </Form.Item>
-
                   <Form.Item
                     name="email"
-                    label={<span className="font-medium italic">Email</span>}
+                    label="Email"
                     rules={[
                       { required: true, message: "Nhập email!" },
                       { type: "email", message: "Email không hợp lệ!" },
                     ]}
+                    className="font-medium italic"
                   >
-                    <Input placeholder="Nhập email" />
+                    <Input placeholder="Nhập email" className="rounded-md border-gray-300" />
                   </Form.Item>
-
                   <Form.Item
                     name="phoneNumber"
-                    label={<span className="font-medium italic">Số điện thoại</span>}
+                    label="Số điện thoại"
                     rules={[{ required: true, message: "Nhập số điện thoại!" }]}
+                    className="font-medium italic"
                   >
-                    <Input placeholder="Nhập số điện thoại" />
+                    <Input placeholder="Nhập số điện thoại" className="rounded-md border-gray-300" />
                   </Form.Item>
-
                   <Form.Item
                     name="password"
-                    label={<span className="font-medium italic">Mật khẩu</span>}
+                    label="Mật khẩu"
                     rules={[{ required: true, message: "Nhập mật khẩu!" }]}
+                    className="font-medium italic"
                   >
-                    <Input.Password placeholder="Nhập mật khẩu" />
+                    <Input.Password placeholder="Nhập mật khẩu" className="rounded-md border-gray-300" />
                   </Form.Item>
-
                   <Button
                     type="primary"
                     htmlType="submit"
                     loading={loading}
-                    className="w-full rounded-xl font-semibold italic"
+                    className="w-full rounded-xl font-semibold italic bg-[#111] hover:bg-[#222] text-white h-10"
                   >
                     Đăng kí
                   </Button>
@@ -161,25 +140,6 @@ const AuthModal = ({ open, onClose }) => {
           ]}
         />
       </Modal>
-
-      <style>
-        {`
-          .custom-tabs .ant-tabs-tab {
-            font-weight: 600;
-            font-style: italic;
-            font-size: 1.1rem;
-          }
-          .custom-tabs .ant-tabs-tab:hover {
-            color: #111 !important;
-          }
-          .custom-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
-            color: #111 !important;
-          }
-          .custom-tabs .ant-tabs-ink-bar {
-            background: #111 !important;
-          }
-        `}
-      </style>
     </ConfigProvider>
   );
 };
