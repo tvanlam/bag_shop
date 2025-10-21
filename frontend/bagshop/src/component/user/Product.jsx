@@ -16,16 +16,17 @@ import {
   selectProductLoading,
   selectProductError,
 } from "../../redux/slices/ProductSlice";
+import { ADD_TO_CART, FETCH_CARTS } from "../../redux/slices/CartSlice";
 
 const Product = () => {
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const loading = useSelector(selectProductLoading);
   const error = useSelector(selectProductError);
+  const { accountId } = useSelector((state) => state.auth);
   const [sortBy, setSortBy] = useState("default");
   const [favorites, setFavorites] = useState([]);
   const [selectOption, setSelectOption] = useState([]);
-  const [addToCart, setAddToCart] = useState([]);
 
   useEffect(() => {
     dispatch(FETCH_PRODUCTS());
@@ -49,23 +50,55 @@ const Product = () => {
     }));
   };
 
-  const handleAddToCart = (productId) => {
-    setAddToCart((prev) => ({
-      ...prev,
-      [productId]: {
-        ...prev[productId],
-        quantity: prev[productId] ? prev[productId].quantity + 1 : 1,
-      },
-    }));
-    toast.success("Thêm vào giỏ hàng thành công!", {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "light",
-    });
+  const handleAddToCart = (product) => {
+    if (!accountId) {
+      toast.error("Vui lòng đăng nhập để thêm vào giỏ hàng!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+      return;
+    }
+
+    const cartRequest = {
+      items: [
+        {
+          productId: product.id,
+          quantity: 1,
+        },
+      ],
+    };
+
+    dispatch(ADD_TO_CART({ accountId, cartRequest }))
+      .unwrap()
+      .then(() => {
+        // Fetch lại danh sách giỏ hàng sau khi add to cart thành công
+        dispatch(FETCH_CARTS(accountId));
+        toast.success("Thêm vào giỏ hàng thành công!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
+      })
+      .catch(() => {
+        toast.error("Thêm vào giỏ hàng thất bại!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
+      });
   };
 
   const colorMap = {
@@ -263,7 +296,7 @@ const Product = () => {
                   </div>
                   {/* Add to Cart Button - Appears on Hover */}
                   <button
-                    onClick={() => handleAddToCart(product.id)}
+                    onClick={() => handleAddToCart(product)}
                     className="absolute bottom-0 left-0 right-0 bg-blue-600 text-white py-2 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity "
                   >
                     <HiOutlineShoppingCart size={20} />

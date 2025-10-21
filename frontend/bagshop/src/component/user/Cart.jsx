@@ -1,19 +1,54 @@
-import React, { useState } from "react";
-import products from "../../data/products";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { FETCH_CARTS } from "../../redux/slices/CartSlice";
 
 const Cart = () => {
-  const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.carts);
+  const accountId = useSelector((state) => state.auth.accountId);
+  const [quantities, setQuantities] = useState({});
+
+  useEffect(() => {
+    if (accountId) {
+      dispatch(FETCH_CARTS(accountId));
+    }
+  }, [dispatch, accountId]);
+
+  useEffect(() => {
+    // Khởi tạo state với object lưu số lượng cho từng sản phẩm từ Redux
+    if (cartItems && cartItems.length > 0) {
+      const initialQuantities = cartItems.reduce((acc, item, index) => {
+        acc[index] = item.quantity || 1;
+        return acc;
+      }, {});
+      setQuantities(initialQuantities);
+    }
+  }, [cartItems]);
 
   // Hàm chuyển đổi giá từ string sang number
   const parsePrice = (priceString) => {
     if (!priceString) return 0;
-    // Loại bỏ dấu phẩy và chuyển thành số
-    return parseInt(priceString.toString().replace(/,/g, "")) || 0;
+    return parseFloat(priceString.toString().replace(/,/g, "")) || 0;
   };
 
-  const totalPrice = (product) => parsePrice(product.price) * quantity;
-  const handleQuantityChange = (change) => {
-    setQuantity((prev) => Math.max(1, prev + change));
+  const calculateTotalPrice = (item, index) => {
+    return (
+      parsePrice(item.priceAtAdd) * (quantities[index] || item.quantity || 1)
+    );
+  };
+
+  const handleQuantityChange = (index, change) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [index]: Math.max(1, (prev[index] || 1) + change),
+    }));
+  };
+
+  const calculateGrandTotal = () => {
+    if (!cartItems || cartItems.length === 0) return 0;
+    return cartItems.reduce((total, item, index) => {
+      return total + calculateTotalPrice(item, index);
+    }, 0);
   };
 
   return (
@@ -31,41 +66,37 @@ const Cart = () => {
               <th className="px-4 py-2">Tổng</th>
             </thead>
             <tbody>
-              {products.length > 0 ? (
-                products.map((product, index) => {
+              {cartItems && cartItems.length > 0 ? (
+                cartItems.map((item, index) => {
                   return (
-                    <tr key={index}>
+                    <tr key={item.id || index}>
                       <td className="px-4 py-2 text-center">
                         <img
-                          src={product.mainImage || "default-image.jpg"}
-                          alt={product.name || "Sản phẩm"}
+                          src={item.thumbnail || "default-image.jpg"}
+                          alt={item.productName || "Sản phẩm"}
                           className="w-16 h-16 object-cover mx-auto"
                         />
                       </td>
                       <td className="px-4 py-2 ">
-                        <p>{product.name || "Tên sản phẩm"}</p>
-                        <p>{product.category || "Danh mục"}</p>
-                        <p>
-                          {product.colors || "Không có màu"},{" "}
-                          {product.sizes || "Không có kích thước"}
-                        </p>
+                        <p>{item.productName || "Tên sản phẩm"}</p>
                       </td>
                       <td className="px-4 py-2 text-center">
                         <p>
-                          {parsePrice(product.price).toLocaleString("vi-VN")} ₫
+                          {parsePrice(item.priceAtAdd).toLocaleString("vi-VN")}{" "}
+                          ₫
                         </p>
                       </td>
                       <td className="px-4 py-2 text-center">
                         <div className="flex items-center justify-center space-x-3">
                           <button
-                            onClick={() => handleQuantityChange(-1)}
+                            onClick={() => handleQuantityChange(index, -1)}
                             className="w-10 h-10 rounded-full"
                           >
                             -
                           </button>
-                          <p>{quantity}</p>
+                          <p>{quantities[index] || item.quantity}</p>
                           <button
-                            onClick={() => handleQuantityChange(1)}
+                            onClick={() => handleQuantityChange(index, 1)}
                             className="w-10 h-10 rounded-full"
                           >
                             +
@@ -73,7 +104,10 @@ const Cart = () => {
                         </div>
                       </td>
                       <td className="px-4 py-2 text-center">
-                        {totalPrice(product).toLocaleString("vi-VN")} ₫
+                        {calculateTotalPrice(item, index).toLocaleString(
+                          "vi-VN"
+                        )}{" "}
+                        ₫
                       </td>
                     </tr>
                   );
@@ -88,6 +122,21 @@ const Cart = () => {
             </tbody>
           </table>
           <hr className="mb-6" />
+
+          {/* Tổng tiền */}
+          {cartItems && cartItems.length > 0 && (
+            <div className="flex justify-end mb-6">
+              <div className="w-full md:w-1/3">
+                <div className="flex justify-between mb-4 text-lg font-semibold">
+                  <span>Tổng cộng:</span>
+                  <span>{calculateGrandTotal().toLocaleString("vi-VN")} ₫</span>
+                </div>
+                <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                  Thanh toán
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

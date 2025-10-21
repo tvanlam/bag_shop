@@ -12,6 +12,7 @@ import {
   selectProductError,
 } from "../../redux/slices/ProductSlice";
 import { selectIsAuthenticated } from "../../redux/slices/AuthSlice";
+import { ADD_TO_CART, FETCH_CARTS } from "../../redux/slices/CartSlice";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -21,6 +22,7 @@ const ProductDetails = () => {
   const loading = useSelector(selectProductLoading);
   const error = useSelector(selectProductError);
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const { accountId } = useSelector((state) => state.auth);
   const [mainImage, setMainImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [currentProduct, setCurrentProduct] = useState(null);
@@ -81,15 +83,56 @@ const ProductDetails = () => {
   };
 
   const handleAddToCart = () => {
-    toast.success("Thêm vào giỏ hàng thành công!", {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "light",
-    });
+    if (!currentProduct) return;
+
+    if (!accountId) {
+      toast.error("Vui lòng đăng nhập để thêm vào giỏ hàng!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+      return;
+    }
+
+    const cartRequest = {
+      items: [
+        {
+          productId: currentProduct.id,
+          quantity: quantity,
+        },
+      ],
+    };
+
+    dispatch(ADD_TO_CART({ accountId, cartRequest }))
+      .unwrap()
+      .then(() => {
+        // Fetch lại danh sách giỏ hàng sau khi add to cart thành công
+        dispatch(FETCH_CARTS(accountId));
+        toast.success("Thêm vào giỏ hàng thành công!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
+      })
+      .catch(() => {
+        toast.error("Thêm vào giỏ hàng thất bại!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
+      });
   };
 
   // Hiển thị loading state

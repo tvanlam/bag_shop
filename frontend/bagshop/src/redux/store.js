@@ -1,22 +1,41 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storageSession from "redux-persist/lib/storage/session";
+import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import supportReducer from "./slices/SupportSlice";
 import authReducer from "./slices/AuthSlice";
 import accountReducer from "./slices/AccountSlice";
 import productReducer from "./slices/ProductSlice";
+import cartReducer from "./slices/CartSlice";
+
+// Config cho auth - lưu vào sessionStorage (tự động xóa khi đóng browser)
+const authPersistConfig = {
+  key: "auth",
+  storage: storageSession,
+};
+
+// Config cho cart - lưu vào localStorage (persistent)
+const cartPersistConfig = {
+  key: "cart",
+  storage: storage,
+};
 
 const persistConfig = {
   key: "root",
   storage: storageSession,
-  whitelist: ["auth"],
+  whitelist: ["auth", "cart"],
 };
 
+// Áp dụng persist config cho từng reducer
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
+const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
+
 const rootReducer = combineReducers({
-  auth: authReducer,
+  auth: persistedAuthReducer,
   account: accountReducer,
   support: supportReducer,
   product: productReducer,
+  cart: persistedCartReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

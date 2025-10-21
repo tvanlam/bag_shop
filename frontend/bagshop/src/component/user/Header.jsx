@@ -8,6 +8,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../redux/slices/AuthSlice";
 import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "../modal/AuthModal";
+import { FETCH_CARTS } from "../../redux/slices/CartSlice";
+import UserAvatar from "./UserAvatar";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -18,6 +20,7 @@ const Header = () => {
 
   const dispatch = useDispatch();
   const { accountId } = useSelector((state) => state.auth);
+  const { carts } = useSelector((state) => state.cart);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -25,11 +28,22 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (accountId) {
+      dispatch(FETCH_CARTS());
+    }
+  }, [dispatch, accountId]);
+
   const handleLogout = (myId) => {
     dispatch(LOGOUT(myId))
       .unwrap()
       .then(() => setOpenDropdown(false));
   };
+
+  // Tính tổng số lượng sản phẩm trong giỏ hàng
+  const totalCartItems = Array.isArray(carts)
+    ? carts.reduce((total, item) => total + (item.quantity || 0), 0)
+    : 0;
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -46,7 +60,7 @@ const Header = () => {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "bg-white shadow-lg" : "bg-transparent"
+          isScrolled ? "bg-gray-500 shadow-lg" : "bg-transparent"
         }`}
       >
         <div className="container px-8 py-6 mx-auto flex items-center justify-center relative">
@@ -101,14 +115,17 @@ const Header = () => {
             </div>
 
             <div
-              className={`cursor-pointer transition-colors duration-200 ${
+              className={`cursor-pointer transition-colors duration-200 relative ${
                 isScrolled
                   ? "text-gray-600 hover:text-blue-600"
                   : "text-white hover:text-pink-300"
               }`}
             >
-              <Link to="/cart">
+              <Link to="/cart" className="relative">
                 <HiOutlineShoppingCart size={22} />
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {totalCartItems}
+                </span>
               </Link>
             </div>
 
@@ -130,19 +147,11 @@ const Header = () => {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
-                <span
-                  className={`cursor-pointer font-medium transition-colors duration-200 ${
-                    isScrolled
-                      ? "text-gray-700 hover:text-purple-600"
-                      : "text-white hover:text-purple-400"
-                  }`}
-                >
-                  Mã khách hàng: {accountId}
-                </span>
+                <UserAvatar accountId={accountId} isScrolled={isScrolled} />
 
                 {openDropdown && (
                   <div
-                    className="absolute right-0 mt-2 w-56 rounded-xl 
+                    className="absolute right-0 mt-2 w-56 rounded-xl
                     backdrop-blur-md bg-gray-800/40 shadow-xl border border-gray-200/30"
                   >
                     <ul className="py-2 text-gray-100">

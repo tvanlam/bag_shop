@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import CartSlice from "../../service/CartSlice";
+import CartService from "../../service/CartService";
 
 export const FETCH_CARTS = createAsyncThunk(
   "cart/fetchCarts",
-  async (_, { rejectWithValue }) => {
+  async (accountId, { rejectWithValue }) => {
     try {
-      return (await cartService.getAll()).data;
+      if (!accountId) {
+        return rejectWithValue("Account ID is required");
+      }
+      return (await CartService.getCartByAccountId(accountId)).data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetch cart failed");
     }
@@ -16,7 +19,7 @@ export const FETCH_CART = createAsyncThunk(
   "cart/fetchCart",
   async (cartId, { rejectWithValue }) => {
     try {
-      return (await cartService.getCartById(cartId)).data;
+      return (await CartService.getCartById(cartId)).data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetch cart failed");
     }
@@ -27,18 +30,29 @@ export const CREATE_CART = createAsyncThunk(
   "cart/createCart",
   async (cartRequest, { rejectWithValue }) => {
     try {
-      return (await cartService.createCart(cartRequest)).data;
+      return (await CartService.createCart(cartRequest)).data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Create cart failed");
     }
   }
 );
 
+export const ADD_TO_CART = createAsyncThunk(
+  "cart/addToCart",
+  async ({ accountId, cartRequest }, { rejectWithValue }) => {
+    try {
+      return (await CartService.addToCart(accountId, cartRequest)).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Add to cart failed");
+    }
+  }
+);
+
 export const UPDATE_CART = createAsyncThunk(
   "cart/updateCart",
-  async ({ cartId, cartRequest }, { rejectWithValue }) => {
+  async ({ accountId, cartRequest }, { rejectWithValue }) => {
     try {
-      return (await cartService.updateCart(cartId, cartRequest)).data;
+      return (await CartService.updateCart(accountId, cartRequest)).data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Update cart failed");
     }
@@ -49,7 +63,7 @@ export const DELETE_CART = createAsyncThunk(
   "cart/deleteCart",
   async (cartId, { rejectWithValue }) => {
     try {
-      await cartService.deleteCart(cartId);
+      await CartService.deleteCart(cartId);
       return;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Delete cart failed");
@@ -87,7 +101,18 @@ const CartSlice = createSlice({
       .addCase(FETCH_CARTS.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.carts = action.payload;
+        // Backend trả về array CartDto, lấy items từ cart đầu tiên (hoặc tất cả items)
+        if (Array.isArray(action.payload) && action.payload.length > 0) {
+          // Nếu là array CartDto, lấy items từ cart đầu tiên
+          state.carts = action.payload[0].items || [];
+          state.cart = action.payload[0];
+        } else if (action.payload && action.payload.items) {
+          // Nếu là CartDto object
+          state.carts = action.payload.items || [];
+          state.cart = action.payload;
+        } else {
+          state.carts = [];
+        }
       })
       .addCase(FETCH_CARTS.rejected, setRejected)
       // Fetch Cart
@@ -103,9 +128,19 @@ const CartSlice = createSlice({
       .addCase(CREATE_CART.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.carts.push(action.payload);
+        state.cart = action.payload;
       })
       .addCase(CREATE_CART.rejected, setRejected)
+      // Add To Cart
+      .addCase(ADD_TO_CART.pending, setPending)
+      .addCase(ADD_TO_CART.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.cart = action.payload;
+        // Backend trả về CartDto với items array, lưu items vào carts
+        state.carts = action.payload.items || [];
+      })
+      .addCase(ADD_TO_CART.rejected, setRejected)
       // Update Cart
       .addCase(UPDATE_CART.pending, setPending)
 
