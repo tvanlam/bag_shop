@@ -29,11 +29,10 @@ const AdminSidebar = ({ collapsed }) => {
         mode="inline"
         selectedKeys={[location.pathname]}
         className="bg-transparent border-none text-white"
-        items={menuItems.map((item) => ({
-          ...item,
-          className: `my-1 transition-all duration-300 ${collapsed ? 'justify-center' : ''}`,
-        }))}
+        inlineCollapsed={collapsed}
+        items={menuItems}
       />
+
     </div>
   );
 };

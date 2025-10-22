@@ -26,8 +26,14 @@ const AdminLayout = () => {
           <AdminHeader />
         </Header>
         <Content
-          className={`p-6 bg-white min-h-screen ml-${collapsed ? '20' : '64'} mt-16 transition-all duration-300`}
+          style={{
+            marginLeft: collapsed ? 80 : 250, // khớp với collapsedWidth và width của Sider
+            marginTop: 64, // khớp với chiều cao Header
+            transition: "margin-left 0.3s ease",
+          }}
+          className="p-6 bg-white min-h-screen"
         >
+
           <Outlet />
         </Content>
       </Layout>
