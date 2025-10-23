@@ -6,22 +6,22 @@ import { HiOutlineShoppingCart } from "react-icons/hi2";
 import { SlUser } from "react-icons/sl";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../redux/slices/AuthSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthModal from "../modal/AuthModal";
 import { FETCH_CARTS } from "../../redux/slices/CartSlice";
-import UserAvatar from "./UserAvatar";
+import { Avatar } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openAuth, setOpenAuth] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(false);
-  const navigate = useNavigate();
   const timeoutRef = useRef(null);
 
   const dispatch = useDispatch();
   const { accountId } = useSelector((state) => state.auth);
   const { carts } = useSelector((state) => state.cart);
-  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+  const { account } = useSelector((state) => state.account); // nếu có thông tin người dùng
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -41,7 +41,6 @@ const Header = () => {
       .then(() => setOpenDropdown(false));
   };
 
-  // Tính tổng số lượng sản phẩm trong giỏ hàng
   const totalCartItems = Array.isArray(carts)
     ? carts.reduce((total, item) => total + (item.quantity || 0), 0)
     : 0;
@@ -125,13 +124,12 @@ const Header = () => {
               <Link to="/cart" className="relative">
                 <HiOutlineShoppingCart size={22} />
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {totalQuantity}
+                  {totalCartItems}
                 </span>
               </Link>
             </div>
 
             {!accountId ? (
-              // ✅ Chưa login → hiện icon
               <div
                 onClick={() => setOpenAuth(true)}
                 className={`cursor-pointer transition-colors duration-200 ${
@@ -148,7 +146,16 @@ const Header = () => {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
-                <UserAvatar accountId={accountId} isScrolled={isScrolled} />
+                <Avatar
+                  size={32}
+                  icon={<UserOutlined />}
+                  src={account?.avatarUrl || undefined}
+                  style={{
+                    backgroundColor: isScrolled ? "#f0f0f0" : "#ffffff",
+                    color: "#555",
+                    cursor: "pointer",
+                  }}
+                />
 
                 {openDropdown && (
                   <div
