@@ -165,13 +165,6 @@ const Product = () => {
           </div>
         </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="text-center py-12">
-            <div className="text-lg text-gray-600">Đang tải sản phẩm...</div>
-          </div>
-        )}
-
         {error && (
           <div className="text-center py-12">
             <div className="text-lg text-red-600">

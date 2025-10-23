@@ -95,6 +95,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Transactional
     @Override
     public CartDto updateCartItem(int accountId, CartRequest request) {
         Cart cart = cartRepository.findByAccountId(accountId)

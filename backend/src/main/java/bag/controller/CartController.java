@@ -32,6 +32,15 @@ public class CartController {
         }
     }
 
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity<?> getCartByAccountId(@PathVariable int accountId) {
+        try {
+            return ResponseEntity.ok(cartService.getCartByAccountId(accountId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/{accountId}/add")
     public ResponseEntity<?> addToCart(@PathVariable int accountId, @RequestBody CartRequest request) {
         try {

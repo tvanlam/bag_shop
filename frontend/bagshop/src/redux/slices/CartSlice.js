@@ -76,6 +76,7 @@ const initialState = {
   error: null,
   carts: [],
   cart: null,
+  totalQuantity: 0,
 };
 
 const setPending = (state) => {
@@ -93,6 +94,9 @@ const CartSlice = createSlice({
   initialState,
   reducers: {
     clearCart: () => initialState,
+    setTotalQuantity: (state, action) => {
+      state.totalQuantity = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -147,13 +151,10 @@ const CartSlice = createSlice({
       .addCase(UPDATE_CART.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.carts = state.carts.map((cart) => {
-          if (cart.id === action.payload.id) {
-            return action.payload;
-          }
-          return cart;
-        });
-        state.cart = action.payload;
+        if (action.payload && action.payload.items) {
+          state.carts = action.payload.items || [];
+          state.cart = action.payload;
+        }
       })
       .addCase(UPDATE_CART.rejected, setRejected)
       // Delete Cart
@@ -173,5 +174,5 @@ export const selectCartLoading = (state) => state.cart.loading;
 export const selectCartError = (state) => state.cart.error;
 export const selectCarts = (state) => state.cart.carts;
 export const selectCart = (state) => state.cart.cart;
-export const { clearCart } = CartSlice.actions;
+export const { clearCart, setTotalQuantity } = CartSlice.actions;
 export default CartSlice.reducer;

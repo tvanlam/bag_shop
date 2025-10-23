@@ -153,6 +153,11 @@ const ProductDetails = () => {
     );
   }
 
+  const formatVND = (price) => {
+    if (typeof price !== "number") return "N/A";
+    return new Intl.NumberFormat("vi-VN").format(price) + " VNĐ";
+  };
+
   return (
     <div className="min-h-screen pt-24 pb-12 bg-gray-50">
       <div className="max-w-6xl mx-auto px-6 lg:px-8">
@@ -200,12 +205,8 @@ const ProductDetails = () => {
               {currentProduct.description || "Không có mô tả"}
             </p>
 
-            {/* Giá */}
             <p className="text-2xl text-gray-800 font-bold mb-4">
-              $
-              {typeof currentProduct.price === "number"
-                ? currentProduct.price.toFixed(2)
-                : currentProduct.price || "N/A"}
+              {formatVND(currentProduct.price)}
             </p>
 
             {/* Số lượng tồn kho */}

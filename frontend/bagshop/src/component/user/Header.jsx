@@ -21,6 +21,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const { accountId } = useSelector((state) => state.auth);
   const { carts } = useSelector((state) => state.cart);
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -124,7 +125,7 @@ const Header = () => {
               <Link to="/cart" className="relative">
                 <HiOutlineShoppingCart size={22} />
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {totalCartItems}
+                  {totalQuantity}
                 </span>
               </Link>
             </div>
