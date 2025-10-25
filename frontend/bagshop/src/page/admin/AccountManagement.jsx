@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Table, Button, Tag, Spin, Alert } from "antd";
 import { CREATE_ADMIN, FETCH_ACCOUNTS, selectAccounts, selectAccountLoading, selectAccountError } from "../../redux/slices/AccountSlice";
@@ -11,9 +11,31 @@ const AccountManagement = () => {
   const loading = useSelector(selectAccountLoading);
   const error = useSelector(selectAccountError);
 
-  useEffect(() => {
-    dispatch(FETCH_ACCOUNTS());
+  // Debounce fetch accounts
+  const fetchAccounts = useCallback(() => {
+    console.log("Dispatching FETCH_ACCOUNTS at:", new Date().toLocaleTimeString());
+    return dispatch(FETCH_ACCOUNTS());
   }, [dispatch]);
+
+  useEffect(() => {
+    let timer;
+    const fetchData = () => {
+      timer = setTimeout(() => {
+        fetchAccounts();
+      }, 300); // Chờ 300ms trước khi fetch
+    };
+
+    fetchData(); // Gọi lần đầu
+
+    return () => {
+      clearTimeout(timer); // Cleanup timer khi unmount
+    };
+  }, [fetchAccounts]); // Chỉ chạy khi fetchAccounts thay đổi
+
+  const handleCreateAdmin = () => {
+    console.log("Creating admin at:", new Date().toLocaleTimeString());
+    dispatch(CREATE_ADMIN());
+  };
 
   const columns = [
     {
@@ -60,20 +82,19 @@ const AccountManagement = () => {
     },
   ];
 
-  const handleCreateAdmin = () => {
-    dispatch(CREATE_ADMIN());
-  };
-
   if (loading) {
+    console.log("Loading state:", loading, "at:", new Date().toLocaleTimeString());
     return <Spin size="large" className="flex justify-center items-center h-64" />;
   }
 
   if (error) {
+    console.log("Error state:", error, "at:", new Date().toLocaleTimeString());
     return <Alert message="Lỗi tải dữ liệu" description={error} type="error" showIcon className="mb-4" />;
   }
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-xl border border-gray-200">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">Danh sách tài khoản</h1>
       <div className="mb-6">
         <Button
           type="primary"

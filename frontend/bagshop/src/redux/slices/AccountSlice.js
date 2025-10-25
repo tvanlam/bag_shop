@@ -66,8 +66,7 @@ export const UPDATE_INFORMATION = createAsyncThunk("account/updateInformation", 
 
 export const DELETE_ACCOUNT = createAsyncThunk("account/deleteAccount", async (accountId, { rejectWithValue }) => {
     try {
-        await AccountService.delete(accountId);
-        return;
+        return (await AccountService.delete(accountId)).data;
     } catch (error) {
         return rejectWithValue(error.response?.data || "Delete account failed");
     }
@@ -104,7 +103,7 @@ const AccountSlice = createSlice({
             .addCase(FETCH_ACCOUNTS.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.accounts = action.payload;
+                state.accounts = Array.isArray(action.payload) ? action.payload : [];
             })
             .addCase(FETCH_ACCOUNTS.rejected, setRejected)
 
