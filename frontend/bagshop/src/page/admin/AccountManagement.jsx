@@ -1,94 +1,86 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Table, Button, Tag, Spin, Alert } from "antd";
-import { CREATE_ADMIN, FETCH_ACCOUNTS, selectAccounts, selectAccountLoading, selectAccountError } from "../../redux/slices/AccountSlice";
+import {
+  CREATE_ADMIN,
+  FETCH_ACCOUNTS,
+  selectAccounts,
+  selectAccountListLoading,
+  selectAccountError,
+} from "../../redux/slices/AccountSlice";
 import { useNavigate } from "react-router-dom";
 
 const AccountManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const accounts = useSelector(selectAccounts);
-  const loading = useSelector(selectAccountLoading);
+  const loadingList = useSelector(selectAccountListLoading);
   const error = useSelector(selectAccountError);
 
-  // Debounce fetch accounts
-  const fetchAccounts = useCallback(() => {
-    console.log("Dispatching FETCH_ACCOUNTS at:", new Date().toLocaleTimeString());
-    return dispatch(FETCH_ACCOUNTS());
-  }, [dispatch]);
-
   useEffect(() => {
-    let timer;
-    const fetchData = () => {
-      timer = setTimeout(() => {
-        fetchAccounts();
-      }, 300); // Chờ 300ms trước khi fetch
-    };
-
-    fetchData(); // Gọi lần đầu
-
-    return () => {
-      clearTimeout(timer); // Cleanup timer khi unmount
-    };
-  }, [fetchAccounts]); // Chỉ chạy khi fetchAccounts thay đổi
+    console.log("AccountManagement mounted at:", new Date().toLocaleTimeString());
+    dispatch(FETCH_ACCOUNTS());
+    return () => console.log("AccountManagement unmounted at:", new Date().toLocaleTimeString());
+  }, [dispatch]);
 
   const handleCreateAdmin = () => {
     console.log("Creating admin at:", new Date().toLocaleTimeString());
     dispatch(CREATE_ADMIN());
   };
 
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      render: (id, record) => (
-        <span
-          className="text-blue-600 hover:text-blue-800 cursor-pointer underline font-medium"
-          onClick={() => record.id && navigate(`/admin/customers/account-details/${record.id}`)}
-        >
-          {id}
-        </span>
-      ),
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      render: (email) => <span className="text-gray-800 font-medium">{email}</span>,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag
-          className="rounded-full px-3 py-1 text-sm font-semibold"
-          color={
-            status === "ACTIVE"
-              ? "green"
-              : status === "INACTIVE"
-              ? "orange"
-              : status === "DELETED"
-              ? "red"
-              : status === "NOT_VERIFIED"
-              ? "gray"
-              : "default"
-          }
-        >
-          {status}
-        </Tag>
-      ),
-    },
-  ];
+  const columns = useMemo(
+    () => [
+      {
+        title: "ID",
+        dataIndex: "id",
+        key: "id",
+        render: (id, record) => (
+          <span
+            className="text-blue-600 hover:text-blue-800 cursor-pointer underline font-medium"
+            onClick={() => record.id && navigate(`/admin/customers/account-details/${record.id}`)}
+          >
+            {id}
+          </span>
+        ),
+      },
+      {
+        title: "Email",
+        dataIndex: "email",
+        key: "email",
+        render: (email) => <span className="text-gray-800 font-medium">{email}</span>,
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        render: (status) => (
+          <Tag
+            className="rounded-full px-3 py-1 text-sm font-semibold"
+            color={
+              status === "ACTIVE"
+                ? "green"
+                : status === "INACTIVE"
+                ? "orange"
+                : status === "DELETED"
+                ? "red"
+                : status === "NOT_VERIFIED"
+                ? "gray"
+                : "default"
+            }
+          >
+            {status}
+          </Tag>
+        ),
+      },
+    ],
+    [navigate]
+  );
 
-  if (loading) {
-    console.log("Loading state:", loading, "at:", new Date().toLocaleTimeString());
+  if (loadingList) {
     return <Spin size="large" className="flex justify-center items-center h-64" />;
   }
 
   if (error) {
-    console.log("Error state:", error, "at:", new Date().toLocaleTimeString());
     return <Alert message="Lỗi tải dữ liệu" description={error} type="error" showIcon className="mb-4" />;
   }
 
@@ -106,7 +98,7 @@ const AccountManagement = () => {
       </div>
       <Table
         columns={columns}
-        dataSource={accounts}
+        dataSource={Array.isArray(accounts) ? accounts : []}
         rowKey="id"
         pagination={{ pageSize: 10, showSizeChanger: true, pageSizeOptions: ["10", "20", "50"] }}
         className="overflow-x-auto"
