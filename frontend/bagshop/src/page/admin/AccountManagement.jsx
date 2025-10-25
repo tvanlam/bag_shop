@@ -34,14 +34,7 @@ const AccountManagement = () => {
         title: "ID",
         dataIndex: "id",
         key: "id",
-        render: (id, record) => (
-          <span
-            className="text-blue-600 hover:text-blue-800 cursor-pointer underline font-medium"
-            onClick={() => record.id && navigate(`/admin/customers/account-details/${record.id}`)}
-          >
-            {id}
-          </span>
-        ),
+        render: (id) => <span className="text-gray-800 font-medium">{id}</span>,
       },
       {
         title: "Email",
@@ -73,8 +66,14 @@ const AccountManagement = () => {
         ),
       },
     ],
-    [navigate]
+    []
   );
+
+  const handleRowClick = (record) => {
+    if (record.id) {
+      navigate(`/admin/details-account/${record.id}`);
+    }
+  };
 
   if (loadingList) {
     return <Spin size="large" className="flex justify-center items-center h-64" />;
@@ -102,8 +101,10 @@ const AccountManagement = () => {
         rowKey="id"
         pagination={{ pageSize: 10, showSizeChanger: true, pageSizeOptions: ["10", "20", "50"] }}
         className="overflow-x-auto"
-        rowClassName="hover:bg-gray-50 transition duration-200"
-        headStyle={{ backgroundColor: "#f9fafb", color: "#374151", fontWeight: "600" }}
+        rowClassName={() => "cursor-pointer hover:bg-gray-100 transition duration-200"}
+        onRow={(record) => ({
+          onClick: () => handleRowClick(record),
+        })}
         bordered={false}
         scroll={{ x: "max-content" }}
       />
