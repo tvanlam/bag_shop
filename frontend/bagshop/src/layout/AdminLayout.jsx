@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import AdminHeader from "../component/admin/AdminHeader";
@@ -7,13 +7,14 @@ const { Header, Content, Sider } = Layout;
 
 const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const handleCollapse = useCallback((value) => setCollapsed(value), []);
 
   return (
     <Layout className="min-h-screen bg-gray-100">
       <Sider
         collapsible
         collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
+        onCollapse={handleCollapse}
         width={250}
         collapsedWidth={80}
         className="fixed top-0 left-0 h-screen bg-indigo-900 text-white overflow-y-auto z-20 shadow-lg"
@@ -27,13 +28,12 @@ const AdminLayout = () => {
         </Header>
         <Content
           style={{
-            marginLeft: collapsed ? 80 : 250, // khớp với collapsedWidth và width của Sider
-            marginTop: 64, // khớp với chiều cao Header
+            marginLeft: collapsed ? 80 : 250,
+            marginTop: 64,
             transition: "margin-left 0.3s ease",
           }}
           className="p-6 bg-white min-h-screen"
         >
-
           <Outlet />
         </Content>
       </Layout>
@@ -41,4 +41,4 @@ const AdminLayout = () => {
   );
 };
 
-export default AdminLayout;
+export default React.memo(AdminLayout);
