@@ -82,7 +82,7 @@ const Cart = () => {
         })),
       };
 
-      console.log("🚀 REQUEST:", JSON.stringify(cartRequest, null, 2)); // DEBUG
+      console.log(" REQUEST:", JSON.stringify(cartRequest, null, 2)); // DEBUG
 
       await dispatch(
         UPDATE_CART({
@@ -196,11 +196,7 @@ const Cart = () => {
                         <button
                           onClick={() => handleQuantityChange(item.id, -1)}
                           disabled={updating || (quantities[item.id] || 1) <= 1}
-                          className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            updating || (quantities[item.id] || 1) <= 1
-                              ? "bg-gray-200 cursor-not-allowed"
-                              : "bg-gray-200 hover:bg-gray-300"
-                          }`}
+                          className={`w-10 h-10 rounded-full flex items-center justify-center ${"bg-gray-200 hover:bg-gray-300"}`}
                         >
                           -
                         </button>

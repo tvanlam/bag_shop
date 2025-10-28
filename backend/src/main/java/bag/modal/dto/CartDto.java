@@ -35,7 +35,5 @@ public class CartDto {
                 .mapToInt(CartItem::getQuantity).sum();
         this.totalPrice = cart.getCartItems().stream()
                 .mapToDouble(CartItem::getSubTotal).sum();
-
-
     }
 }

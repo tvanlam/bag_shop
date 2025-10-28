@@ -38,9 +38,8 @@ public class CartServiceImpl implements CartService {
         return new CartDto(cart);
     }
 
-
-
     @Override
+    @Transactional
     public CartDto getCartByAccountId(int accountId ) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException("Account " + accountId + " not found"));
@@ -120,9 +119,19 @@ public class CartServiceImpl implements CartService {
 
     //admin operation
     @Override
-    public void deleteCart(int id) {
-        Cart cart = cartRepository.findById(id).orElseThrow(() -> new RuntimeException("Cart not found"));
-        cartRepository.delete(cart);
+    @Transactional
+    public void deleteCartItem(int accountId, int cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new RuntimeException("Cart item not found with id: " + cartItemId));
+        Cart cart = cartItem.getCart();
+        if (cart == null) {
+            throw new RuntimeException("Cart item is not associated with any cart");
+        }
+        if (cart.getAccount().getId() != accountId) {
+            throw new RuntimeException("You can only delete items from your own cart");
+        }
+        cart.getCartItems().remove(cartItem);
+        cartItemRepository.delete(cartItem);
     }
 
     @Override

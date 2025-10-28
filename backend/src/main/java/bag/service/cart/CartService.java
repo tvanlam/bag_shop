@@ -16,7 +16,7 @@ public interface CartService {
 
     CartDto updateCartItem(int accountId, CartRequest request);
 
-    void deleteCart(int id);
+    void deleteCartItem(int accountId, int cartItemId);
 
     CartDto createNewCart(CartRequest request);
 

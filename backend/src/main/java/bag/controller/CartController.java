@@ -61,11 +61,11 @@ public class CartController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCart(@PathVariable int id) {
+    @DeleteMapping("/{accountId}/delete/{cartItemId}")
+    public ResponseEntity<?> deleteCartItem(@PathVariable int accountId,@PathVariable("cartItemId") int cartItemId) {
         try {
-            cartService.deleteCart(id);
-            return ResponseEntity.ok("Cart deleted successfully");
+            cartService.deleteCartItem(accountId,cartItemId);
+            return ResponseEntity.ok("Cart item deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
