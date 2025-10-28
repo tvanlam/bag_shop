@@ -61,10 +61,11 @@ export const UPDATE_CART = createAsyncThunk(
 
 export const DELETE_CART = createAsyncThunk(
   "cart/deleteCart",
-  async (cartId, { rejectWithValue }) => {
+  async ({ accountId, cartItemId }, { rejectWithValue }) => {
     try {
-      await CartService.deleteCart(cartId);
-      return;
+      const res = await CartService.deleteCart(accountId, cartItemId);
+      // If backend returns the deleted item id or the updated cart, prefer res.data
+      return res?.data ?? cartItemId;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Delete cart failed");
     }
@@ -162,9 +163,30 @@ const CartSlice = createSlice({
       .addCase(DELETE_CART.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        state.carts = state.carts.filter(
-          (cart) => cart.id !== action.payload.id
-        );
+        // action.payload may be: { id: deletedId } or deletedId or updated cart
+        const payload = action.payload;
+        let deletedId = null;
+        if (payload == null) {
+          // fallback to the thunk arg if available
+          deletedId = action.meta?.arg?.cartItemId;
+        } else if (typeof payload === "object" && payload.id) {
+          deletedId = payload.id;
+        } else if (typeof payload === "string" || typeof payload === "number") {
+          deletedId = payload;
+        }
+
+        if (deletedId != null) {
+          state.carts = state.carts.filter((item) => item.id !== deletedId);
+          if (state.cart && Array.isArray(state.cart.items)) {
+            state.cart.items = state.cart.items.filter(
+              (item) => item.id !== deletedId
+            );
+          }
+        } else if (payload && payload.items) {
+          // If backend returned the updated cart, use its items
+          state.carts = payload.items || [];
+          state.cart = payload;
+        }
       })
       .addCase(DELETE_CART.rejected, setRejected);
   },

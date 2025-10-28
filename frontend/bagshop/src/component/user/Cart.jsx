@@ -119,20 +119,35 @@ const Cart = () => {
   };
 
   const confirmDelete = async () => {
+    if (!accountId || !selectedItem) return;
+
+    setUpdating(true);
     try {
-      await dispatch(DELETE_CART(selectedItem.id)).unwrap();
+      await dispatch(
+        DELETE_CART({
+          accountId: parseInt(accountId),
+          cartItemId: parseInt(selectedItem.id),
+        })
+      ).unwrap();
+
+      // Re-fetch carts to ensure frontend matches backend canonical state
+      await dispatch(FETCH_CARTS(parseInt(accountId)));
+
       toast.success("Xóa sản phẩm thành công!", {
         position: "top-center",
         autoClose: 2000,
       });
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Xóa sản phẩm thất bại!", {
         position: "top-center",
         autoClose: 2000,
       });
+    } finally {
+      setUpdating(false);
+      setIsOpen(false);
+      setSelectedItem(null);
     }
-    setIsOpen(false);
-    setSelectedItem(null);
   };
 
   const cancelDelete = () => {
