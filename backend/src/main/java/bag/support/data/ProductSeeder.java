@@ -45,7 +45,7 @@ public class ProductSeeder {
                     // Lấy tài khoản người dùng từ AccountRepository để gán cho Review
                     List<Account> accounts = accountRepository.findAll();
                     Account user1 = accounts.stream()
-                            .filter(a -> a.getUsername().equals("user1"))
+                            .filter(a -> a.getUsername().equals("User1"))
                             .findFirst()
                             .orElseThrow(() -> new RuntimeException("User1 not found"));
                     Account user2 = accounts.stream()
@@ -133,7 +133,7 @@ public class ProductSeeder {
             } catch (Exception e) {
                 System.err.println("❌ Error seeding products: " + e.getMessage());
                 e.printStackTrace();
-                throw e; // Ném lại ngoại lệ để dễ debug
+                throw e;
             }
         };
     }

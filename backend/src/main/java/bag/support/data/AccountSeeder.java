@@ -40,7 +40,7 @@ public class AccountSeeder {
 
                 // User accounts
                 Account user1 = new Account();
-                user1.setUsername("user1");
+                user1.setUsername("User1");
                 user1.setPassword(passwordEncoder.encode("user123"));
                 user1.setEmail("user1@example.com");
                 user1.setPhoneNumber("0111111111");

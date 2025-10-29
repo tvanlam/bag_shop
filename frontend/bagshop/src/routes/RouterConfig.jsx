@@ -11,6 +11,7 @@ import PrivateRoute from "./PrivateRouter";
 import AdminLayout from "../layout/AdminLayout";
 import AccountManagement from "../page/admin/AccountManagement"
 import AccountDetails from "../page/admin/AccountDetails";
+import ProductManagement from "../page/admin/ProductManagement";
 
 const router = createBrowserRouter([
   {
@@ -34,7 +35,8 @@ const router = createBrowserRouter([
         children: [
           { path: "", element: <Navigate to="dashboard" replace /> },
           { path: "dashboard", element: <div>Dashboard</div> },
-          { path: "products", element: <div>Products Content</div> },
+          { path: "products", element: <ProductManagement />},
+          { path: "details-product/:id", element: <ProductDetails />},
           { path: "orders", element: <div>Orders Content</div> },
           { path: "customers", element: <AccountManagement /> },
           { path: "details-account/:id", element: <AccountDetails />},
