@@ -38,8 +38,13 @@ public class AccountServiceImpl implements AccountService {
     public AccountDto addUser(AccountRequest request) {
         Account account = request.register();
         accountRepository.save(account);
-        verificationService.createAndSendVerificationEmail(request.getEmail(), "REGISTER");
-        return new AccountDto(account);
+        try {
+            verificationService.createAndSendVerificationEmail(request.getEmail(), "REGISTER");
+            return new AccountDto(account);
+        } catch (Exception e) {
+            System.err.println("❌ Lỗi gửi email xác thực: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

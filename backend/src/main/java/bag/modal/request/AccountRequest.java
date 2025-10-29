@@ -11,11 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Data
 public class AccountRequest {
     @UniqueUsername
-    @NotBlank
     private String username;
     private String password;
     @UniqueEmail
-    @NotBlank
     private String email;
     private String phoneNumber;
     private String city;

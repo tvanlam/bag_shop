@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 public class CategoryDto {
     private int id;
     private String name;
-    private String decription;
+    private String description;
     private String imageUrl;
     private List<ProductDto> products;
 
     public CategoryDto(Category category){
         this.id = category.getId();
         this.name = category.getName();
-        this.decription = category.getDescription();
+        this.description = category.getDescription();
         this.imageUrl =  category.getImageUrl();
         this.products = category.getProducts() != null
                 ? category.getProducts().stream().map(ProductDto::new)
