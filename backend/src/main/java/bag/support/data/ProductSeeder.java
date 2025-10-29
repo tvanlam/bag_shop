@@ -58,7 +58,7 @@ public class ProductSeeder {
                     Product leatherHandbag = new Product();
                     leatherHandbag.setName("Leather Handbag");
                     leatherHandbag.setDescription("Premium leather handbag with adjustable strap");
-                    leatherHandbag.setPrice(89.99);
+                    leatherHandbag.setPrice(2500000);
                     leatherHandbag.setStockQuantity(30);
                     leatherHandbag.setCategory(handbags);
 
@@ -82,7 +82,7 @@ public class ProductSeeder {
                     Product travelBackpack = new Product();
                     travelBackpack.setName("Travel Backpack");
                     travelBackpack.setDescription("Water-resistant backpack, perfect for travel");
-                    travelBackpack.setPrice(59.99);
+                    travelBackpack.setPrice(800000);
                     travelBackpack.setStockQuantity(50);
                     travelBackpack.setCategory(backpacks);
 
@@ -106,7 +106,7 @@ public class ProductSeeder {
                     Product leatherWallet = new Product();
                     leatherWallet.setName("Leather Wallet");
                     leatherWallet.setDescription("Slim leather wallet with card slots");
-                    leatherWallet.setPrice(29.99);
+                    leatherWallet.setPrice(1500000);
                     leatherWallet.setStockQuantity(100);
                     leatherWallet.setCategory(wallets);
 

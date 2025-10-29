@@ -13,5 +13,5 @@ public class CartItemRequest {
     @Min(value = 1, message = "Quantity must be at least 1")
     private int quantity;
 
-    // Không cần price, totalPrice - server sẽ tự tính!
+
 }

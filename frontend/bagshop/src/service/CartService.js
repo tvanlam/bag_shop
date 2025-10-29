@@ -21,8 +21,9 @@ const CartService = {
   updateCart(accountId, cartRequest) {
     return axiosClient.put(`cart/${accountId}/update`, cartRequest);
   },
-  deleteCart(cartId) {
-    return axiosClient.delete(`cart/${cartId}`);
+  deleteCart(accountId, cartItemId) {
+    // Use accountId in the URL (was incorrectly using undefined cartId variable)
+    return axiosClient.delete(`cart/${accountId}/delete/${cartItemId}`);
   },
 };
 

@@ -129,10 +129,7 @@ const Cart = () => {
           cartItemId: parseInt(selectedItem.id),
         })
       ).unwrap();
-
-      // Re-fetch carts to ensure frontend matches backend canonical state
       await dispatch(FETCH_CARTS(parseInt(accountId)));
-
       toast.success("Xóa sản phẩm thành công!", {
         position: "top-center",
         autoClose: 2000,
