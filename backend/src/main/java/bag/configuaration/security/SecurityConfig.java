@@ -77,8 +77,7 @@ public class SecurityConfig {
                                 "/account/register",
 
                                 //category
-                                "/category",
-                                "/category/create",
+                                "/category/**",
 
                                 //productImage
                                 "/productImage",
