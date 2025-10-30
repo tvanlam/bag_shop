@@ -23,6 +23,14 @@ export const FETCH_PRODUCT = createAsyncThunk(
   }
 );
 
+export const FETCH_PRODUCT_BY_CATEGORY = createAsyncThunk('product/fetchProductByCategory', async(categoryId, {rejectWithValue})=>{
+  try {
+    return (await ProductService.getProductByCategoryId(categoryId)).data
+  } catch (error) {
+    return rejectWithValue(error.response?.data || "fetch product by category failed")
+  }
+})
+
 export const CREATE_PRODUCT = createAsyncThunk(
   "product/createProduct",
   async (productRequest, { rejectWithValue }) => {
@@ -99,6 +107,13 @@ const ProductSlice = createSlice({
         state.product = action.payload;
       })
       .addCase(FETCH_PRODUCT.rejected, setRejected)
+      // Fetcj product by category
+      .addCase(FETCH_PRODUCT_BY_CATEGORY.pending, setPending)
+      .addCase(FETCH_PRODUCT_BY_CATEGORY.fulfilled, (state, action)=>{
+        state.loading = false
+        state.products = action.payload
+      })
+      .addCase(FETCH_PRODUCT_BY_CATEGORY.rejected, setRejected)
       // Create Product
       .addCase(CREATE_PRODUCT.pending, setPending)
       .addCase(CREATE_PRODUCT.fulfilled, (state, action) => {
@@ -138,5 +153,6 @@ export const selectProductLoading = (state) => state.product.loading;
 export const selectProductError = (state) => state.product.error;
 export const selectProducts = (state) => state.product.products;
 export const selectProduct = (state) => state.product.product;
+export const selectProductsByCategory = (state) => state.product.products
 export const { clearProduct } = ProductSlice.actions;
 export default ProductSlice.reducer;

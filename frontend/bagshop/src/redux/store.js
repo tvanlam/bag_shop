@@ -7,6 +7,7 @@ import authReducer from "./slices/AuthSlice";
 import accountReducer from "./slices/AccountSlice";
 import productReducer from "./slices/ProductSlice";
 import cartReducer from "./slices/CartSlice";
+import categoryReducer from "./slices/CategorySlice"
 
 // Config cho auth - lưu vào sessionStorage (tự động xóa khi đóng browser)
 const authPersistConfig = {
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   support: supportReducer,
   product: productReducer,
   cart: persistedCartReducer,
+  category: categoryReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

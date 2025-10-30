@@ -7,6 +7,9 @@ const ProductService = {
   getProductById(productId) {
     return axiosClient.get(`product/${productId}`);
   },
+  getProductByCategoryId(categoryId){
+    return axiosClient.get(`product/category/${categoryId}`)
+  },
   createProduct(productRequest) {
     return axiosClient.post("product/create", productRequest);
   },
