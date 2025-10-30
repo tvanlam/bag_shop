@@ -1,6 +1,5 @@
 package bag.controller;
 
-import bag.modal.request.ProductRequest;
 import bag.modal.request.ReviewRequest;
 import bag.service.review.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +39,7 @@ public class ReviewController {
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateProduct(@RequestBody ReviewRequest request, @PathVariable int id){
         try{
             return ResponseEntity.ok(reviewService.updateReview(request,id));

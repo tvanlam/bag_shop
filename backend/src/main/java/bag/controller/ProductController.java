@@ -45,6 +45,15 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<?> getProductByCategory(@PathVariable int categoryId){
+        try{
+            return ResponseEntity.ok(productService.getByCategoryId(categoryId));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestBody ProductRequest request){
         try{
@@ -54,7 +63,7 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateProduct(@RequestBody ProductRequest request, @PathVariable int id){
         try{
             return ResponseEntity.ok(productService.updateProduct(request,id));
@@ -63,12 +72,12 @@ public class ProductController {
         }
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteAccount(@PathVariable int id){
-//        try{
-//            return ResponseEntity.ok(productService.deleteProductById(id));
-//        }catch (Exception e){
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAccount(@PathVariable int id){
+        try{
+            return ResponseEntity.ok(productService.deleteProductById(id));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

@@ -70,17 +70,16 @@ public class SecurityConfig {
 
                                 // verify
                                 "/verify",
-                                //resend
                                 "/resend",
 
                                 // account
                                 "/account",
                                 "/account/register",
-                                //ProductImage
-                                "/productImage",
+
                                 //category
                                 "/category",
                                 "/category/create",
+
                                 //productImage
                                 "/productImage",
                                 "/productImage/create",
@@ -91,6 +90,8 @@ public class SecurityConfig {
                                 "/product/getProductById",
                                 "/product/create",
                                 "/product/update",
+                                "/product/category/{categoryId}",
+
                                 //review
                                 "/review",
                                 "/review/create",

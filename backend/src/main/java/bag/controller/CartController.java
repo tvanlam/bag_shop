@@ -1,7 +1,6 @@
 package bag.controller;
 
 import bag.modal.request.CartRequest;
-import bag.modal.request.ProductRequest;
 import bag.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

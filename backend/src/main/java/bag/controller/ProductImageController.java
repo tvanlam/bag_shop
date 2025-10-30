@@ -1,7 +1,6 @@
 package bag.controller;
 
 import bag.modal.request.ProductImageRequest;
-import bag.modal.request.ProductRequest;
 import bag.service.productImage.ProductImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class ProductImageController {
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@RequestBody ProductImageRequest request, @PathVariable int id){
         try{
             return ResponseEntity.ok(productImageService.updateProductImage(request,id));

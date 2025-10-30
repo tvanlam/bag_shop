@@ -1,11 +1,9 @@
 package bag.controller;
 
 import bag.modal.request.CategoryRequest;
-import bag.modal.request.ProductRequest;
 import bag.service.Category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,7 +40,7 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateCategory(@RequestBody CategoryRequest request, @PathVariable int id){
         try{
             return ResponseEntity.ok(categoryService.updateCategory(request,id));

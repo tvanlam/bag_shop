@@ -11,13 +11,11 @@ public interface ProductService {
     Page<ProductDto> getAllProducts(int page, int size, String sortBy, String sortDir);
 
     List<ProductDto> getAllProductsWithoutPaging();
-
+    List<ProductDto> getByCategoryId(int categoryId);
     ProductDto getProductById(int productId);
 
     ProductDto addProduct(ProductRequest request);
 
     ProductDto updateProduct(ProductRequest request, int id);
-    void deleteProductById(int productId);
-
-
+    ProductDto deleteProductById(int productId);
 }

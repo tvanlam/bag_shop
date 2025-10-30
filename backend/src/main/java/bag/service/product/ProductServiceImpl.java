@@ -1,11 +1,9 @@
 package bag.service.product;
 
 import bag.modal.dto.ProductDto;
-import bag.modal.entity.Cart;
 import bag.modal.entity.Category;
 import bag.modal.entity.Product;
 import bag.modal.request.ProductRequest;
-import bag.repository.CartRepository;
 import bag.repository.CategoryRepository;
 import bag.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -14,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,13 +20,10 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final CartRepository cartRepository;
 
-
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, CartRepository cartRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.cartRepository = cartRepository;
     }
 
     @Override
@@ -44,6 +40,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> getAllProductsWithoutPaging() {
         return productRepository.findAll().stream().map(ProductDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> getByCategoryId(int categoryId) {
+        List<Product> products = productRepository.findByCategory(categoryId);
+        if (products.isEmpty()){
+            return new ArrayList<>();
+        }
+        return products.stream().map(ProductDto::new).collect(Collectors.toList());
     }
 
     @Override
@@ -85,9 +90,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductById(int productId) {
+    public ProductDto deleteProductById(int productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-        productRepository.delete(product);
+        product.setStockQuantity(0);
+        productRepository.save(product);
+        return new ProductDto(product);
     }
 }
