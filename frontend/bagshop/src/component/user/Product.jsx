@@ -15,22 +15,31 @@ import {
   selectProducts,
   selectProductLoading,
   selectProductError,
+  selectProductPagination,
 } from "../../redux/slices/ProductSlice";
 import { ADD_TO_CART, FETCH_CARTS } from "../../redux/slices/CartSlice";
+import ProductPage from "./ProductPage";
 
 const Product = () => {
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const loading = useSelector(selectProductLoading);
   const error = useSelector(selectProductError);
+  const pagination = useSelector(selectProductPagination);
   const { accountId } = useSelector((state) => state.auth);
   const [sortBy, setSortBy] = useState("default");
   const [favorites, setFavorites] = useState([]);
   const [selectOption, setSelectOption] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    dispatch(FETCH_PRODUCTS());
-  }, [dispatch]);
+    dispatch(FETCH_PRODUCTS({ pageNumber: currentPage - 1, pageSize: 12 }));
+  }, [dispatch, currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const toggleFavorite = (productId) => {
     setFavorites((prev) =>
@@ -309,6 +318,13 @@ const Product = () => {
           </div>
         )}
       </div>
+      {pagination && pagination.totalPages > 0 && (
+        <ProductPage
+          currentPage={currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 };
