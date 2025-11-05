@@ -86,6 +86,7 @@ public class SecurityConfig {
 
                                 // product
                                 "/product",
+                                "/product/getAllProductsWithPaging/{page}/{size}/{sortBy}/{sortDir}",
                                 "/product/getProductById",
                                 "/product/create",
                                 "/product/update",

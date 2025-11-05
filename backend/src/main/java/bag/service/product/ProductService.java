@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ProductService {
-    Page<ProductDto> getAllProducts(int page, int size, String sortBy, String sortDir);
+    Page<ProductDto> getAllProductsWithPaging(int page, int size, String sortBy, String sortDir);
 
     List<ProductDto> getAllProductsWithoutPaging();
     List<ProductDto> getByCategoryId(int categoryId);

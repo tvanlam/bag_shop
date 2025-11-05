@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/{page}/{size}/{sortBy}/{sortDir}")
-    public ResponseEntity<?> getAllProducts(
+    @GetMapping("getAllProductsWithPaging/{page}/{size}/{sortBy}/{sortDir}")
+    public ResponseEntity<?> getAllProductsWithPaging(
             @PathVariable int page,
             @PathVariable int size,
             @PathVariable String sortBy,
             @PathVariable String sortDir
     ) {
         try {
-            return ResponseEntity.ok(productService.getAllProducts(page, size, sortBy, sortDir));
+            return ResponseEntity.ok(productService.getAllProductsWithPaging(page, size, sortBy, sortDir));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
