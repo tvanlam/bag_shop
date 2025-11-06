@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { MdFavoriteBorder } from "react-icons/md";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,6 @@ import {
   selectProductLoading,
   selectProductError,
 } from "../../redux/slices/ProductSlice";
-import { selectIsAuthenticated } from "../../redux/slices/AuthSlice";
 import { ADD_TO_CART, FETCH_CARTS } from "../../redux/slices/CartSlice";
 
 const ProductDetails = () => {
@@ -21,7 +20,6 @@ const ProductDetails = () => {
   const products = useSelector(selectProducts);
   const loading = useSelector(selectProductLoading);
   const error = useSelector(selectProductError);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
   const { accountId } = useSelector((state) => state.auth);
   const [mainImage, setMainImage] = useState("");
   const [quantity, setQuantity] = useState(1);
