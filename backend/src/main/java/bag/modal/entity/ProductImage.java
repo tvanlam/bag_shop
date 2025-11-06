@@ -25,6 +25,4 @@ public class ProductImage {
 
     @Column
     private boolean isMain;
-
-
 }

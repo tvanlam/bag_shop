@@ -1,20 +1,15 @@
 package bag.support.data;
 
-import bag.modal.entity.Account;
 import bag.modal.entity.Category;
 import bag.modal.entity.Product;
-import bag.modal.entity.Review;
-import bag.repository.AccountRepository;
 import bag.repository.CategoryRepository;
 import bag.repository.ProductRepository;
-import bag.repository.ReviewRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -22,88 +17,108 @@ import java.util.List;
 public class ProductSeeder {
 
     @Bean
-    CommandLineRunner initProducts(ProductRepository productRepository, CategoryRepository categoryRepository,
-                                   AccountRepository accountRepository, ReviewRepository reviewRepository) {
+    CommandLineRunner initProducts(ProductRepository productRepository,
+                                   CategoryRepository categoryRepository) {
         return args -> {
             if (productRepository.count() > 0) {
-                System.out.println("ℹ️ Database already contains products. Skipping seeding.");
+                System.out.println("Database already contains products. Skipping seeding.");
                 return;
             }
 
-            System.out.println("👜 Starting product seeding...");
+            System.out.println("Starting product seeding (15 products, no images, no reviews)...");
 
-            // Tạo danh mục
-            Category handbags = new Category();
-            handbags.setName("Handbags");
-            handbags.setDescription("Stylish handbags for daily use");
+            // Lấy các category theo tên
+            Category handbags = getCategory(categoryRepository, "Handbags");
+            Category backpacks = getCategory(categoryRepository, "Backpacks");
+            Category wallets = getCategory(categoryRepository, "Wallets");
+            Category toteBags = getCategory(categoryRepository, "Tote Bags");
+            Category crossbodyBags = getCategory(categoryRepository, "Crossbody Bags");
 
-            Category backpacks = new Category();
-            backpacks.setName("Backpacks");
-            backpacks.setDescription("Durable and fashionable backpacks");
+            // Tạo sản phẩm cho từng category
+            seedHandbags(productRepository, handbags);
+            seedBackpacks(productRepository, backpacks);
+            seedWallets(productRepository, wallets);
+            seedToteBags(productRepository, toteBags);
+            seedCrossbodyBags(productRepository, crossbodyBags);
 
-            Category wallets = new Category();
-            wallets.setName("Wallets");
-            wallets.setDescription("Compact and elegant wallets");
-
-            categoryRepository.saveAll(Arrays.asList(handbags, backpacks, wallets));
-            System.out.println("✅ Seeded 3 categories.");
-
-            // Lấy tài khoản người dùng
-            List<Account> accounts = accountRepository.findAll();
-            Account user1 = accounts.stream().filter(a -> a.getUsername().equals("User1")).findFirst()
-                    .orElseThrow(() -> new RuntimeException("User1 not found"));
-            Account user2 = accounts.stream().filter(a -> a.getUsername().equals("user2")).findFirst()
-                    .orElseThrow(() -> new RuntimeException("User2 not found"));
-
-            // Seed sản phẩm
-            seedProductsForCategory(productRepository, reviewRepository, handbags, user1, user2,
-                    "Handbag", 2500000);
-            seedProductsForCategory(productRepository, reviewRepository, backpacks, user1, user2,
-                    "Backpack", 800000);
-            seedProductsForCategory(productRepository, reviewRepository, wallets, user1, user2,
-                    "Wallet", 1500000);
-
-            System.out.println("✅ Seeded 15 products with reviews and empty images.");
+            System.out.println("Seeded 15 products successfully.");
         };
     }
 
-    private void seedProductsForCategory(ProductRepository productRepository,
-                                         ReviewRepository reviewRepository,
-                                         Category category,
-                                         Account user1,
-                                         Account user2,
-                                         String baseName,
-                                         double basePrice) {
-
-        for (int i = 1; i <= 5; i++) {
-            Product product = new Product();
-            product.setName(baseName + " " + i);
-            product.setDescription("High-quality " + baseName.toLowerCase() + " number " + i);
-            product.setPrice(basePrice + i * 10000);
-            product.setStockQuantity(20 + i * 5);
-            product.setCategory(category);
-            product.setImages(Collections.emptyList());
-
-            productRepository.save(product);
-            System.out.println("✅ Created: " + product.getName());
-
-            if (i == 1) {
-                List<Review> reviews = Arrays.asList(
-                        createReview(product, user1, 5, "Excellent " + baseName.toLowerCase() + "!"),
-                        createReview(product, user2, 4, "Good value for money.")
-                );
-                reviewRepository.saveAll(reviews);
-                System.out.println("✅ Added reviews for " + product.getName());
-            }
-        }
+    // === Helper: Lấy category ===
+    private Category getCategory(CategoryRepository repo, String name) {
+        return repo.findByName(name)
+                .orElseThrow(() -> new RuntimeException("Category '" + name + "' not found"));
     }
 
-    private Review createReview(Product product, Account account, int rating, String comment) {
-        Review review = new Review();
-        review.setProduct(product);
-        review.setAccount(account);
-        review.setRating(rating);
-        review.setComment(comment);
-        return review;
+    // =====================================================================
+    // SEED METHODS (3 sản phẩm mỗi loại)
+    // =====================================================================
+
+    private void seedHandbags(ProductRepository repo, Category cat) {
+        List<Product> products = Arrays.asList(
+                createProduct("Leather Tote Handbag", "Premium genuine leather with gold hardware", 2890000, 15, cat),
+                createProduct("Canvas Everyday Handbag", "Lightweight canvas with adjustable strap", 1590000, 25, cat),
+                createProduct("Mini Evening Clutch", "Elegant satin clutch for special occasions", 2190000, 20, cat)
+        );
+        saveAll(repo, products, "Handbag");
+    }
+
+    private void seedBackpacks(ProductRepository repo, Category cat) {
+        List<Product> products = Arrays.asList(
+                createProduct("Urban Traveler Backpack", "Water-resistant with laptop compartment", 1290000, 30, cat),
+                createProduct("Hiking Pro Backpack", "40L capacity with rain cover", 1890000, 18, cat),
+                createProduct("Student Daily Backpack", "Affordable and spacious for school", 890000, 40, cat)
+        );
+        saveAll(repo, products, "Backpack");
+    }
+
+    private void seedWallets(ProductRepository repo, Category cat) {
+        List<Product> products = Arrays.asList(
+                createProduct("Slim Leather Bifold Wallet", "Genuine leather with RFID protection", 690000, 50, cat),
+                createProduct("Minimalist Card Holder", "Aluminum with cash strap", 450000, 60, cat),
+                createProduct("Zip-Around Long Wallet", "Full-grain leather with compartments", 890000, 35, cat)
+        );
+        saveAll(repo, products, "Wallet");
+    }
+
+    private void seedToteBags(ProductRepository repo, Category cat) {
+        List<Product> products = Arrays.asList(
+                createProduct("Eco Canvas Tote", "100% organic cotton with reinforced handles", 490000, 45, cat),
+                createProduct("Beach Straw Tote", "Handwoven straw with leather straps", 790000, 28, cat),
+                createProduct("Market Shopper Tote", "Foldable and lightweight for shopping", 390000, 55, cat)
+        );
+        saveAll(repo, products, "Tote Bag");
+    }
+
+    private void seedCrossbodyBags(ProductRepository repo, Category cat) {
+        List<Product> products = Arrays.asList(
+                createProduct("Compact Crossbody", "Adjustable strap and secure zipper", 990000, 32, cat),
+                createProduct("Leather Saddle Bag", "Vintage-inspired with magnetic closure", 1490000, 22, cat),
+                createProduct("Sporty Nylon Crossbody", "Lightweight and water-resistant", 690000, 40, cat)
+        );
+        saveAll(repo, products, "Crossbody Bag");
+    }
+
+    // =====================================================================
+    // Helper Methods
+    // =====================================================================
+
+    private Product createProduct(String name, String desc, double price, int stock, Category cat) {
+        Product p = new Product();
+        p.setName(name);
+        p.setDescription(desc);
+        p.setPrice(price);
+        p.setStockQuantity(stock);
+        p.setCategory(cat);
+        // images và reviews để null (hoặc empty list nếu cần)
+        return p;
+    }
+
+    private void saveAll(ProductRepository repo, List<Product> products, String type) {
+        products.forEach(p -> {
+            repo.save(p);
+            System.out.println("Created: " + p.getName() + " (" + type + ")");
+        });
     }
 }
