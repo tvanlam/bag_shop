@@ -1,7 +1,6 @@
 package bag.service.cart;
 
 import bag.modal.dto.CartDto;
-import bag.modal.dto.CartItemDto;
 import bag.modal.entity.Account;
 import bag.modal.entity.Cart;
 import bag.modal.entity.CartItem;
@@ -16,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,46 +52,40 @@ public class CartServiceImpl implements CartService {
         return new CartDto(cart);
     }
 
-    //user operation
     @Override
     @Transactional
-    public CartDto addToCart(int accountId, CartRequest request) {
-        try {
-            // b1: lấy account và cart
-            Account account = accountRepository.findById(accountId)
-                    .orElseThrow(() -> new RuntimeException("Account " + accountId + "not found"));
-            Cart cart = cartRepository.findByAccountId(accountId)
-                    .orElseGet(() -> {
-                       Cart newCart = new Cart();
-                       newCart.setAccount(account);
-                       return cartRepository.save(newCart);
-                    });
-            // b2: kiểm tra product
-            for(CartItemRequest cartItemRequest : request.getItems()){
-                Product product = productRepository.findById(cartItemRequest.getProductId())
-                        .orElseThrow(() -> new RuntimeException("Product " + cartItemRequest.getProductId() + "not found"));
-                // tìm xem sp có trong cart chưa
-                var existingItem = cart.getCartItems().stream()
-                        .filter(ci -> ci.getProduct().getId() == cartItemRequest.getProductId())
-                        .findFirst();
-                // nếu có thì tăng số lượng
-                if(existingItem.isPresent()){
-                    int newQty = existingItem.get().getQuantity() + cartItemRequest.getQuantity();
-                    existingItem.get().setQuantity(newQty);
-                // nếu chưa có thì tạo mới
-                }else{
-                    var newItem = new bag.modal.entity.CartItem();
-                    newItem.setCart(cart);
-                    newItem.setQuantity(cartItemRequest.getQuantity());
-                    newItem.setProduct(product);
-                    cart.getCartItems().add(newItem);
-                }
+    public CartDto addToCart(CartRequest request) {
+        Account account = accountRepository.findById(request.getAccountId())
+                .orElseThrow(() -> new RuntimeException("Account " + request.getAccountId() + " not found"));
+
+        Cart cart = cartRepository.findByAccountId(account.getId())
+                .orElseGet(() -> {
+                    Cart newCart = new Cart();
+                    newCart.setAccount(account);
+                    return cartRepository.save(newCart);
+                });
+        Map<Integer, CartItem> cartItemMap = cart.getCartItems().stream()
+                .collect(Collectors.toMap(ci -> ci.getProduct().getId(), ci -> ci));
+
+        for (CartItemRequest itemRequest : request.getItems()) {
+            Product product = productRepository.findById(itemRequest.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product " + itemRequest.getProductId() + " not found"));
+
+            CartItem existingItem = cartItemMap.get(itemRequest.getProductId());
+
+            if (existingItem != null) {
+                existingItem.setQuantity(existingItem.getQuantity() + itemRequest.getQuantity());
+            } else {
+                CartItem newItem = new CartItem();
+                newItem.setProduct(product);
+                newItem.setQuantity(itemRequest.getQuantity());
+                newItem.setPriceAtAdd(product.getPrice()); // giả sử Product có getPrice()
+                newItem.setCart(cart);
+                cart.getCartItems().add(newItem);
             }
-            cartRepository.save(cart);
-            return new CartDto(cart);
-        }catch(Exception e){
-            throw new RuntimeException("Add to cart failed");
         }
+        cartRepository.save(cart);
+        return new CartDto(cart);
     }
 
     @Transactional

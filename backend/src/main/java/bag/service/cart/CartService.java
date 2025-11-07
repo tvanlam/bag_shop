@@ -12,7 +12,7 @@ public interface CartService {
 
     CartDto getCartByAccountId(int accountId);
 
-    CartDto addToCart(int accountId, CartRequest request);
+    CartDto addToCart(CartRequest request);
 
     CartDto updateCartItem(int accountId, CartRequest request);
 

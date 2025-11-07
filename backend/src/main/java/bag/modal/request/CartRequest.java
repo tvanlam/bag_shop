@@ -16,8 +16,5 @@ public class CartRequest {
 
     private int accountId;
     @NotEmpty(message = "Cart item cannot be empty")
-    @Valid
     private List<CartItemRequest> items;
-
-
 }

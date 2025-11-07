@@ -40,10 +40,10 @@ public class CartController {
         }
     }
 
-    @PostMapping("/{accountId}/add")
-    public ResponseEntity<?> addToCart(@PathVariable int accountId, @RequestBody CartRequest request) {
+    @PostMapping("/add")
+    public ResponseEntity<?> addToCart(@RequestBody CartRequest request) {
         try {
-            return ResponseEntity.ok(cartService.addToCart(accountId, request));
+            return ResponseEntity.ok(cartService.addToCart(request));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
