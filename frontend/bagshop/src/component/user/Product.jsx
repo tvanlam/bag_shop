@@ -18,7 +18,7 @@ import {
   selectProductPagination,
 } from "../../redux/slices/ProductSlice";
 import { ADD_TO_CART, FETCH_CARTS } from "../../redux/slices/CartSlice";
-// import ProductPage from "./ProductPage";
+import ProductPage from "./ProductPage";
 
 const Product = () => {
   const dispatch = useDispatch();

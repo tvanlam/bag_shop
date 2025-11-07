@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 public class CartRequest {
-    @NotNull(message = "AccountID must be required")
+
     private int accountId;
     @NotEmpty(message = "Cart item cannot be empty")
     @Valid
