@@ -2,10 +2,13 @@ package bag.service.account;
 
 import bag.modal.dto.AccountDto;
 import bag.modal.entity.Account;
+import bag.modal.entity.Cart;
 import bag.modal.request.AccountRequest;
 import bag.repository.AccountRepository;
+import bag.repository.CartRepository;
 import bag.service.verification.VerificationService;
 import bag.support.method.Support;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final VerificationService verificationService;
     private final RedisTemplate<String, String> redisTemplate;
+    private final CartRepository cartRepository;
 
     @Override
     public List<AccountDto> getAll() {
@@ -35,9 +39,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public AccountDto addUser(AccountRequest request) {
         Account account = request.register();
         accountRepository.save(account);
+        Cart cart = new Cart();
+        cart.setAccount(account);
+        account.setCart(cart);
+        cartRepository.save(cart);
+
         try {
             verificationService.createAndSendVerificationEmail(request.getEmail(), "REGISTER");
             return new AccountDto(account);
@@ -48,9 +58,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public AccountDto addAdmin(AccountRequest request) {
         Account account = request.registerAdmin();
         accountRepository.save(account);
+        Cart cart = new Cart();
+        cart.setAccount(account);
+        cartRepository.save(cart);
+
         verificationService.createAndSendVerificationEmail(request.getEmail(), "REGISTER_ADMIN");
         return new AccountDto(account);
     }
@@ -103,3 +118,8 @@ public class AccountServiceImpl implements AccountService {
         redisTemplate.expire(redisKey, Duration.ofMinutes(5));
     }
 }
+
+//    Tại sao phải @Transactional?
+//    Vì bạn đang thao tác 2 entity: Account và Cart
+//    Nếu không có @Transactional, có thể chỉ lưu được 1 cái
+//    @Transactional đảm bảo cả 2 đều được commit cùng lúc

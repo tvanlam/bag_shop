@@ -13,6 +13,7 @@ public class AccountDto {
     private String address;
     private String position;
     private String status;
+    private int cartId;
 
     public AccountDto(Account account) {
         this.id = account.getId();
@@ -23,5 +24,6 @@ public class AccountDto {
         this.address = account.getAddress();
         this.position = account.getPosition().toString();
         this.status = account.getStatus().toString();
+        this.cartId = account.getCart().getId();
     }
 }

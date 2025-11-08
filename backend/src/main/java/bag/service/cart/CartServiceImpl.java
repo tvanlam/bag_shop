@@ -58,12 +58,19 @@ public class CartServiceImpl implements CartService {
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() -> new RuntimeException("Account " + request.getAccountId() + " not found"));
 
-        Cart cart = cartRepository.findByAccountId(account.getId())
-                .orElseGet(() -> {
-                    Cart newCart = new Cart();
-                    newCart.setAccount(account);
-                    return cartRepository.save(newCart);
-                });
+//        Cart cart = cartRepository.findByAccountId(account.getId())
+//                .orElseGet(() -> {
+//                    Cart newCart = new Cart();
+//                    newCart.setAccount(account);
+//                    return cartRepository.save(newCart);
+//                });
+        Cart cart = account.getCart();
+        if (cart == null) {
+            cart = new Cart();
+            cart.setAccount(account);
+            account.setCart(cart);
+            cartRepository.save(cart);
+        }
         Map<Integer, CartItem> cartItemMap = cart.getCartItems().stream()
                 .collect(Collectors.toMap(ci -> ci.getProduct().getId(), ci -> ci));
 

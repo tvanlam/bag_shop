@@ -98,7 +98,7 @@ public class SecurityConfig {
 
                                 //cart
                                 "/cart",
-                                "/cart/{accountId}/add",
+                                "/cart/add",
                                 "/cart/update/{accountId}",
                                 "/cart/{accountId}/delete/{cartItemId}"
                         ).permitAll()
