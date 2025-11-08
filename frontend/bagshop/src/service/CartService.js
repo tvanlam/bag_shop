@@ -12,14 +12,20 @@ const CartService = {
   },
   // Thêm sản phẩm vào giỏ hàng
   addToCart(accountId, cartRequest) {
-    return axiosClient.post(`cart/${accountId}/add`, cartRequest);
+    return axiosClient.post(`cart/add`, {
+      accountId: accountId,
+      items: cartRequest.items,
+    });
   },
   // Tạo giỏ hàng mới
   createCart(cartRequest) {
     return axiosClient.post("cart", cartRequest);
   },
   updateCart(accountId, cartRequest) {
-    return axiosClient.put(`cart/${accountId}/update`, cartRequest);
+    return axiosClient.put(`cart/update`, {
+      accountId: accountId,
+      items: cartRequest.items,
+    });
   },
   deleteCart(accountId, cartItemId) {
     // Use accountId in the URL (was incorrectly using undefined cartId variable)

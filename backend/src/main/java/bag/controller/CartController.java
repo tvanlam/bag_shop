@@ -49,18 +49,17 @@ public class CartController {
         }
     }
 
-    @PutMapping("/{accountId}/update")
+    @PutMapping("/update")
     public ResponseEntity<?> updateCart(
-            @PathVariable int accountId,
             @RequestBody CartRequest request) {
         try {
-            return ResponseEntity.ok(cartService.updateCartItem(accountId, request));
+            return ResponseEntity.ok(cartService.updateCartItem( request));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/{accountId}/delete/{cartItemId}")
+    @DeleteMapping("{accountId}/delete/{cartItemId}")
     public ResponseEntity<?> deleteCartItem(@PathVariable int accountId,@PathVariable("cartItemId") int cartItemId) {
         try {
             cartService.deleteCartItem(accountId,cartItemId);

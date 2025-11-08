@@ -21,7 +21,7 @@ public class Cart extends Time {
     @JoinColumn(name = "account_id", nullable = false, unique = true)
     private Account account;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CartItem> cartItems = new ArrayList<>();
 
     public void addItem(CartItem item) {

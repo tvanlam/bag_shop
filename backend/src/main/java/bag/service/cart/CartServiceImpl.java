@@ -57,13 +57,6 @@ public class CartServiceImpl implements CartService {
     public CartDto addToCart(CartRequest request) {
         Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() -> new RuntimeException("Account " + request.getAccountId() + " not found"));
-
-//        Cart cart = cartRepository.findByAccountId(account.getId())
-//                .orElseGet(() -> {
-//                    Cart newCart = new Cart();
-//                    newCart.setAccount(account);
-//                    return cartRepository.save(newCart);
-//                });
         Cart cart = account.getCart();
         if (cart == null) {
             cart = new Cart();
@@ -95,23 +88,27 @@ public class CartServiceImpl implements CartService {
         return new CartDto(cart);
     }
 
-    @Transactional
     @Override
-    public CartDto updateCartItem(int accountId, CartRequest request) {
-        Cart cart = cartRepository.findByAccountId(accountId)
-                .orElseThrow(() -> new RuntimeException("Account" + accountId + "not found"));
-        for(CartItemRequest cartItemRequest : request.getItems()){
-            CartItem existingItem = cart.getCartItems().stream()
-                    .filter(ci -> ci.getProduct().getId() == cartItemRequest.getProductId())
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Product " + cartItemRequest.getProductId() + "not found in cart"));
-            //cap nhat so luong
-            if(cartItemRequest.getQuantity() <= 0){
-                cart.getCartItems().remove(existingItem);
-                cartItemRepository.delete(existingItem);
-            }else{
-                // neu > 0, cap nhat lai so luong
-                existingItem.setQuantity(cartItemRequest.getQuantity());
+    @Transactional
+    public CartDto updateCartItem(CartRequest request) {
+        Cart cart = cartRepository.findByAccountId(request.getAccountId())
+                .orElseThrow(() -> new IllegalArgumentException("Cart not found for account: " + request.getAccountId()));
+
+        // Map productId -> CartItem hiện có
+        Map<Integer, CartItem> itemMap = cart.getCartItems().stream()
+                .collect(Collectors.toMap(ci -> ci.getProduct().getId(), ci -> ci));
+        for (CartItemRequest req : request.getItems()) {
+            CartItem item = itemMap.get(req.getProductId());
+            if (item == null) {
+                throw new IllegalArgumentException("Product " + req.getProductId() + " not in cart");
+            }
+            if (req.getQuantity() <= 0) {
+                // XÓA ITEM
+                cart.getCartItems().remove(item);
+                cartItemRepository.delete(item);
+            } else {
+                // GHI ĐÈ số lượng mới
+                item.setQuantity(req.getQuantity());
             }
         }
         cartRepository.save(cart);
@@ -139,19 +136,4 @@ public class CartServiceImpl implements CartService {
     public List<CartDto> getAllCarts() {
         return cartRepository.findAll().stream().map(CartDto::new).collect(Collectors.toList());
     }
-
-
-    //helper method
-    @Override
-    public CartDto createNewCart(CartRequest request) {
-        Cart cart = new Cart();
-        Account account = accountRepository.findById(request.getAccountId())
-                .orElseThrow(() -> new RuntimeException(request.getAccountId() + "not found"));
-        cart.setAccount(account);
-        cartRepository.save(cart);
-        return new CartDto(cart);
-    }
-
-
-
 }

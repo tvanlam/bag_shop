@@ -14,10 +14,10 @@ public interface CartService {
 
     CartDto addToCart(CartRequest request);
 
-    CartDto updateCartItem(int accountId, CartRequest request);
+    CartDto updateCartItem(CartRequest request);
 
     void deleteCartItem(int accountId, int cartItemId);
 
-    CartDto createNewCart(CartRequest request);
+
 
 }
