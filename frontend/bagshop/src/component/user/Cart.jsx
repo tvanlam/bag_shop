@@ -29,7 +29,9 @@ const Cart = () => {
   useEffect(() => {
     if (cartItems && cartItems.length > 0) {
       const initialQuantities = cartItems.reduce((acc, item) => {
-        acc[item.id] = item.quantity || 1;
+        // Backend trả về itemId, không phải id
+        const key = item.itemId || item.id || item.productId;
+        acc[key] = item.quantity || 1;
         return acc;
       }, {});
       setQuantities(initialQuantities);
@@ -40,7 +42,8 @@ const Cart = () => {
 
   useEffect(() => {
     const total = cartItems.reduce((sum, item) => {
-      return sum + (quantities[item.id] || item.quantity || 1);
+      const key = item.itemId || item.id || item.productId;
+      return sum + (quantities[key] || item.quantity || 1);
     }, 0);
     dispatch(setTotalQuantity(total));
   }, [quantities, cartItems, dispatch]);
@@ -51,57 +54,92 @@ const Cart = () => {
   };
 
   const calculateTotalPrice = (item) => {
+    const key = item.itemId || item.id || item.productId;
     return (
-      parsePrice(item.priceAtAdd) * (quantities[item.id] || item.quantity || 1)
+      parsePrice(item.priceAtAdd) * (quantities[key] || item.quantity || 1)
     );
   };
 
-  const handleQuantityChange = async (itemId, change) => {
+  const handleQuantityChange = async (itemKey, change) => {
     if (!accountId || updating) return;
 
     setUpdating(true);
 
-    const currentQuantity = quantities[itemId] || 1;
+    const currentQuantity = quantities[itemKey] || 1;
     const newQuantity = Math.max(1, currentQuantity + change);
 
     // Optimistic update
     setQuantities((prev) => ({
       ...prev,
-      [itemId]: newQuantity,
+      [itemKey]: newQuantity,
     }));
 
     try {
+      // Tìm sản phẩm cần cập nhật - sử dụng itemId
+      const itemToUpdate = cartItems.find(
+        (item) => (item.itemId || item.id || item.productId) === itemKey
+      );
+
+      if (!itemToUpdate) {
+        throw new Error("Không tìm thấy sản phẩm");
+      }
+
+      console.log("🔍 DEBUG - Item to update:", {
+        itemKey,
+        itemId: itemToUpdate.itemId,
+        productId: itemToUpdate.productId,
+        currentQuantity,
+        newQuantity,
+        itemToUpdate,
+      });
+
+      // CHỈ GỬI sản phẩm cần cập nhật (backend sẽ GHI ĐÈ số lượng mới)
       const cartRequest = {
-        accountId: parseInt(accountId),
-        items: cartItems.map((item) => ({
-          productId: parseInt(item.productId),
-          quantity:
-            item.id === itemId
-              ? newQuantity
-              : quantities[item.id] || item.quantity || 1,
-        })),
+        items: [
+          {
+            productId: parseInt(itemToUpdate.productId),
+            quantity: newQuantity,
+          },
+        ],
       };
 
-      console.log(" REQUEST:", JSON.stringify(cartRequest, null, 2)); // DEBUG
+      console.log("📤 UPDATE REQUEST - AccountId:", accountId);
+      console.log(
+        "📤 UPDATE REQUEST - CartRequest:",
+        JSON.stringify(cartRequest, null, 2)
+      );
 
-      await dispatch(
+      const response = await dispatch(
         UPDATE_CART({
           accountId: parseInt(accountId),
           cartRequest,
         })
       ).unwrap();
 
+      console.log("✅ UPDATE RESPONSE:", response);
+
+      // Cập nhật lại quantities từ response (sử dụng itemId)
+      if (response && response.items) {
+        const updatedQuantities = response.items.reduce((acc, item) => {
+          const key = item.itemId || item.id || item.productId;
+          acc[key] = item.quantity || 1;
+          return acc;
+        }, {});
+        setQuantities(updatedQuantities);
+        console.log("🔄 UPDATED QUANTITIES FROM RESPONSE:", updatedQuantities);
+      }
+
       toast.success("Cập nhật số lượng thành công!", {
         position: "top-right",
         autoClose: 1500,
       });
     } catch (error) {
-      console.error(" ERROR:", error); // DEBUG
+      console.error("UPDATE ERROR:", error);
 
       // Rollback
       setQuantities((prev) => ({
         ...prev,
-        [itemId]: currentQuantity,
+        [itemKey]: currentQuantity,
       }));
 
       toast.error(`Lỗi: ${error.message || "Cập nhật thất bại!"}`, {
@@ -188,62 +226,67 @@ const Cart = () => {
                 </tr>
               </thead>
               <tbody>
-                {cartItems.map((item) => (
-                  <tr key={item.id} className="border-b">
-                    <td className="px-4 py-4 text-center">
-                      <img
-                        src={item.thumbnail || "default-image.jpg"}
-                        alt={item.productName}
-                        className="w-16 h-16 object-cover mx-auto rounded"
-                      />
-                    </td>
-                    <td className="px-4 py-4">{item.productName}</td>
-                    <td className="px-4 py-4 text-center">
-                      <span className="text-sm text-gray-600">
-                        {formatCurrency(parsePrice(item.priceAtAdd))}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4 text-center">
-                      <div className="flex items-center justify-center space-x-3">
-                        <button
-                          onClick={() => handleQuantityChange(item.id, -1)}
-                          disabled={updating || (quantities[item.id] || 1) <= 1}
-                          className={`w-10 h-10 rounded-full flex items-center justify-center ${"bg-gray-200 hover:bg-gray-300"}`}
-                        >
-                          -
-                        </button>
+                {cartItems.map((item) => {
+                  const itemKey = item.itemId || item.id || item.productId;
+                  return (
+                    <tr key={itemKey} className="border-b">
+                      <td className="px-4 py-4 text-center">
+                        <img
+                          src={item.thumbnail || "default-image.jpg"}
+                          alt={item.productName}
+                          className="w-16 h-16 object-cover mx-auto rounded"
+                        />
+                      </td>
+                      <td className="px-4 py-4">{item.productName}</td>
+                      <td className="px-4 py-4 text-center">
+                        <span className="text-sm text-gray-600">
+                          {formatCurrency(parsePrice(item.priceAtAdd))}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <div className="flex items-center justify-center space-x-3">
+                          <button
+                            onClick={() => handleQuantityChange(itemKey, -1)}
+                            disabled={
+                              updating || (quantities[itemKey] || 1) <= 1
+                            }
+                            className={`w-10 h-10 rounded-full flex items-center justify-center ${"bg-gray-200 hover:bg-gray-300"}`}
+                          >
+                            -
+                          </button>
 
-                        <p className="w-8 text-center font-semibold">
-                          {quantities[item.id] || item.quantity}
-                        </p>
+                          <p className="w-8 text-center font-semibold">
+                            {quantities[itemKey] || item.quantity}
+                          </p>
 
+                          <button
+                            onClick={() => handleQuantityChange(itemKey, 1)}
+                            disabled={updating}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                              updating
+                                ? "bg-gray-200 cursor-not-allowed"
+                                : "bg-gray-200 hover:bg-gray-300"
+                            }`}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        {calculateTotalPrice(item).toLocaleString("vi-VN")} ₫
+                      </td>
+                      <td className="px-4 py-4 text-center">
                         <button
-                          onClick={() => handleQuantityChange(item.id, 1)}
+                          onClick={() => handleDeleteClick(item)}
                           disabled={updating}
-                          className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            updating
-                              ? "bg-gray-200 cursor-not-allowed"
-                              : "bg-gray-200 hover:bg-gray-300"
-                          }`}
+                          className="text-red-500 hover:text-red-700 p-1 disabled:opacity-50"
                         >
-                          +
+                          <FaTrashAlt />
                         </button>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 text-center">
-                      {calculateTotalPrice(item).toLocaleString("vi-VN")} ₫
-                    </td>
-                    <td className="px-4 py-4 text-center">
-                      <button
-                        onClick={() => handleDeleteClick(item)}
-                        disabled={updating}
-                        className="text-red-500 hover:text-red-700 p-1 disabled:opacity-50"
-                      >
-                        <FaTrashAlt />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
 

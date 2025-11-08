@@ -23,7 +23,6 @@ public class ProductDto {
     private double averageRating;
     private int totalReviews;
 
-
     public ProductDto(Product product){
         this.id = product.getId();
         this.name = product.getName();

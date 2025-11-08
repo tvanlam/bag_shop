@@ -24,6 +24,8 @@ public class Cart extends Time {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CartItem> cartItems = new ArrayList<>();
 
+
+
     public void addItem(CartItem item) {
         item.setCart(this);
         cartItems.add(item);

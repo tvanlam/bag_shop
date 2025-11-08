@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,18 +17,21 @@ public class Voucher extends Time{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column
-    private String code;
+    @Column(nullable = false)
+    private String code; // GIAM50K, FREESHIP, SALE10
 
     @Column
     private String description;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private typeDiscount type;
+    private TypeDiscount typeDiscount;
 
     @Column
-    private String value;
+    private double discountValue;
+
+    @Column
+    private double maxDiscount; // Toi da giam theo %
 
     @Column
     private LocalDateTime startDate;
@@ -37,15 +42,21 @@ public class Voucher extends Time{
     @Column
     private int quantity;
 
+    @OneToMany(mappedBy = "voucher", fetch = FetchType.LAZY)
+    private List<Order> orders;
+
     @Column
     @Enumerated(EnumType.STRING)
     private VoucherStatus status;
 
+    @Column
+    private boolean isActive = true;
 
-    public enum typeDiscount {
-        PERCENTAGE,
+
+    public enum TypeDiscount {
+        PERCENT,
         FIXED_AMOUNT,
-        FREE_SHIPPING
+        FREE_SHIP
     }
 
     public enum VoucherStatus {

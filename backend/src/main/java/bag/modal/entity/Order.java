@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "orders")
@@ -20,8 +23,10 @@ public class Order extends Time{
     @JoinColumn
     private Account account;
 
-    @ManyToOne
-    @JoinColumn
+    //@ManyToOne mặc định là EAGER
+    //Nếu trong thực tế bạn chỉ hiển thị đơn hàng mà không cần voucher chi tiết -> dung LAZY
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voucher_id")
     private Voucher voucher;
 
     @Column
