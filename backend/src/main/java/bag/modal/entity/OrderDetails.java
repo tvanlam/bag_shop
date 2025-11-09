@@ -12,11 +12,11 @@ public class OrderDetails {
     private int id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column
@@ -27,4 +27,6 @@ public class OrderDetails {
 
     @Column
     private double totalPrice;
+
+
 }

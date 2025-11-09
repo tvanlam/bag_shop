@@ -7,8 +7,13 @@ import lombok.Data;
 
 @Data
 public class OrderRequest {
-    private double price;
     private Account account;
     private Voucher voucher;
+    private double totalPrice;
     private Order.OrderStatus orderStatus;
+    public void setOrder(Order order){
+        order.setAccount(account);
+        order.setVoucher(voucher);
+        order.setTotalPrice(totalPrice);
+    }
 }

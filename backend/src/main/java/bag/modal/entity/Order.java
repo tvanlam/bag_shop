@@ -17,7 +17,7 @@ public class Order extends Time{
     private int id;
 
     @Column
-    private double price;
+    private double totalPrice;
 
     @OneToOne
     @JoinColumn

@@ -11,7 +11,7 @@ public class OrderDto {
     private int voucher;
     public OrderDto(Order order){
         this.id = order.getId();
-        this.totalPrice = order.getPrice();
+        this.totalPrice = order.getTotalPrice();
         this.account = order.getAccount().getId();
         this.voucher = order.getVoucher().getId();
     }
