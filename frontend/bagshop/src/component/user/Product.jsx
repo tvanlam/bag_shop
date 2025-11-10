@@ -19,6 +19,8 @@ import {
 } from "../../redux/slices/ProductSlice";
 import { ADD_TO_CART, FETCH_CARTS } from "../../redux/slices/CartSlice";
 import ProductPage from "./ProductPage";
+import { Button } from "antd";
+import ModalFilter from "../utils/ModalFilter";
 
 const Product = () => {
   const dispatch = useDispatch();
@@ -31,6 +33,8 @@ const Product = () => {
   const [favorites, setFavorites] = useState([]);
   const [selectOption, setSelectOption] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalFilter, setModalFilter] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState(null);
 
   useEffect(() => {
     dispatch(FETCH_PRODUCTS({ pageNumber: currentPage - 1, pageSize: 12 }));
@@ -133,9 +137,55 @@ const Product = () => {
     );
   };
 
+  // Handle filter apply
+  const handleApplyFilter = (filters) => {
+    setAppliedFilters(filters);
+    setModalFilter(false);
+  };
+
+  // Filter products based on applied filters
+  const getFilteredProducts = () => {
+    if (!products || !Array.isArray(products)) return [];
+
+    if (!appliedFilters) return products;
+
+    return products.filter((product) => {
+      const productPrice = product.price || 0;
+
+      // Check predefined price ranges
+      if (appliedFilters.priceRanges && appliedFilters.priceRanges.length > 0) {
+        const matchesRange = appliedFilters.priceRanges.some(
+          (range) => productPrice >= range.min && productPrice <= range.max
+        );
+        if (!matchesRange) return false;
+      }
+
+      // Check custom price range
+      if (appliedFilters.customRange) {
+        const { min, max } = appliedFilters.customRange;
+        if (productPrice < min || productPrice > max) return false;
+      }
+
+      return true;
+    });
+  };
+
+  const filteredProducts = getFilteredProducts();
+
   return (
     <div className="min-h-screen pt-24 pb-12 bg-gray-100">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Modal Filter */}
+      <ModalFilter
+        isOpen={modalFilter}
+        onClose={() => setModalFilter(false)}
+        onApplyFilter={handleApplyFilter}
+      />
+
+      <div
+        className={`container mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
+          modalFilter ? "ml-80" : ""
+        }`}
+      >
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
             TẤT CẢ TÚI XÁCH
@@ -147,10 +197,13 @@ const Product = () => {
 
         {/* Filter and Sort Section */}
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8 pb-4 border-b border-gray-300">
-          <div className="flex items-center font-bold gap-2 text-gray-700 mb-4 sm:mb-0">
+          <button
+            onClick={() => setModalFilter(true)}
+            className="flex items-center font-bold gap-2 text-gray-700 mb-4 sm:mb-0"
+          >
             <RiFilterLine size={20} />
             <span>LỌC</span>
-          </div>
+          </button>
           <div className="flex items-center gap-3">
             <span className="font-medium text-gray-700">Sắp xếp theo:</span>
             <div className="relative">
@@ -188,8 +241,10 @@ const Product = () => {
         {/* Products Grid */}
         {!loading && !error && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products && Array.isArray(products) && products.length > 0 ? (
-              products.map((product) => (
+            {filteredProducts &&
+            Array.isArray(filteredProducts) &&
+            filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
                 <div
                   key={product.id}
                   className="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl group relative"
