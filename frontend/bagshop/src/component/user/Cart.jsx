@@ -19,6 +19,7 @@ const Cart = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const [modalFilter, setModalFilter] = useState(false);
 
   useEffect(() => {
     if (accountId) {
@@ -84,7 +85,7 @@ const Cart = () => {
         throw new Error("Không tìm thấy sản phẩm");
       }
 
-      console.log("🔍 DEBUG - Item to update:", {
+      console.log(" DEBUG - Item to update:", {
         itemKey,
         itemId: itemToUpdate.itemId,
         productId: itemToUpdate.productId,

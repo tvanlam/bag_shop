@@ -22,6 +22,8 @@ public class ProductDto {
     private String categoryName;
     private double averageRating;
     private int totalReviews;
+    private double minPrice;
+    private double maxPrice;
 
     public ProductDto(Product product){
         this.id = product.getId();

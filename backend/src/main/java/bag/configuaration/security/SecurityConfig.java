@@ -91,6 +91,7 @@ public class SecurityConfig {
                                 "/product/create",
                                 "/product/update",
                                 "/product/category/{categoryId}",
+                                "/product/filterByRangePrice",
 
                                 //review
                                 "/review",

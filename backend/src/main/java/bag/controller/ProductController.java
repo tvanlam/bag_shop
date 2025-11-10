@@ -54,6 +54,16 @@ public class ProductController {
         }
     }
 
+    @PostMapping("/filterByRangePrice")
+    public ResponseEntity<?> filterByRange(@RequestParam double minPrice,
+                                           @RequestParam double maxPrice){
+        try{
+            return ResponseEntity.ok(productService.getProductByRangePrice(minPrice, maxPrice));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestBody ProductRequest request){
         try{
@@ -62,6 +72,7 @@ public class ProductController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateProduct(@RequestBody ProductRequest request, @PathVariable int id){

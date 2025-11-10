@@ -52,6 +52,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDto> getProductByRangePrice(double minPrice, double maxPrice) {
+        if (minPrice < 0) minPrice = 0;
+        if (maxPrice <= 0) maxPrice = Double.MAX_VALUE;
+        List<Product> products = productRepository.findByRangePrice(minPrice, maxPrice);
+        return products.stream().map(ProductDto::new).collect(Collectors.toList());
+    }
+
+    @Override
     public ProductDto getProductById(int productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));

@@ -1,7 +1,7 @@
 package bag.repository;
 
 import bag.modal.entity.Product;
-import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -26,8 +26,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.images WHERE p.id = :productId")
     Optional<Product> findByIdWithImages(@Param("productId") int productId);
 
-    // Lấy sản phẩm trong khoảng giá
-    @Query("SELECT p FROM Product p WHERE p.price BETWEEN :min AND :max")
-    List<Product> findByRangePrice(@Param("min") double min, @Param("max") double max);
+    @Query("SELECT p FROM Product p WHERE p.price BETWEEN :minPrice AND :maxPrice")
+    List<Product> findByRangePrice(
+            @Param("minPrice") double minPrice,
+            @Param("maxPrice") double maxPrice
+    );
 
 }

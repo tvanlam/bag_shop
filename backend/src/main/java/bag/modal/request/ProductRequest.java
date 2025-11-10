@@ -26,6 +26,8 @@ public class ProductRequest {
     @NotEmpty(message = "At least one image is required")
     private List<String> images;
     private int categoryId;
+    private double minPrice;
+    private double maxPrice;
 
 
     public void populate(Product product){
