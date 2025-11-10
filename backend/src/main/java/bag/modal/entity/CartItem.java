@@ -22,6 +22,10 @@ public class CartItem extends Time {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     @Column(nullable = false)
     private int quantity;
 

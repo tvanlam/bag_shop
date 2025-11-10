@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -43,6 +44,9 @@ public class Account extends Time{
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Order> orders = new ArrayList<>();
 
     public enum Position {
         USER, ADMIN

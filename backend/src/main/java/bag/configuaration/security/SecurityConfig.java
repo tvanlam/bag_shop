@@ -100,7 +100,14 @@ public class SecurityConfig {
                                 "/cart",
                                 "/cart/add",
                                 "/cart/update",
-                                "/cart/delete/{cartItemId}"
+                                "/cart/delete/{cartItemId}",
+
+                                //order
+                                "/order",
+                                "/order/create",
+                                "/order/update",
+                                "/order/delete"
+
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

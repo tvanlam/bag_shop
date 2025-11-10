@@ -16,11 +16,8 @@ public class Order extends Time{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column
-    private double totalPrice;
-
-    @OneToOne
-    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
     private Account account;
 
     //@ManyToOne mặc định là EAGER
@@ -28,6 +25,12 @@ public class Order extends Time{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderDetails> orderDetails = new ArrayList<>();
+
+    @Column
+    private double totalPrice;
 
     @Column
     @Enumerated(EnumType.STRING)

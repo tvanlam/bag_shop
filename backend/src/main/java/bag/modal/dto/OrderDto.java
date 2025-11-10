@@ -8,6 +8,7 @@ public class OrderDto {
     private int id;
     private double totalPrice;
     private int account;
+    private int orderDetails;
     private int voucher;
     public OrderDto(Order order){
         this.id = order.getId();
