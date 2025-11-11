@@ -64,14 +64,6 @@ const ModalFilter = ({ isOpen, onClose, onApplyFilter }) => {
 
   return (
     <>
-      {/* Overlay */}
-      <div
-        className={`fixed inset-0 bg-black transition-opacity duration-300 z-40 ${
-          isOpen ? "opacity-50" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={onClose}
-      />
-
       {/* Modal Sidebar */}
       <div
         className={`fixed top-0 left-0 h-full bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${

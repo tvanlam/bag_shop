@@ -6,6 +6,7 @@ import Profile from "../page/user/Profile";
 import VerificationPage from "../page/both/VerificationPage";
 import Product from "../component/user/Product";
 import Cart from "../component/user/Cart";
+import Checkout from "../component/user/Checkout";
 
 import PrivateRoute from "./PrivateRouter";
 import AdminLayout from "../layout/AdminLayout";
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
       { path: "/product/:id", element: <ProductDetails /> },
       { path: "/verify", element: <VerificationPage /> },
       { path: "/cart", element: <Cart /> },
+      { path: "/checkout", element: <Checkout /> },
     ],
   },
   {
