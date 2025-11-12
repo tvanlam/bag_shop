@@ -16,4 +16,5 @@ public class OrderDto {
         this.account = order.getAccount().getId();
         this.voucher = order.getVoucher().getId();
     }
+
 }

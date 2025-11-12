@@ -1,16 +1,27 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { FaGreaterThan } from "react-icons/fa";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Checkout = () => {
   const Navigate = useNavigate();
+  const dispatch = useSelector((state) => state.auth.accountId);
+  // const loading = useSelector((state) => state.checkout.loading);
+  const shippingRef = useRef(null);
   const account = {
     fullName: "Nguyễn Văn A",
     city: "Hà Nội",
     address: "123 đường vào tim e",
     phoneNumber: "123456789",
+    email: "nguyenvana@example.com",
   };
   const [selectedOption, setSelectedOption] = useState("default");
+  const handleContinueToShipping = () => {
+    shippingRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
     <>
@@ -25,7 +36,7 @@ const Checkout = () => {
           </div>
           <p className="font-bold text-center text-2xl mb-6">Thanh toán</p>
 
-          <div className="delivery max-w-screen-md">
+          <div className="deliveryStep max-w-screen-md">
             <h3 className="text-lg text-gray-700 font-bold bg-gray-200 p-3 rounded-md">
               1.Giao hàng
             </h3>
@@ -44,7 +55,10 @@ const Checkout = () => {
                     />
                   </label>
                   <div className="flex flex-col w-64">
-                    <select className="border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    <select className="border border-gray-400 rounded-md p-2 focus:outline-none ">
+                      <option value="">Hà Nội</option>
+                      <option value="">TPHCM</option>
+                    </select>
                   </div>
                 </div>
                 <ul>
@@ -70,6 +84,7 @@ const Checkout = () => {
                 </label>
               </div>
             </div>
+
             {selectedOption === "new" && (
               <form className="flex flex-col gap-2 mt-2 text-sm pb-1 pt-2 ">
                 <h4 className="font-bold ">THÊM MỘT ĐỊA CHỈ GIAO HÀNG MỚI</h4>
@@ -115,16 +130,17 @@ const Checkout = () => {
                   </select>
                 </div>
                 <div className="flex flex-row gap-4 pt-4">
-                  <p>Số điện thoại*</p>
+                  <p>Số liên lạc*</p>
                   <input
                     type="text"
-                    placeholder="Số điện thoại"
+                    placeholder="Số điện thoại liên hệ"
                     className="border border-gray-300 rounded-md p-2 w-1/2"
                   />
                 </div>
-                <div className="flex items-center gap-2 pt-2">
+
+                <div className="flex items-center gap-2 pt-4">
                   <input type="checkbox" className="w-4 h-4 accent-black" />
-                  <label>Đặt làm địa chỉ mặc định</label>
+                  <label>Lưu địa chỉ cho những lần mua sau</label>
                 </div>
                 <div className="flex justify-center mt-4">
                   <button className="border border-black bg-white-500 text-black px-6 py-2 rounded-md hover:bg-black hover:text-white">
@@ -133,8 +149,58 @@ const Checkout = () => {
                 </div>
               </form>
             )}
+
+            <div className="mt-6 pt-4 border-t border-gray-300">
+              <h4 className="font-bold text-md mb-3">Thông tin liên hệ</h4>
+              <div className="flex flex-row gap-4 items-center">
+                <p>Email*</p>
+                <input
+                  type="email"
+                  value={account.email}
+                  readOnly
+                  className="border border-gray-300 rounded-md p-2 w-1/2 bg-gray-100 cursor-not-allowed"
+                />
+              </div>
+              <p className="text-sm text-gray-600 mt-2 ml-16">
+                Email này sẽ được sử dụng để gửi thông tin đơn hàng
+              </p>
+            </div>
+
+            {/* Nút tiếp tục - Áp dụng cho cả 2 trường hợp */}
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={() => handleContinueToShipping}
+                className="border border-black bg-gray-600 rounded-md px-4 py-2 text-white hover:bg-gray-700"
+              >
+                TIẾP TỤC ĐẾN PHƯƠNG THỨC GIAO HÀNG
+              </button>
+            </div>
+          </div>
+
+          <div className="shippingMethodStep max-w-screen-md mt-12">
+            <h3 className="text-lg text-gray-700 font-bold bg-gray-200 p-3 rounded-md">
+              2.Phương thức vận chuyển
+            </h3>
+            <p className="font-bold">PHƯƠNG THỨC GIAO HÀNG</p>
+            <div className="w-80 h-40 border border-black rounded-md p-4 flex flex-col gap-3">
+              <label className="flex items-center gap-2">
+                <input
+                  onChange={(e) => setSelectedOption(e.target.value)}
+                  type="radio"
+                  name="standard-shipping"
+                  className="accent-black w-4 h-4"
+                />
+              </label>
+            </div>
+          </div>
+
+          <div className="paymentStep max-w-screen-md mt-12">
+            <h3 className="text-lg text-gray-700 font-bold bg-gray-200 p-3 rounded-md">
+              3.Thanh toán
+            </h3>
           </div>
         </div>
+        <div className="max-w-4xl"></div>
       </div>
     </>
   );

@@ -45,7 +45,7 @@ public class Account extends Time{
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "account")
     private List<Order> orders = new ArrayList<>();
 
     public enum Position {

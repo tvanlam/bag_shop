@@ -13,6 +13,7 @@ import AdminLayout from "../layout/AdminLayout";
 import AccountManagement from "../page/admin/AccountManagement";
 import AccountDetails from "../page/admin/AccountDetails";
 import ProductManagement from "../page/admin/ProductManagement";
+import ErrorPage from "../component/user/ErrorPage";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       { path: "/verify", element: <VerificationPage /> },
       { path: "/cart", element: <Cart /> },
       { path: "/checkout", element: <Checkout /> },
+      { path: "/error", element: <ErrorPage /> },
     ],
   },
   {

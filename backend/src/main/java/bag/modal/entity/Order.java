@@ -37,6 +37,7 @@ public class Order extends Time{
     private OrderStatus status;
 
     public enum OrderStatus {
-        SUCCESS, WAITING
+        SUCCESS, PENDING,
     }
+
 }

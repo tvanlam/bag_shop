@@ -11,9 +11,7 @@ import java.util.List;
 @Data
 public class OrderRequest {
     private int account;
-    private List<String> orderDetails;
+    private List<OrderDetails> orderDetails;
     private int voucher;
-
-    private Order.OrderStatus orderStatus;
 
 }

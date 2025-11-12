@@ -15,18 +15,14 @@ public class OrderDetails {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+
+
     @Column
     private int quantity;
-
-    @Column
-    private double price;
-
-    @Column
-    private double totalPrice;
 
 
 }

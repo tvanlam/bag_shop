@@ -2,12 +2,14 @@ package bag.service.order;
 
 import bag.modal.dto.OrderDto;
 import bag.modal.entity.Account;
+import bag.modal.entity.CartItem;
 import bag.modal.entity.Order;
 
 import bag.modal.entity.Voucher;
 import bag.modal.request.OrderRequest;
 import bag.repository.AccountRepository;
 
+import bag.repository.CartItemRepository;
 import bag.repository.OrderRepository;
 import bag.repository.VoucherRepository;
 import jakarta.transaction.Transactional;
@@ -22,11 +24,13 @@ public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final VoucherRepository voucherRepository;
     private final AccountRepository accountRepository;
+    private final CartItemRepository cartItemRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, VoucherRepository voucherRepository, AccountRepository accountRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, VoucherRepository voucherRepository, AccountRepository accountRepository, CartItemRepository cartItemRepository) {
         this.orderRepository = orderRepository;
         this.voucherRepository = voucherRepository;
         this.accountRepository = accountRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @Override
@@ -49,8 +53,10 @@ public class OrderServiceImpl implements OrderService{
                     .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccount()));
             Voucher voucher = voucherRepository.findById(request.getVoucher())
                     .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucher()));
-
+//            CartItem cartItem = cartItemRepository.findById(request.get)
+//                    .orElseThrow(() -> new RuntimeException("Item not found"));
             Order order = new Order();
+
             order.setAccount(account);
             order.setVoucher(voucher);
             orderRepository.save(order);
