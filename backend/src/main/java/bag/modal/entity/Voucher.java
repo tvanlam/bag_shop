@@ -28,10 +28,10 @@ public class Voucher extends Time{
     private TypeDiscount typeDiscount;
 
     @Column
-    private double discountValue;
+    private double discountValue; // 100.000, 50.000
 
     @Column
-    private double maxDiscount; // Toi da giam theo %
+    private double maxDiscount; // Toi da giam theo %(VD:200000)
 
     @Column
     private LocalDateTime startDate;
@@ -51,7 +51,6 @@ public class Voucher extends Time{
 
     @Column
     private boolean isActive = true;
-
 
     public enum TypeDiscount {
         PERCENT,

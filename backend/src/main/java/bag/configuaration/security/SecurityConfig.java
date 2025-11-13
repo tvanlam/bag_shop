@@ -107,7 +107,11 @@ public class SecurityConfig {
                                 "/order",
                                 "/order/create",
                                 "/order/update",
-                                "/order/delete"
+                                "/order/delete",
+
+                                //voucher
+                                "/voucher",
+                                "/voucher/create"
 
                         ).permitAll()
                         .anyRequest().authenticated()

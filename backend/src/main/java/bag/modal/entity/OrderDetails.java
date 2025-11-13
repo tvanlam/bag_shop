@@ -19,10 +19,17 @@ public class OrderDetails {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-
-
     @Column
     private int quantity;
 
+    @Column
+    private double priceAtAdd;
+
+
+
+    @Transient //k luu DB
+    public double getSubTotal(){
+        return priceAtAdd * quantity;
+    }
 
 }

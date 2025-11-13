@@ -1,11 +1,9 @@
 package bag.service.order;
 
+import bag.modal.dto.OrderDetailsDto;
 import bag.modal.dto.OrderDto;
-import bag.modal.entity.Account;
-import bag.modal.entity.CartItem;
-import bag.modal.entity.Order;
+import bag.modal.entity.*;
 
-import bag.modal.entity.Voucher;
 import bag.modal.request.OrderRequest;
 import bag.repository.AccountRepository;
 
@@ -15,6 +13,7 @@ import bag.repository.VoucherRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,13 +52,26 @@ public class OrderServiceImpl implements OrderService{
                     .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccount()));
             Voucher voucher = voucherRepository.findById(request.getVoucher())
                     .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucher()));
-//            CartItem cartItem = cartItemRepository.findById(request.get)
-//                    .orElseThrow(() -> new RuntimeException("Item not found"));
+        // 3. Lấy CartItems của user (chưa có order)
+        List<CartItem> cartItems = cartItemRepository.findByCartAccountAndOrderIsNull(account);
+        if (cartItems.isEmpty()) {
+            throw new IllegalArgumentException("Giỏ hàng trống");
+        }
+        // 4. Tạo Order
             Order order = new Order();
-
             order.setAccount(account);
             order.setVoucher(voucher);
+            order.setStatus(Order.OrderStatus.PENDING);
+        // 5. CHUYỂN CartItem → OrderDetails
+            List<OrderDetails> orderDetails = convertCartItemsToOrderDetails(cartItems, order);
+            order.setOrderDetails(orderDetails);
+        // 6. TÍNH GIÁ
+            OrderPrice price = calculateOrderPrice(orderDetails, voucher);
+            order.setSubTotal(price.subTotal);
+        order.setDiscountAmount(price.discountAmount());
+        order.setTotalPrice(price.totalPrice());
             orderRepository.save(order);
+            cartItemRepository.deleteAll(cartItems);
             return new OrderDto(order);
     }
 
@@ -84,4 +96,47 @@ public class OrderServiceImpl implements OrderService{
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         orderRepository.delete(order);
     }
+
+    // PRIVATE METHODS
+    private List<OrderDetails> convertCartItemsToOrderDetails(List<CartItem> cartItems, Order order) {
+        return cartItems.stream()
+                .map(cartItem -> {
+                    OrderDetails detail = new OrderDetails();
+                    detail.setOrder(order);
+                    detail.setProduct(cartItem.getProduct());
+                    detail.setQuantity(cartItem.getQuantity());
+                    detail.setPriceAtAdd(cartItem.getPriceAtAdd());
+                    return detail;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private OrderPrice calculateOrderPrice(List<OrderDetails> details, Voucher voucher) {
+        double subTotal = details.stream().mapToDouble(d -> d.getPriceAtAdd() * d.getQuantity())
+                .sum();
+        double discount = calculateDiscountAmount(subTotal,voucher);
+        double totalPrice = subTotal - discount;
+        return new OrderPrice(Math.round(subTotal * 100.0) / 100.0,
+                Math.round(discount * 100.0) / 100.0,
+                Math.round(totalPrice * 100.0) / 100.0);
+    }
+
+    private double calculateDiscountAmount(double subtotal, Voucher voucher) {
+        if (voucher == null || !voucher.isActive()) {
+            return 0.0;
+        }
+        return switch (voucher.getTypeDiscount()) {
+            case PERCENT -> {
+                double amount = subtotal * (voucher.getDiscountValue() / 100.0);
+                if (voucher.getMaxDiscount() > 0) {
+                    amount = Math.min(amount, voucher.getMaxDiscount());
+                }
+                yield amount;
+            }
+            case FIXED_AMOUNT -> voucher.getDiscountValue();
+            case FREE_SHIP -> 0.0; // xử lý riêng ở shipping
+        };
+    }
+
+    private record OrderPrice(double subTotal, double discountAmount, double totalPrice){}
 }

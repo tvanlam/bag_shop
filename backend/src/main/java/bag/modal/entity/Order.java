@@ -30,14 +30,32 @@ public class Order extends Time{
     private List<OrderDetails> orderDetails = new ArrayList<>();
 
     @Column
+    private double subTotal;
+
+    @Column
+    private double discountAmount;
+
+    @Column
     private double totalPrice;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.PENDING;
 
     public enum OrderStatus {
-        SUCCESS, PENDING,
+        SUCCESS, PENDING,CANCELLED,REFUNDED;
+    }
+
+    // Helper: add OrderDetails
+    public void addOrderDetail(OrderDetails detail) {
+        orderDetails.add(detail);
+        detail.setOrder(this);
+    }
+
+    // Helper: remove OrderDetails
+    public void removeOrderDetail(OrderDetails detail) {
+        orderDetails.remove(detail);
+        detail.setOrder(null);
     }
 
 }

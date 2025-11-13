@@ -1,6 +1,7 @@
 package bag.service.order;
 
 import bag.modal.dto.OrderDto;
+import bag.modal.entity.CartItem;
 import bag.modal.entity.Order;
 import bag.modal.request.OrderRequest;
 
@@ -10,6 +11,8 @@ public interface OrderService {
     List<OrderDto> getOrders();
 
     OrderDto getOrderById(int id);
+
+//    List<OrderDto> convertCartItemToOrderDetails(List<CartItem> cartItems, Order order);
 
     OrderDto createOrder(OrderRequest request);
 
