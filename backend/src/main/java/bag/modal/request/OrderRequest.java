@@ -14,9 +14,7 @@ import java.util.List;
 public class OrderRequest {
     @Min(1)
     @NotNull(message = "AccountID must be required")
-    private int account;
-    // Nếu muốn gửi danh sách sản phẩm (trong trường hợp không dùng giỏ hàng)
-    private List<OrderDetails> orderDetails;
-    private int voucher;
+    private int accountId;
+    private int voucherId;
 
 }

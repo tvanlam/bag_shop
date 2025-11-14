@@ -29,21 +29,21 @@ public class Order extends Time{
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDetails> orderDetails = new ArrayList<>();
 
-    @Column
+    @Column(name="sub_total")
     private double subTotal;
 
-    @Column
+    @Column(name = "discount_amount")
     private double discountAmount;
 
-    @Column
+    @Column(name = "total_price")
     private double totalPrice;
 
-    @Column
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.PENDING;
 
     public enum OrderStatus {
-        SUCCESS, PENDING,CANCELLED,REFUNDED;
+        PENDING, SUCCESS,CANCELLED,REFUNDED;
     }
 
     // Helper: add OrderDetails

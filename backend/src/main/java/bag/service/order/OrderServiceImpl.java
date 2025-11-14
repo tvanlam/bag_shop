@@ -48,10 +48,10 @@ public class OrderServiceImpl implements OrderService{
     @Transactional
     @Override
     public OrderDto createOrder(OrderRequest request) {
-            Account account = accountRepository.findById(request.getAccount())
-                    .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccount()));
-            Voucher voucher = voucherRepository.findById(request.getVoucher())
-                    .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucher()));
+            Account account = accountRepository.findById(request.getAccountId())
+                    .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccountId()));
+            Voucher voucher = voucherRepository.findById(request.getVoucherId())
+                    .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucherId()));
         // 3. Lấy CartItems của user (chưa có order)
         List<CartItem> cartItems = cartItemRepository.findByCartAccountAndOrderIsNull(account);
         if (cartItems.isEmpty()) {
@@ -80,10 +80,10 @@ public class OrderServiceImpl implements OrderService{
     public OrderDto updateOrder(OrderRequest request, int id) {
             Order order = orderRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Order not found"));
-            Account account = accountRepository.findById(request.getAccount())
-                    .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccount()));
-            Voucher voucher = voucherRepository.findById(request.getVoucher())
-                    .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucher()));
+            Account account = accountRepository.findById(request.getAccountId())
+                    .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccountId()));
+            Voucher voucher = voucherRepository.findById(request.getVoucherId())
+                    .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucherId()));
             order.setAccount(account);
             order.setVoucher(voucher);
             orderRepository.save(order);
