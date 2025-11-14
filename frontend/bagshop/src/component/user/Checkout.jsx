@@ -112,19 +112,19 @@ const Checkout = () => {
                 <div className="flex flex-row gap-4 pt-2">
                   <p className="text-center">Tỉnh/TP*</p>
                   <select className="w-40 rounded-md ">
-                    <option value="" disabled selected>
+                    <option value="" selected>
                       Chọn Tỉnh/TP
                     </option>
                   </select>
                   <p className="text-center">Quận/Huyện*</p>
                   <select className="w-40 rounded-md">
-                    <option value="" disabled selected>
+                    <option value="" selected>
                       Chọn Quận/Huyện
                     </option>
                   </select>
                   <p className="text-center">Phường/Xã*</p>
                   <select className="w-40 rounded-md">
-                    <option value="" disabled selected>
+                    <option value="" selected>
                       Chọn Phường/Xã
                     </option>
                   </select>
