@@ -2,6 +2,9 @@ import React, { useRef, useState } from "react";
 import { FaGreaterThan } from "react-icons/fa";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import vnpayLogo from "../../assets/vnpayLogo.png";
+import momoLogo from "../../assets/momoLogo.png";
+import creditCardLogo from "../../assets/creditCardLogo.png";
 
 const Checkout = () => {
   const Navigate = useNavigate();
@@ -198,9 +201,84 @@ const Checkout = () => {
             <h3 className="text-lg text-gray-700 font-bold bg-gray-200 p-3 rounded-md">
               3.Thanh toán
             </h3>
+            <p className="font-bold">Chọn phương thức thanh toán</p>
+            <div className="grid grid-cols-3 gap-4 mt-4">
+              {/* item 1 */}
+              <div className="border-2 border-gray-500 rounded-md p-4">
+                <label className="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="payment"
+                    className="accent-black w-4 h-4"
+                    onChange={(e) => setSelectedOption(e.target.value)}
+                  />
+                  <span className="text-sm leading-none">
+                    Thanh toán khi nhận hàng
+                  </span>
+                </label>
+              </div>
+
+              {/* item 2 */}
+              <div className="border-2 border-gray-500 rounded-md p-4">
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-3 flex-1">
+                    <input
+                      type="radio"
+                      name="payment"
+                      className="accent-black w-4 h-4"
+                      onChange={(e) => setSelectedOption(e.target.value)}
+                    />
+                    <span className="text-sm leading-none">
+                      Thanh toán VnPay
+                    </span>
+                  </label>
+
+                  <img src={vnpayLogo} className="w-6 h-auto" />
+                </div>
+              </div>
+
+              {/* item 3 */}
+              <div className="border-2 border-gray-500 rounded-md p-4">
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="payment"
+                      className="accent-black w-4 h-4"
+                      onChange={(e) => setSelectedOption(e.target.value)}
+                    />
+                    <span className="text-sm leading-none">MoMo Pay</span>
+                  </label>
+                  <img src={momoLogo} className="w-6 h-auto" />
+                </div>
+              </div>
+
+              {/* item 4 */}
+              <div className="border-2 border-gray-500 rounded-md p-4">
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="payment"
+                      className="accent-black w-4 h-4"
+                      onChange={(e) => setSelectedOption(e.target.value)}
+                    />
+                    <span className="text-sm leading-none">
+                      Thẻ tín dụng / ghi nợ
+                    </span>
+                  </label>
+                  <img src={creditCardLogo} className="w-6 h-auto" />
+                </div>
+              </div>
+            </div>
+
+            <div className="max-w-6xl mx-auto px-6 lg:px-8 flex justify-center">
+              <button className="mt-8 border border-green-600 px-32 py-2 rounded-md bg-green-600 text-white hover:bg-green-700">
+                Đặt hàng
+              </button>
+            </div>
           </div>
         </div>
-        <div className="max-w-4xl"></div>
       </div>
     </>
   );
