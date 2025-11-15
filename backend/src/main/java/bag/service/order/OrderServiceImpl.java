@@ -32,12 +32,14 @@ public class OrderServiceImpl implements OrderService{
         this.cartItemRepository = cartItemRepository;
     }
 
+    @Transactional
     @Override
     public List<OrderDto> getOrders() {
         return orderRepository.findAll().stream()
                 .map(OrderDto::new).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public OrderDto getOrderById(int id) {
         Order order = orderRepository.findById(id)
@@ -88,6 +90,12 @@ public class OrderServiceImpl implements OrderService{
             order.setVoucher(voucher);
             orderRepository.save(order);
             return new OrderDto(order);
+    }
+
+    @Override
+    public OrderDto updateStatusOrder(int id) {
+
+        return null;
     }
 
     @Override

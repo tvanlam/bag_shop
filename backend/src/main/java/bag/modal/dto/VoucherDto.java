@@ -12,25 +12,23 @@ import java.util.stream.Collectors;
 @Data
 public class VoucherDto {
     private int id;
-    private List<Order> orders;
     private String code;
     private String description;
     private Voucher.TypeDiscount typeDiscount;
     private double discountValue;
     private double maxDiscount;
+    private int quantity;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
     public VoucherDto(Voucher voucher){
         this.id = voucher.getId();
-        this.orders = voucher.getOrders() != null
-                ? voucher.getOrders().stream()
-                .collect(Collectors.toList())
-                : Collections.emptyList();
+        this.code = voucher.getCode();
         this.description = voucher.getDescription();
         this.typeDiscount = voucher.getTypeDiscount();
         this.discountValue = voucher.getDiscountValue();
         this.maxDiscount = voucher.getMaxDiscount();
+        this.quantity = voucher.getQuantity();
         this.startDate = voucher.getStartDate();
         this.endDate = voucher.getEndDate();
 

@@ -13,6 +13,7 @@ public class OrderDetailsDto {
     private double subTotal;
     public OrderDetailsDto(OrderDetails orderDetails) {
         this.id = orderDetails.getId();
+        this.productId = orderDetails.getProduct().getId();
         this.productName = orderDetails.getProduct().getName();
         this.priceAtAdd = orderDetails.getPriceAtAdd();
         this.quantity = orderDetails.getQuantity();

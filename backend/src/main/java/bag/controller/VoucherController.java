@@ -41,7 +41,7 @@ public class VoucherController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateProduct(@RequestBody VoucherRequest request, @PathVariable int id){
+    public ResponseEntity<?> updateVoucher(@RequestBody VoucherRequest request, @PathVariable int id){
         try{
             return ResponseEntity.ok(voucherService.updateVoucher(request,id));
         }catch (Exception e){

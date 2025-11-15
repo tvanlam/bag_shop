@@ -11,7 +11,7 @@ public class OrderDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
@@ -24,8 +24,6 @@ public class OrderDetails {
 
     @Column
     private double priceAtAdd;
-
-
 
     @Transient //k luu DB
     public double getSubTotal(){

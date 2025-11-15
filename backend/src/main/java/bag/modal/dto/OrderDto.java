@@ -15,12 +15,9 @@ public class OrderDto {
     private Integer voucherId;
     private String status;
     private List<OrderDetailsDto> items;
-
-    // CHI TIẾT GIÁ
-    private double subtotal;        // tổng tiền hàng
-    private double discountAmount;  // tiền giảm
-    private double totalPrice;      // cuối cùng
-
+    private double subtotal;
+    private double discountAmount;
+    private double totalPrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -38,7 +35,7 @@ public class OrderDto {
                 .mapToDouble(OrderDetailsDto::getSubTotal)
                 .sum();
 
-//        this.discountAmount = calculateDiscountAmount(order, this.subtotal);
+        this.discountAmount = order.getDiscountAmount();
 
         this.totalPrice = order.getTotalPrice(); // đã lưu trong DB
 

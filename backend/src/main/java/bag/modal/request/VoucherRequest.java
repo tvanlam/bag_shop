@@ -12,6 +12,7 @@ public class VoucherRequest {
     private Voucher.TypeDiscount typeDiscount;
     private double discountValue;
     private double maxDiscount;
+    private int quantity;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
@@ -23,6 +24,7 @@ public class VoucherRequest {
         voucher.setTypeDiscount(typeDiscount);
         voucher.setDiscountValue(discountValue);
         voucher.setMaxDiscount(maxDiscount);
+        voucher.setQuantity(quantity);
         voucher.setStartDate(startDate);
         voucher.setEndDate(endDate);
     }

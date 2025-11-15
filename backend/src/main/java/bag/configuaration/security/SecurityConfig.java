@@ -111,7 +111,9 @@ public class SecurityConfig {
 
                                 //voucher
                                 "/voucher",
-                                "/voucher/create"
+                                "/voucher/getVoucherById",
+                                "/voucher/create",
+                                "/voucher/update/{id}"
 
                         ).permitAll()
                         .anyRequest().authenticated()
