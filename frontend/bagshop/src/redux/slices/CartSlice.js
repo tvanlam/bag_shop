@@ -30,7 +30,7 @@ export const CREATE_CART = createAsyncThunk(
   "cart/createCart",
   async (cartRequest, { rejectWithValue }) => {
     try {
-      return (await CartService.createCart(cartRequest)).data;
+      return await CartService.createCart(cartRequest).data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Create cart failed");
     }
