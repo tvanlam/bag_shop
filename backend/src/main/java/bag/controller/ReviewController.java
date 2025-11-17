@@ -30,6 +30,15 @@ public class ReviewController {
         }
     }
 
+    @GetMapping("/date")
+    public ResponseEntity<?> findReviewByDate(@RequestParam String date){
+        try{
+            return ResponseEntity.ok(reviewService.getReviewByDate(date));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody ReviewRequest request){
         try{

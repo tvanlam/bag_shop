@@ -9,6 +9,7 @@ public interface ReviewService {
     List<ReviewDto> getAll();
 
     ReviewDto findReviewById(int id);
+    List<ReviewDto> getReviewByDate(String date);
 
     ReviewDto createReview(ReviewRequest request);
 
