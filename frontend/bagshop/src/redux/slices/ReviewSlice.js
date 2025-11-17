@@ -4,6 +4,7 @@ import ReviewService from "../../service/ReviewService";
 const initialReview = {
   reviews: [],
   reviewsByProduct: [],
+  reviewBydate: [],
   review: null,
   loading: false,
   error: null,
@@ -38,6 +39,19 @@ export const FETCH_REVIEW_BY_PRODUCT_ID = createAsyncThunk(
     }
   }
 );
+
+export const FETCH_REVIEW_BY_DATE = createAsyncThunk(
+  "review/fetchReviewByDate",
+  async(date, {rejectWithValue}) => {
+    try {
+      return (await ReviewService.fetchReviewByDate(date)).data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "lấy review theo ngày thất bại"
+      )
+    }
+  }
+)
 
 const ReviewSlice = createSlice({
   name: "review",
@@ -78,6 +92,18 @@ const ReviewSlice = createSlice({
         state.loading = false
         state.error = action.payload
       })
+      .addCase(FETCH_REVIEW_BY_DATE.pending, (state)=>{
+        state.loading = true
+        state.error = null
+      })
+      .addCase(FETCH_REVIEW_BY_DATE.fulfilled, (state, action)=>{
+        state.loading = false
+        state.reviewBydate = action.payload
+      })
+      .addCase(FETCH_REVIEW_BY_DATE.rejected, (state, action)=>{
+        state.loading = false
+        state.error = action.payload
+      })
   },
 });
 
@@ -87,5 +113,6 @@ export const selectReviews = (state) => state.review.reviews;
 export const selectReview = (state) => state.review.review;
 export const selectLoading = (state) => state.review.loading;
 export const selectError = (state) => state.review.error;
+export const selectReviewByDate = (state) => state.review.reviewBydate
 
 export default ReviewSlice.reducer;

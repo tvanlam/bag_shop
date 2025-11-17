@@ -14,6 +14,7 @@ import AccountManagement from "../page/admin/AccountManagement";
 import AccountDetails from "../page/admin/AccountDetails";
 import ProductManagement from "../page/admin/ProductManagement";
 import ErrorPage from "../component/user/ErrorPage";
+import ReviewManagement from "../page/admin/ReviewManagement"
 
 const router = createBrowserRouter([
   {
@@ -44,7 +45,7 @@ const router = createBrowserRouter([
           { path: "orders", element: <div>Orders Content</div> },
           { path: "customers", element: <AccountManagement /> },
           { path: "details-account/:id", element: <AccountDetails /> },
-          { path: "reviews", element: <div>Reviews Content</div> },
+          { path: "reviews", element: <ReviewManagement /> },
           { path: "settings", element: <div>Settings Content</div> },
         ],
       },
