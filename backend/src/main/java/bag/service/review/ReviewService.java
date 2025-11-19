@@ -10,7 +10,7 @@ public interface ReviewService {
 
     ReviewDto findReviewById(int id);
     List<ReviewDto> getReviewByDate(String date);
-
+    List<ReviewDto> getReviewByProduct(int productId);
     ReviewDto createReview(ReviewRequest request);
 
     ReviewDto updateReview(ReviewRequest request, int id);

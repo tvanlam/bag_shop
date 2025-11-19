@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -48,6 +49,15 @@ public class ReviewServiceImpl implements ReviewService{
         return reviews.stream()
                 .map(ReviewDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReviewDto> getReviewByProduct(int productId) {
+        List<Review> reviews = reviewRepository.findByProduct(productId);
+        if (reviews.isEmpty()){
+            return new ArrayList<>();
+        }
+        return reviews.stream().map(ReviewDto::new).collect(Collectors.toList());
     }
 
     @Override

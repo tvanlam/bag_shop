@@ -30,6 +30,15 @@ public class ReviewController {
         }
     }
 
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<?> getReviewByProduct(@PathVariable("productId") int productId){
+        try{
+            return ResponseEntity.ok(reviewService.getReviewByProduct(productId));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/date")
     public ResponseEntity<?> findReviewByDate(@RequestParam String date){
         try{

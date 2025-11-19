@@ -97,6 +97,7 @@ public class SecurityConfig {
                                 "/review",
                                 "/review/create",
                                 "/review/date",
+                                "/review/product/{productId}",
 
                                 //cart
                                 "/cart",

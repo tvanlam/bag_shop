@@ -17,4 +17,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
                             @Param("end") LocalDateTime end);
 
     boolean existsByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
+
+    @Query("select r from Review r where r.product.id = :productId")
+    List<Review> findByProduct(@Param("productId")int productId);
 }
