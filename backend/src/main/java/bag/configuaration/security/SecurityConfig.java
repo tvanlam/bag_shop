@@ -103,7 +103,7 @@ public class SecurityConfig {
                                 "/cart",
                                 "/cart/add",
                                 "/cart/update",
-                                "/cart/delete/{cartItemId}",
+                                "/cart/{accountId}/delete/{cartItemId}",
 
                                 //order
                                 "/order",

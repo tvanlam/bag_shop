@@ -14,7 +14,7 @@ import AccountManagement from "../page/admin/AccountManagement";
 import AccountDetails from "../page/admin/AccountDetails";
 import ProductManagement from "../page/admin/ProductManagement";
 import ErrorPage from "../component/user/ErrorPage";
-import ReviewManagement from "../page/admin/ReviewManagement"
+import ReviewManagement from "../page/admin/ReviewManagement";
 
 const router = createBrowserRouter([
   {
@@ -26,9 +26,13 @@ const router = createBrowserRouter([
       { path: "/product/:id", element: <ProductDetails /> },
       { path: "/verify", element: <VerificationPage /> },
       { path: "/cart", element: <Cart /> },
-      { path: "/checkout", element: <Checkout /> },
       { path: "/error", element: <ErrorPage /> },
     ],
+  },
+  // Checkout page without header/footer
+  {
+    path: "/checkout",
+    element: <Checkout />,
   },
   {
     path: "/admin",

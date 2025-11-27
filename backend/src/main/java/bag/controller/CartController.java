@@ -59,7 +59,7 @@ public class CartController {
         }
     }
 
-    @DeleteMapping("{accountId}/delete/{cartItemId}")
+    @DeleteMapping("/{accountId}/delete/{cartItemId}")
     public ResponseEntity<?> deleteCartItem(@PathVariable int accountId,@PathVariable("cartItemId") int cartItemId) {
         try {
             cartService.deleteCartItem(accountId,cartItemId);

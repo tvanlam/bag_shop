@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaGreaterThan } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import logoBag from "../../assets/logoBag.png";
 import vnpayLogo from "../../assets/vnpayLogo.png";
 import momoLogo from "../../assets/momoLogo.png";
 import creditCardLogo from "../../assets/creditCardLogo.png";
@@ -215,16 +215,17 @@ const Checkout = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+      <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center gap-2 mb-2">
-            <button onClick={() => navigate(-1)} className="underline">
-              Giỏ hàng
-            </button>
-            <FaGreaterThan />
-            <span>Thanh toán</span>
+          {/* Logo ở giữa */}
+          <div className="flex justify-center mb-8">
+            <img
+              src={logoBag}
+              alt="Logo"
+              className="h-20 w-auto object-contain cursor-pointer"
+              onClick={() => navigate("/")}
+            />
           </div>
-          <p className="font-bold text-center text-2xl mb-6">Thanh toán</p>
 
           {/* Layout 2 cột */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

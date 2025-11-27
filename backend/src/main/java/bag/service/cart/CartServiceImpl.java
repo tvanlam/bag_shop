@@ -65,7 +65,9 @@ public class CartServiceImpl implements CartService {
             cartRepository.save(cart);
         }
         Map<Integer, CartItem> cartItemMap = cart.getCartItems().stream()
-                .collect(Collectors.toMap(ci -> ci.getProduct().getId(), ci -> ci));
+                .collect(Collectors.toMap(
+                        ci -> ci.getProduct().getId(), // key: productId
+                        ci -> ci));                    // value: CartItem object
 
         for (CartItemRequest itemRequest : request.getItems()) {
             Product product = productRepository.findById(itemRequest.getProductId())
