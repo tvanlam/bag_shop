@@ -1,8 +1,20 @@
 import React, { useMemo } from "react";
-import { Modal, Form, Input, Button, Tabs, message, ConfigProvider } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Button,
+  Tabs,
+  message,
+  ConfigProvider,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { UPDATE_EMAIL, UPDATE_PASSWORD, UPDATE_INFORMATION } from "../../redux/slices/AccountSlice";
+import {
+  UPDATE_EMAIL,
+  UPDATE_PASSWORD,
+  UPDATE_INFORMATION,
+} from "../../redux/slices/AccountSlice";
 
 const UpdateAccountModal = ({ open, onClose, account }) => {
   const dispatch = useDispatch();
@@ -25,25 +37,44 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
 
   const handleFinish = (values, type) => {
     if (type === "CHANGE_EMAIL") {
-      dispatch(UPDATE_EMAIL({ accountRequest: { email: values.newEmail }, accountId: account.id }))
+      dispatch(
+        UPDATE_EMAIL({
+          accountRequest: { email: values.newEmail },
+          accountId: account.id,
+        })
+      )
         .unwrap()
         .then(() => {
           message.success("OTP đã được gửi tới email mới!");
           onClose?.();
-          navigate("/verify", { state: { email: values.newEmail, action: "CHANGE_EMAIL" } });
+          navigate("/verify", {
+            state: { email: values.newEmail, action: "CHANGE_EMAIL" },
+          });
         })
         .catch((err) => message.error(err || "Đổi email thất bại"));
     } else if (type === "CHANGE_PASSWORD") {
-      dispatch(UPDATE_PASSWORD({ accountRequest: { password: values.newPassword }, accountId: account.id }))
+      dispatch(
+        UPDATE_PASSWORD({
+          accountRequest: { password: values.newPassword },
+          accountId: account.id,
+        })
+      )
         .unwrap()
         .then(() => {
           message.success("OTP đã được gửi để xác nhận đổi mật khẩu!");
           onClose?.();
-          navigate("/verify", { state: { email: account.email, action: "CHANGE_PASSWORD" } });
+          navigate("/verify", {
+            state: { email: account.email, action: "CHANGE_PASSWORD" },
+          });
         })
         .catch((err) => message.error(err || "Đổi mật khẩu thất bại"));
     } else if (type === "UPDATE_INFORMATION") {
-      dispatch(UPDATE_INFORMATION({accountRequest: { ...values}, accountId: account.id }))
+      dispatch(
+        UPDATE_INFORMATION({
+          accountRequest: { ...values },
+          accountId: account.id,
+        })
+      )
         .unwrap()
         .then(() => {
           message.success("Cập nhật thông tin thành công!");
@@ -103,9 +134,14 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
                   <Form.Item
                     name="newPassword"
                     label={<span className="font-medium">Mật khẩu mới</span>}
-                    rules={[{ required: true, message: "Vui lòng nhập mật khẩu mới" }]}
+                    rules={[
+                      { required: true, message: "Vui lòng nhập mật khẩu mới" },
+                    ]}
                   >
-                    <Input.Password size="large" placeholder="Nhập mật khẩu mới" />
+                    <Input.Password
+                      size="large"
+                      placeholder="Nhập mật khẩu mới"
+                    />
                   </Form.Item>
 
                   <Button
@@ -169,16 +205,28 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
                   className="space-y-3"
                   initialValues={initialInfo}
                 >
-                  <Form.Item name="username" label={<span className="font-medium">Tên người dùng</span>}>
+                  <Form.Item
+                    name="username"
+                    label={<span className="font-medium">Tên người dùng</span>}
+                  >
                     <Input size="large" placeholder="Tên hiển thị" />
                   </Form.Item>
-                  <Form.Item name="phoneNumber" label={<span className="font-medium">Số điện thoại</span>}>
+                  <Form.Item
+                    name="phoneNumber"
+                    label={<span className="font-medium">Số điện thoại</span>}
+                  >
                     <Input size="large" placeholder="Nhập số điện thoại" />
                   </Form.Item>
-                  <Form.Item name="city" label={<span className="font-medium">Thành phố</span>}>
+                  <Form.Item
+                    name="city"
+                    label={<span className="font-medium">Thành phố</span>}
+                  >
                     <Input size="large" placeholder="Nhập thành phố" />
                   </Form.Item>
-                  <Form.Item name="address" label={<span className="font-medium">Địa chỉ</span>}>
+                  <Form.Item
+                    name="address"
+                    label={<span className="font-medium">Địa chỉ</span>}
+                  >
                     <Input size="large" placeholder="Nhập địa chỉ" />
                   </Form.Item>
 

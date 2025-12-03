@@ -162,10 +162,19 @@ const Cart = () => {
 
     setUpdating(true);
     try {
+      const cartItemId = selectedItem.itemId || selectedItem.id;
+
+      console.log(" DELETE - Selected item:", selectedItem);
+      console.log(" DELETE - Cart item ID:", cartItemId);
+
+      if (!cartItemId) {
+        throw new Error("Không tìm thấy ID sản phẩm");
+      }
+
       await dispatch(
         DELETE_CART({
           accountId: parseInt(accountId),
-          cartItemId: parseInt(selectedItem.id),
+          cartItemId: parseInt(cartItemId),
         })
       ).unwrap();
       await dispatch(FETCH_CARTS(parseInt(accountId)));

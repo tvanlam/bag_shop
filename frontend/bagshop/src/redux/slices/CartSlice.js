@@ -163,11 +163,10 @@ const CartSlice = createSlice({
       .addCase(DELETE_CART.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        // action.payload may be: { id: deletedId } or deletedId or updated cart
+
         const payload = action.payload;
         let deletedId = null;
         if (payload == null) {
-          // fallback to the thunk arg if available
           deletedId = action.meta?.arg?.cartItemId;
         } else if (typeof payload === "object" && payload.id) {
           deletedId = payload.id;

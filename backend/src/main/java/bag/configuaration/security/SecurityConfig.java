@@ -75,6 +75,8 @@ public class SecurityConfig {
                                 // account
                                 "/account",
                                 "/account/register",
+                                "account/{id}",
+                                "account/information/{id}",
 
                                 //category
                                 "/category/**",
@@ -115,7 +117,12 @@ public class SecurityConfig {
                                 "/voucher",
                                 "/voucher/getVoucherById",
                                 "/voucher/create",
-                                "/voucher/update/{id}"
+                                "/voucher/update/{id}",
+
+                                //address
+                                "/address",
+                                "/address/create",
+                                "/address/update"
 
                         ).permitAll()
                         .anyRequest().authenticated()

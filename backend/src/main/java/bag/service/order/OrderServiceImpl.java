@@ -142,7 +142,7 @@ public class OrderServiceImpl implements OrderService{
                 yield amount;
             }
             case FIXED_AMOUNT -> voucher.getDiscountValue();
-            case FREE_SHIP -> 0.0; // xử lý riêng ở shipping
+            case FREE_SHIP -> 0.0;
         };
     }
 

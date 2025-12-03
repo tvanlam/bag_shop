@@ -26,4 +26,10 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
             "FROM Account a WHERE a.email = :email AND a.status = :status")
     boolean isAccountNotVerified(@Param("email") String email,
                                  @Param("status") Account.AccountStatus status);
+
+    @Query("SELECT a FROM Account a LEFT JOIN FETCH a.addresses WHERE a.id = :accountId ")
+    Optional<Account> findByIdWithAddresses(@Param("accountId") int accountId);
+
+
+
 }

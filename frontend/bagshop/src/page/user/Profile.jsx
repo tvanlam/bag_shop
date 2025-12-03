@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Descriptions,
-  Tag,
-  Spin,
-  Divider,
-  Avatar,
-  Button,
-} from "antd";
+import { Card, Descriptions, Tag, Spin, Divider, Avatar, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
   FETCH_ACCOUNT,
@@ -57,7 +49,11 @@ const Profile = () => {
         className="shadow-lg rounded-2xl"
         title={
           <div className="flex items-center gap-4">
-            <Avatar size={64} style={{ backgroundColor: "#1890ff" }} icon={<UserOutlined />} />
+            <Avatar
+              size={64}
+              style={{ backgroundColor: "#1890ff" }}
+              icon={<UserOutlined />}
+            />
             <div>
               <h2 className="text-xl font-bold m-0">{account.username}</h2>
               <p className="text-gray-500 m-0">Mã KH: {account.id}</p>
@@ -69,7 +65,12 @@ const Profile = () => {
             type="primary"
             size="large"
             onClick={() => setOpenModal(true)}
-            style={{ background: "#111", borderColor: "#111", borderRadius: 12, fontWeight: 600 }}
+            style={{
+              background: "#111",
+              borderColor: "#111",
+              borderRadius: 12,
+              fontWeight: 600,
+            }}
           >
             Cập nhật
           </Button>
@@ -87,8 +88,12 @@ const Profile = () => {
           contentStyle={{ background: "#fff" }}
           className="rounded-xl overflow-hidden"
         >
-          <Descriptions.Item label={<MailOutlined />}>{account.email}</Descriptions.Item>
-          <Descriptions.Item label={<PhoneOutlined />}>{account.phoneNumber}</Descriptions.Item>
+          <Descriptions.Item label={<MailOutlined />}>
+            {account.email}
+          </Descriptions.Item>
+          <Descriptions.Item label={<PhoneOutlined />}>
+            {account.phoneNumber}
+          </Descriptions.Item>
           <Descriptions.Item label={<EnvironmentOutlined />}>
             {account.city || "Chưa cập nhật"}
           </Descriptions.Item>

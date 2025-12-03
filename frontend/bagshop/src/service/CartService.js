@@ -28,7 +28,6 @@ const CartService = {
     });
   },
   deleteCart(accountId, cartItemId) {
-    // Use accountId in the URL (was incorrectly using undefined cartId variable)
     return axiosClient.delete(`cart/${accountId}/delete/${cartItemId}`);
   },
 };

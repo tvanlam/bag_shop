@@ -669,7 +669,7 @@ const Checkout = () => {
                   </div>
                   {appliedVoucher && (
                     <p className="text-xs text-green-600 mt-2">
-                      ✓ Đã áp dụng mã "{appliedVoucher.code}" - Giảm{" "}
+                      Đã áp dụng mã "{appliedVoucher.code}" - Giảm{" "}
                       {appliedVoucher.discountType === "PERCENTAGE"
                         ? `${appliedVoucher.discountValue}%`
                         : appliedVoucher.discountType === "FIXED_AMOUNT"

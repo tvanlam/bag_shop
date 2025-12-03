@@ -2,80 +2,113 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AccountService from "../../service/AccountService";
 
 // Thunk: danh sách tài khoản
-export const FETCH_ACCOUNTS = createAsyncThunk("account/fetchAccounts", async (_, { rejectWithValue }) => {
-  try {
-    return (await AccountService.getAll()).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Fetch accounts failed");
+export const FETCH_ACCOUNTS = createAsyncThunk(
+  "account/fetchAccounts",
+  async (_, { rejectWithValue }) => {
+    try {
+      return (await AccountService.getAll()).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Fetch accounts failed");
+    }
   }
-});
+);
 
 // Thunk: tài khoản đăng nhập
-export const FETCH_ACCOUNT = createAsyncThunk("account/fetchAccount", async (accountId, { rejectWithValue }) => {
-  try {
-    return (await AccountService.getById(accountId)).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Fetch account failed");
+export const FETCH_ACCOUNT = createAsyncThunk(
+  "account/fetchAccount",
+  async (accountId, { rejectWithValue }) => {
+    try {
+      return (await AccountService.getById(accountId)).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Fetch account failed");
+    }
   }
-});
+);
 
 // Thunk: tài khoản đang được xem
-export const FETCH_SELECTED_ACCOUNT = createAsyncThunk("account/fetchSelectedAccount", async (accountId, { rejectWithValue }) => {
-  try {
-    return (await AccountService.getById(accountId)).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Fetch selected account failed");
+export const FETCH_SELECTED_ACCOUNT = createAsyncThunk(
+  "account/fetchSelectedAccount",
+  async (accountId, { rejectWithValue }) => {
+    try {
+      return (await AccountService.getById(accountId)).data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Fetch selected account failed"
+      );
+    }
   }
-});
+);
 
 // Các thao tác khác
-export const REGISTER = createAsyncThunk("account/register", async (accountRequest, { rejectWithValue }) => {
-  try {
-    return (await AccountService.register(accountRequest)).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Register failed");
+export const REGISTER = createAsyncThunk(
+  "account/register",
+  async (accountRequest, { rejectWithValue }) => {
+    try {
+      return (await AccountService.register(accountRequest)).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Register failed");
+    }
   }
-});
+);
 
-export const CREATE_ADMIN = createAsyncThunk("account/createAdmin", async (accountRequest, { rejectWithValue }) => {
-  try {
-    return (await AccountService.createAdmin(accountRequest)).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Create admin failed");
+export const CREATE_ADMIN = createAsyncThunk(
+  "account/createAdmin",
+  async (accountRequest, { rejectWithValue }) => {
+    try {
+      return (await AccountService.createAdmin(accountRequest)).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Create admin failed");
+    }
   }
-});
+);
 
-export const UPDATE_EMAIL = createAsyncThunk("account/updateEmail", async ({ accountId, accountRequest }, { rejectWithValue }) => {
-  try {
-    return (await AccountService.updateEmail(accountId, accountRequest)).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Update email failed");
+export const UPDATE_EMAIL = createAsyncThunk(
+  "account/updateEmail",
+  async ({ accountId, accountRequest }, { rejectWithValue }) => {
+    try {
+      return (await AccountService.updateEmail(accountId, accountRequest)).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Update email failed");
+    }
   }
-});
+);
 
-export const UPDATE_PASSWORD = createAsyncThunk("account/updatePassword", async ({ accountId, accountRequest }, { rejectWithValue }) => {
-  try {
-    return (await AccountService.updatePassword(accountId, accountRequest)).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Update password failed");
+export const UPDATE_PASSWORD = createAsyncThunk(
+  "account/updatePassword",
+  async ({ accountId, accountRequest }, { rejectWithValue }) => {
+    try {
+      return (await AccountService.updatePassword(accountId, accountRequest))
+        .data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Update password failed");
+    }
   }
-});
+);
 
-export const UPDATE_INFORMATION = createAsyncThunk("account/updateInformation", async ({ accountId, accountRequest }, { rejectWithValue }) => {
-  try {
-    return (await AccountService.updateInformation(accountId, accountRequest)).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Update information failed");
+export const UPDATE_INFORMATION = createAsyncThunk(
+  "account/updateInformation",
+  async ({ accountId, accountRequest }, { rejectWithValue }) => {
+    try {
+      return (await AccountService.updateInformation(accountId, accountRequest))
+        .data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Update information failed"
+      );
+    }
   }
-});
+);
 
-export const DELETE_ACCOUNT = createAsyncThunk("account/deleteAccount", async (accountId, { rejectWithValue }) => {
-  try {
-    return (await AccountService.delete(accountId)).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Delete account failed");
+export const DELETE_ACCOUNT = createAsyncThunk(
+  "account/deleteAccount",
+  async (accountId, { rejectWithValue }) => {
+    try {
+      return (await AccountService.delete(accountId)).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Delete account failed");
+    }
   }
-});
+);
 
 // Initial state
 const initialState = {
@@ -215,7 +248,9 @@ const AccountSlice = createSlice({
       })
       .addCase(UPDATE_INFORMATION.fulfilled, (state, action) => {
         state.loadingList = false;
-        state.accounts = state.accounts.map((acc) => (acc.id === action.payload.id ? action.payload : acc));
+        state.accounts = state.accounts.map((acc) =>
+          acc.id === action.payload.id ? action.payload : acc
+        );
         state.account = action.payload;
       })
       .addCase(UPDATE_INFORMATION.rejected, (state, action) => {
@@ -230,7 +265,9 @@ const AccountSlice = createSlice({
       })
       .addCase(DELETE_ACCOUNT.fulfilled, (state, action) => {
         state.loadingList = false;
-        state.accounts = state.accounts.filter((acc) => acc.id !== action.payload.id);
+        state.accounts = state.accounts.filter(
+          (acc) => acc.id !== action.payload.id
+        );
       })
       .addCase(DELETE_ACCOUNT.rejected, (state, action) => {
         state.loadingList = false;
@@ -246,11 +283,13 @@ export const selectSelectedAccount = (state) => state.account.selectedAccount;
 
 export const selectAccountListLoading = (state) => state.account.loadingList;
 export const selectAccountLoading = (state) => state.account.loadingAccount;
-export const selectSelectedAccountLoading = (state) => state.account.loadingSelected;
+export const selectSelectedAccountLoading = (state) =>
+  state.account.loadingSelected;
 
 export const selectAccountError = (state) => state.account.errorAccount;
 export const selectAccountListError = (state) => state.account.errorList;
-export const selectSelectedAccountError = (state) => state.account.errorSelected;
+export const selectSelectedAccountError = (state) =>
+  state.account.errorSelected;
 
 export const { clearAccount, clearSelectedAccount } = AccountSlice.actions;
 

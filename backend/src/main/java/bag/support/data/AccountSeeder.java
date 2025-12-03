@@ -23,8 +23,6 @@ public class AccountSeeder {
                 admin1.setPassword(passwordEncoder.encode("admin123"));
                 admin1.setEmail("admin1@example.com");
                 admin1.setPhoneNumber("0123456789");
-                admin1.setCity("Hanoi");
-                admin1.setAddress("123 Admin Street");
                 admin1.setPosition(Position.ADMIN);
                 admin1.setStatus(Account.AccountStatus.ACTIVE);
 
@@ -33,8 +31,6 @@ public class AccountSeeder {
                 admin2.setPassword(passwordEncoder.encode("admin123"));
                 admin2.setEmail("admin2@example.com");
                 admin2.setPhoneNumber("0987654321");
-                admin2.setCity("HCMC");
-                admin2.setAddress("456 Admin Road");
                 admin2.setPosition(Position.ADMIN);
                 admin2.setStatus(Account.AccountStatus.ACTIVE);
 
@@ -44,8 +40,6 @@ public class AccountSeeder {
                 user1.setPassword(passwordEncoder.encode("user123"));
                 user1.setEmail("user1@example.com");
                 user1.setPhoneNumber("0111111111");
-                user1.setCity("Danang");
-                user1.setAddress("789 User Lane");
                 user1.setPosition(Position.USER);
                 user1.setStatus(Account.AccountStatus.ACTIVE);
 
@@ -54,8 +48,6 @@ public class AccountSeeder {
                 user2.setPassword(passwordEncoder.encode("user123"));
                 user2.setEmail("user2@example.com");
                 user2.setPhoneNumber("0222222222");
-                user2.setCity("Cantho");
-                user2.setAddress("101 User Avenue");
                 user2.setPosition(Position.USER);
                 user2.setStatus(Account.AccountStatus.ACTIVE);
 
