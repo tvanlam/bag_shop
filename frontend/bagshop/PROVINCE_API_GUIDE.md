@@ -3,9 +3,11 @@
 ## 📦 Đã tích hợp:
 
 ### 1. **ProvinceService** (`src/service/ProvinceService.js`)
+
 Service để gọi API địa giới hành chính Việt Nam từ **provinces.open-api.vn**
 
 ### 2. **Checkout Component** (`src/component/user/Checkout.jsx`)
+
 Đã cập nhật form địa chỉ với dropdown cascade cho Tỉnh/TP → Quận/Huyện → Phường/Xã
 
 ## 🌐 API Endpoint:
@@ -15,16 +17,19 @@ Service để gọi API địa giới hành chính Việt Nam từ **provinces.o
 ### Các endpoint có sẵn:
 
 1. **Lấy tất cả tỉnh/thành phố (63 tỉnh):**
+
    ```
    GET /p/
    ```
 
 2. **Lấy chi tiết tỉnh + quận/huyện:**
+
    ```
    GET /p/{province_code}?depth=2
    ```
 
 3. **Lấy chi tiết quận + phường/xã:**
+
    ```
    GET /d/{district_code}?depth=2
    ```
@@ -37,26 +42,31 @@ Service để gọi API địa giới hành chính Việt Nam từ **provinces.o
 ## 🎯 Cách hoạt động trong Checkout:
 
 ### 1. **Khi component mount:**
+
 - Tự động fetch danh sách 63 tỉnh/thành phố
 - Hiển thị trong dropdown "Tỉnh/TP"
 
 ### 2. **Khi user chọn Tỉnh/TP:**
+
 - Lưu mã tỉnh (province code)
 - Fetch danh sách quận/huyện của tỉnh đó
 - Enable dropdown "Quận/Huyện"
 - Reset dropdown "Phường/Xã"
 
 ### 3. **Khi user chọn Quận/Huyện:**
+
 - Lưu mã quận (district code)
 - Fetch danh sách phường/xã của quận đó
 - Enable dropdown "Phường/Xã"
 
 ### 4. **Khi user chọn Phường/Xã:**
+
 - Lưu tên phường/xã vào state
 
 ## 📊 Cấu trúc dữ liệu:
 
 ### Province (Tỉnh/TP):
+
 ```json
 {
   "code": 1,
@@ -69,6 +79,7 @@ Service để gọi API địa giới hành chính Việt Nam từ **provinces.o
 ```
 
 ### District (Quận/Huyện):
+
 ```json
 {
   "code": 1,
@@ -82,6 +93,7 @@ Service để gọi API địa giới hành chính Việt Nam từ **provinces.o
 ```
 
 ### Ward (Phường/Xã):
+
 ```json
 {
   "code": 1,
@@ -106,9 +118,9 @@ Service để gọi API địa giới hành chính Việt Nam từ **provinces.o
 
 ```javascript
 // State lưu danh sách
-const [provinces, setProvinces] = useState([]);      // 63 tỉnh
-const [districts, setDistricts] = useState([]);      // Quận/huyện của tỉnh được chọn
-const [wards, setWards] = useState([]);              // Phường/xã của quận được chọn
+const [provinces, setProvinces] = useState([]); // 63 tỉnh
+const [districts, setDistricts] = useState([]); // Quận/huyện của tỉnh được chọn
+const [wards, setWards] = useState([]); // Phường/xã của quận được chọn
 
 // State lưu lựa chọn hiện tại
 const [selectedProvinceCode, setSelectedProvinceCode] = useState("");
@@ -116,9 +128,9 @@ const [selectedDistrictCode, setSelectedDistrictCode] = useState("");
 
 // State lưu vào form (tên, không phải code)
 const [newAddress, setNewAddress] = useState({
-  city: "",      // Tên tỉnh/TP
-  district: "",  // Tên quận/huyện
-  ward: "",      // Tên phường/xã
+  city: "", // Tên tỉnh/TP
+  district: "", // Tên quận/huyện
+  ward: "", // Tên phường/xã
   // ... các field khác
 });
 ```
@@ -160,4 +172,3 @@ console.log(baDinh.data.wards); // Array of wards in Ba Dinh
 
 **API Source:** https://provinces.open-api.vn/
 **Documentation:** https://provinces.open-api.vn/api-docs/
-

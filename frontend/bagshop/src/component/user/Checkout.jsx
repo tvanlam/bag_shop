@@ -62,11 +62,11 @@ const Checkout = () => {
     }
   }, [dispatch, accountId]);
 
-  // Fetch danh sách tỉnh thành khi component mount
+  // Fetch danh sách 34 tỉnh thành mới (Nghị quyết 202/2025/QH15)
   useEffect(() => {
     const fetchProvinces = async () => {
       try {
-        const response = await ProvinceService.getAllProvinces();
+        const response = await ProvinceService.getMajorProvinces();
         setProvinces(response.data);
       } catch (error) {
         console.error("Lỗi khi tải danh sách tỉnh thành:", error);
