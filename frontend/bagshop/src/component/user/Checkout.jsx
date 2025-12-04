@@ -14,6 +14,7 @@ import {
 import { FETCH_ACCOUNT } from "../../redux/slices/AccountSlice";
 import { FETCH_CARTS } from "../../redux/slices/CartSlice";
 import CheckoutService from "../../service/CheckoutService";
+import ProvinceService from "../../service/ProvinceService";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -46,6 +47,13 @@ const Checkout = () => {
     saveAddress: false,
   });
 
+  // State cho địa giới hành chính
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedProvinceCode, setSelectedProvinceCode] = useState("");
+  const [selectedDistrictCode, setSelectedDistrictCode] = useState("");
+
   // Fetch data on mount
   useEffect(() => {
     if (accountId) {
@@ -53,6 +61,62 @@ const Checkout = () => {
       dispatch(FETCH_CARTS(accountId));
     }
   }, [dispatch, accountId]);
+
+  // Fetch danh sách tỉnh thành khi component mount
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      try {
+        const response = await ProvinceService.getAllProvinces();
+        setProvinces(response.data);
+      } catch (error) {
+        console.error("Lỗi khi tải danh sách tỉnh thành:", error);
+        toast.error("Không thể tải danh sách tỉnh thành");
+      }
+    };
+    fetchProvinces();
+  }, []);
+
+  // Fetch danh sách quận/huyện khi chọn tỉnh
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      if (selectedProvinceCode) {
+        try {
+          const response = await ProvinceService.getDistrictsByProvinceCode(
+            selectedProvinceCode
+          );
+          setDistricts(response.data.districts || []);
+          setWards([]); // Reset wards khi đổi tỉnh
+          setNewAddress((prev) => ({ ...prev, district: "", ward: "" }));
+        } catch (error) {
+          console.error("Lỗi khi tải danh sách quận/huyện:", error);
+        }
+      } else {
+        setDistricts([]);
+        setWards([]);
+      }
+    };
+    fetchDistricts();
+  }, [selectedProvinceCode]);
+
+  // Fetch danh sách phường/xã khi chọn quận
+  useEffect(() => {
+    const fetchWards = async () => {
+      if (selectedDistrictCode) {
+        try {
+          const response = await ProvinceService.getWardsByDistrictCode(
+            selectedDistrictCode
+          );
+          setWards(response.data.wards || []);
+          setNewAddress((prev) => ({ ...prev, ward: "" }));
+        } catch (error) {
+          console.error("Lỗi khi tải danh sách phường/xã:", error);
+        }
+      } else {
+        setWards([]);
+      }
+    };
+    fetchWards();
+  }, [selectedDistrictCode]);
 
   // Handle errors
   useEffect(() => {
@@ -268,7 +332,7 @@ const Checkout = () => {
                       <p className="text-sm text-gray-500">Đang tải...</p>
                     )}
                   </div>
-                  <div className="w-80 h-40 border-2 border-gray-500 rounded-md p-4 flex flex-col gap-3">
+                  <div className="w-80 h-50 border-2 border-gray-500 rounded-md p-4 flex flex-col gap-3">
                     <label className="flex items-center gap-2">
                       <input
                         type="radio"
@@ -332,35 +396,64 @@ const Checkout = () => {
                       <p className="text-center">Tỉnh/TP*</p>
                       <select
                         className="w-40 rounded-md border border-gray-300 p-1"
-                        value={newAddress.city}
-                        onChange={(e) =>
-                          handleNewAddressChange("city", e.target.value)
-                        }
+                        value={selectedProvinceCode}
+                        onChange={(e) => {
+                          const selectedProvince = provinces.find(
+                            (p) => p.code.toString() === e.target.value
+                          );
+                          setSelectedProvinceCode(e.target.value);
+                          setSelectedDistrictCode("");
+                          handleNewAddressChange(
+                            "city",
+                            selectedProvince?.name || ""
+                          );
+                        }}
                       >
                         <option value="">Chọn Tỉnh/TP</option>
-                        <option value="Hà Nội">Hà Nội</option>
-                        <option value="TP Hồ Chí Minh">TP Hồ Chí Minh</option>
-                        <option value="Đà Nẵng">Đà Nẵng</option>
+                        {provinces.map((province) => (
+                          <option key={province.code} value={province.code}>
+                            {province.name}
+                          </option>
+                        ))}
                       </select>
                       <p className="text-center">Quận/Huyện*</p>
                       <select
                         className="w-40 rounded-md border border-gray-300 p-1"
-                        value={newAddress.district}
-                        onChange={(e) =>
-                          handleNewAddressChange("district", e.target.value)
-                        }
+                        value={selectedDistrictCode}
+                        onChange={(e) => {
+                          const selectedDistrict = districts.find(
+                            (d) => d.code.toString() === e.target.value
+                          );
+                          setSelectedDistrictCode(e.target.value);
+                          handleNewAddressChange(
+                            "district",
+                            selectedDistrict?.name || ""
+                          );
+                        }}
+                        disabled={!selectedProvinceCode}
                       >
                         <option value="">Chọn Quận/Huyện</option>
+                        {districts.map((district) => (
+                          <option key={district.code} value={district.code}>
+                            {district.name}
+                          </option>
+                        ))}
                       </select>
                       <p className="text-center">Phường/Xã*</p>
                       <select
                         className="w-40 rounded-md border border-gray-300 p-1"
                         value={newAddress.ward}
-                        onChange={(e) =>
-                          handleNewAddressChange("ward", e.target.value)
-                        }
+                        onChange={(e) => {
+                          handleNewAddressChange("ward", e.target.value);
+                        }}
+                        disabled={!selectedDistrictCode}
                       >
                         <option value="">Chọn Phường/Xã</option>
+                        {wards.map((ward) => (
+                          <option key={ward.code} value={ward.name}>
+                            {ward.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="flex flex-row gap-4 pt-4">

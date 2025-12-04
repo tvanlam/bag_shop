@@ -10,6 +10,7 @@ import cartReducer from "./slices/CartSlice";
 import categoryReducer from "./slices/CategorySlice";
 import checkoutReducer from "./slices/CheckoutSlice";
 import reviewReducer from "./slices/ReviewSlice";
+import addressReducer from "./slices/AddressSlice";
 // Config cho auth - lưu vào sessionStorage (tự động xóa khi đóng browser)
 const authPersistConfig = {
   key: "auth",
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
   category: categoryReducer,
   checkout: checkoutReducer,
   review: reviewReducer,
+  address: addressReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
