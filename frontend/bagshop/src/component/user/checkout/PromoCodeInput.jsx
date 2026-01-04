@@ -41,9 +41,9 @@ const PromoCodeInput = ({
       {appliedVoucher && (
         <p className="text-xs text-green-600 mt-2">
           Đã áp dụng mã "{appliedVoucher.code}" - Giảm{" "}
-          {appliedVoucher.discountType === "PERCENTAGE"
+          {appliedVoucher.typeDiscount === "PERCENT"
             ? `${appliedVoucher.discountValue}%`
-            : appliedVoucher.discountType === "FIXED_AMOUNT"
+            : appliedVoucher.typeDiscount === "FIXED_AMOUNT"
             ? `${appliedVoucher.discountValue.toLocaleString("vi-VN")}đ`
             : "phí ship"}
         </p>
@@ -53,4 +53,3 @@ const PromoCodeInput = ({
 };
 
 export default PromoCodeInput;
-

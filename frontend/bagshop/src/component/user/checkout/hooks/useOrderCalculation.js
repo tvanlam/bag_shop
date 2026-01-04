@@ -4,7 +4,11 @@ import { useMemo } from "react";
  * Custom hook để tính toán giá tiền trong đơn hàng
  * Bao gồm: subtotal, shipping, discount, total
  */
-export const useOrderCalculation = (cartItems, appliedVoucher, shippingFee = 30000) => {
+export const useOrderCalculation = (
+  cartItems,
+  appliedVoucher,
+  shippingFee = 30000
+) => {
   // Parse price string to number
   const parsePrice = (priceString) => {
     if (!priceString) return 0;
@@ -14,7 +18,7 @@ export const useOrderCalculation = (cartItems, appliedVoucher, shippingFee = 300
   // Tính tổng tiền sản phẩm (chưa bao gồm ship và giảm giá)
   const subtotal = useMemo(() => {
     if (!Array.isArray(cartItems)) return 0;
-    
+
     return cartItems.reduce((sum, item) => {
       const price = parsePrice(item.priceAtAdd || item.price);
       const quantity = item.quantity || 1;
@@ -26,12 +30,15 @@ export const useOrderCalculation = (cartItems, appliedVoucher, shippingFee = 300
   const discount = useMemo(() => {
     if (!appliedVoucher) return 0;
 
-    if (appliedVoucher.discountType === "PERCENTAGE") {
+    if (appliedVoucher.typeDiscount === "PERCENT") {
       const discountAmount = (subtotal * appliedVoucher.discountValue) / 100;
-      return Math.min(discountAmount, appliedVoucher.maxDiscount || discountAmount);
-    } else if (appliedVoucher.discountType === "FIXED_AMOUNT") {
+      return Math.min(
+        discountAmount,
+        appliedVoucher.maxDiscount || discountAmount
+      );
+    } else if (appliedVoucher.typeDiscount === "FIXED_AMOUNT") {
       return appliedVoucher.discountValue;
-    } else if (appliedVoucher.discountType === "FREE_SHIPPING") {
+    } else if (appliedVoucher.typeDiscount === "FREE_SHIPPING") {
       return shippingFee;
     }
     return 0;
@@ -56,4 +63,3 @@ export const useOrderCalculation = (cartItems, appliedVoucher, shippingFee = 300
     parsePrice,
   };
 };
-

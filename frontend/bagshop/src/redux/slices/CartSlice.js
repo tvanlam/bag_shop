@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import CartService from "../../service/CartService";
+import { LOGOUT } from "./AuthSlice";
 
 export const FETCH_CARTS = createAsyncThunk(
   "cart/fetchCarts",
@@ -187,7 +188,9 @@ const CartSlice = createSlice({
           state.cart = payload;
         }
       })
-      .addCase(DELETE_CART.rejected, setRejected);
+      .addCase(DELETE_CART.rejected, setRejected)
+      // Clear cart when user logs out
+      .addCase(LOGOUT.fulfilled, () => initialState);
   },
 });
 
