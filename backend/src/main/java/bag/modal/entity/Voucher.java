@@ -46,6 +46,9 @@ public class Voucher extends Time{
     private List<Order> orders;
 
     @Column
+    private Integer usedQuantity = 0;
+
+    @Column
     @Enumerated(EnumType.STRING)
     private VoucherStatus status;
 

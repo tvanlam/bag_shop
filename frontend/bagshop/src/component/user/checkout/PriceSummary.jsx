@@ -4,7 +4,13 @@ import React from "react";
  * Component hiển thị tổng kết giá tiền
  * Bao gồm: Tạm tính, Phí ship, Giảm giá, Tổng cộng
  */
-const PriceSummary = ({ subtotal, shippingFee, discount, total, formatPrice }) => {
+const PriceSummary = ({
+  subtotal,
+  shippingFee,
+  discount,
+  total,
+  formatPrice,
+}) => {
   return (
     <>
       {/* Tổng tiền */}
@@ -18,7 +24,7 @@ const PriceSummary = ({ subtotal, shippingFee, discount, total, formatPrice }) =
           <span className="font-medium">{formatPrice(shippingFee)}đ</span>
         </div>
         {discount > 0 && (
-          <div className="flex justify-between text-sm text-green-600">
+          <div className="flex justify-between text-sm text-gray-600">
             <span>Giảm giá:</span>
             <span className="font-medium">-{formatPrice(discount)}đ</span>
           </div>
@@ -39,4 +45,3 @@ const PriceSummary = ({ subtotal, shippingFee, discount, total, formatPrice }) =
 };
 
 export default PriceSummary;
-

@@ -18,6 +18,7 @@ public class VoucherDto {
     private double discountValue;
     private double maxDiscount;
     private int quantity;
+    private Integer usedQuantity;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
