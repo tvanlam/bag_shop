@@ -1,4 +1,4 @@
-package bag.configuaration.security;
+package bag.configuration.security;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;

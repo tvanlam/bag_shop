@@ -16,5 +16,6 @@ public class OrderRequest {
     @NotNull(message = "AccountID must be required")
     private int accountId;
     private int voucherId;
+    private Order.OrderStatus orderStatus;
 
 }

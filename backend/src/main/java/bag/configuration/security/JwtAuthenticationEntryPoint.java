@@ -1,4 +1,4 @@
-package bag.configuaration.security;
+package bag.configuration.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

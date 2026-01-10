@@ -1,4 +1,4 @@
-package bag.configuaration.security;
+package bag.configuration.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

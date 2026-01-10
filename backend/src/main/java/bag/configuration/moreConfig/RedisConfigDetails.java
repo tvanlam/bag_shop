@@ -1,4 +1,4 @@
-package bag.configuaration.moreConfig;
+package bag.configuration.moreConfig;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;

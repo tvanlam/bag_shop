@@ -1,4 +1,4 @@
-package bag.configuaration.mail;
+package bag.configuration.mail;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

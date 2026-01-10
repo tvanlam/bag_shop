@@ -1,4 +1,4 @@
-package bag.configuaration.swagger;
+package bag.configuration.swagger;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

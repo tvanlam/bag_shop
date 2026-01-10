@@ -1,6 +1,6 @@
 package bag.service.auth;
 
-import bag.configuaration.security.JwtTokenUtil;
+import bag.configuration.security.JwtTokenUtil;
 import bag.modal.dto.AuthResponse;
 import bag.modal.entity.Account;
 import bag.modal.request.AuthRequest;

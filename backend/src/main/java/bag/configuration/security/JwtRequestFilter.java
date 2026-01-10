@@ -1,4 +1,4 @@
-package bag.configuaration.security;
+package bag.configuration.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

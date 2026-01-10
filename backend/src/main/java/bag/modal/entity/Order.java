@@ -43,7 +43,7 @@ public class Order extends Time{
     private OrderStatus status = OrderStatus.PENDING;
 
     public enum OrderStatus {
-        PENDING, SUCCESS,CANCELLED,REFUNDED;
+        CONFIRMED,PENDING, SUCCESS,CANCELLED,REFUNDED;
     }
 
     // Helper: add OrderDetails

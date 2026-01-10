@@ -1,4 +1,4 @@
-package bag.configuaration.moreConfig;
+package bag.configuration.moreConfig;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.PostConstruct;

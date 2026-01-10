@@ -18,6 +18,7 @@ public class AccountRequest {
     private String phoneNumber;
     private String city;
     private String address;
+    private double point;
 
     public Account register(){
         Account account = new Account();
@@ -43,6 +44,7 @@ public class AccountRequest {
         account.setPhoneNumber(phoneNumber);
         account.setCity(null);
         account.setAddress(null);
+        account.setPoint(point);
     }
 
     public void updateInformation(Account account){
