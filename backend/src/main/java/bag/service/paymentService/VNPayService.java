@@ -5,6 +5,7 @@ import bag.modal.entity.Order;
 import bag.modal.entity.VNPayTransaction;
 import bag.repository.OrderRepository;
 import bag.repository.VNPayTransactionRepository;
+import bag.service.point.PointService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ public class VNPayService {
     private final OrderRepository orderRepository;
     private final VNPayConfig vnpayConfig;
     private final VNPayTransactionRepository vnpayTransactionRepository;
+    private final PointService pointService;
 
 
 
@@ -113,17 +115,18 @@ public class VNPayService {
         // Lưu transaction
         saveTransaction(request, status);
 
-        // === CỘNG ĐIỂM NẾU SUCCESS ===
-//        if ("success".equals(status) && !orderIdStr.isEmpty()) {
-//            try {
-//                long bookingId = Long.parseLong(orderIdStr);
-//                double paidAmount = Double.parseDouble(response.get("amount")) / 100; // VNPay trả *100
-//                MethodSchedule.addPointAfterPayment((int) bookingId);
-//                log.info("Cộng điểm thành công cho bookingId {} với số tiền {}", bookingId, paidAmount);
-//            } catch (Exception e) {
-//                log.error("Lỗi khi cộng điểm cho booking {}: {}", orderIdStr, e.getMessage());
-//            }
-//        }
+//         === CỘNG ĐIỂM NẾU SUCCESS ===
+        if("success".equals(status) && !orderIdStr.isEmpty()){
+              try{
+                  int orderId = Integer.parseInt(orderIdStr);
+                  double paidAmount = Double.parseDouble(response.get("amount")) / 100;
+                  pointService.addPointAfterPayment(orderId);
+              }catch (NumberFormatException e) {
+                  log.error("OrderId không hợp lệ: {}", orderIdStr);
+              } catch (Exception e) {
+                  log.error("Lỗi khi cộng điểm cho đơn hàng {}: {}", orderIdStr, e.getMessage(), e);
+              }
+        }
 
         return response;
     }

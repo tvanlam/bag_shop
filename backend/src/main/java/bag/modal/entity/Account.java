@@ -35,7 +35,7 @@ public class Account extends Time{
     private String address;
 
     @Column
-    private double point;
+    private Double point = 0.0;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();

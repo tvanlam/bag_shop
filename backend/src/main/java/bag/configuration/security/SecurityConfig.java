@@ -122,7 +122,10 @@ public class SecurityConfig {
                                 //address
                                 "/address",
                                 "/address/create",
-                                "/address/update"
+                                "/address/update",
+
+                                // Payment
+                                "/vnpay-payment/**"
 
                         ).permitAll()
                         .anyRequest().authenticated()

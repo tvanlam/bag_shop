@@ -18,7 +18,7 @@ public class AccountRequest {
     private String phoneNumber;
     private String city;
     private String address;
-    private double point;
+    private Double point;
 
     public Account register(){
         Account account = new Account();
