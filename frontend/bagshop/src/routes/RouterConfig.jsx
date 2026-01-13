@@ -7,6 +7,7 @@ import VerificationPage from "../page/both/VerificationPage";
 import Product from "../component/user/Product";
 import Cart from "../component/user/Cart";
 import Checkout from "../component/user/Checkout";
+import PaymentCallback from "../component/user/PaymentCallback";
 
 import PrivateRoute from "./PrivateRouter";
 import AdminLayout from "../layout/AdminLayout";
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
   {
     path: "/checkout",
     element: <Checkout />,
+  },
+  // Payment callback page
+  {
+    path: "/payment/callback",
+    element: <PaymentCallback />,
   },
   {
     path: "/admin",

@@ -52,9 +52,14 @@ public class OrderServiceImpl implements OrderService{
     public OrderDto createOrder(OrderRequest request) {
             Account account = accountRepository.findById(request.getAccountId())
                     .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccountId()));
-            Voucher voucher = voucherRepository.findById(request.getVoucherId())
-                    .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucherId()));
-        // 3. Lấy CartItems của user (chưa có order)
+
+            Voucher voucher = null;
+                if(request.getVoucherId() > 0) {
+
+                    voucherRepository.findById(request.getVoucherId())
+                            .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucherId()));
+                }
+                    // 3. Lấy CartItems của user (chưa có order)
         List<CartItem> cartItems = cartItemRepository.findByCartAccountAndOrderIsNull(account);
         if (cartItems.isEmpty()) {
             throw new IllegalArgumentException("Giỏ hàng trống");

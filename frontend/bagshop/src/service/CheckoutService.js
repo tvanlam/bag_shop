@@ -8,10 +8,11 @@ const CheckoutService = {
   getOrderById(orderId) {
     return axiosClient.get(`order/${orderId}`);
   },
-  createOrder(accountId, voucherId) {
+  createOrder({ accountId, voucherId, paymentMethod }) {
     return axiosClient.post(`order/create`, {
       accountId: accountId,
       voucherId: voucherId,
+      paymentMethod: paymentMethod,
     });
   },
   updateOrder(accountId, voucherId) {

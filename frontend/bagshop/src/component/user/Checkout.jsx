@@ -64,9 +64,16 @@ const Checkout = () => {
   // Handle successful order creation
   useEffect(() => {
     if (createdOrder) {
-      toast.success("Đặt hàng thành công!");
-      dispatch(clearCheckoutState());
-      navigate(`/order/${createdOrder.id}`);
+      // Nếu có paymentUrl (VNPay, MoMo), redirect đến trang thanh toán
+      if (createdOrder.paymentUrl) {
+        toast.success("Đang chuyển đến trang thanh toán...");
+        window.location.href = createdOrder.paymentUrl;
+      } else {
+        // COD hoặc thanh toán khác
+        toast.success("Đặt hàng thành công!");
+        dispatch(clearCheckoutState());
+        navigate("/");
+      }
     }
   }, [createdOrder, dispatch, navigate]);
 
@@ -120,6 +127,7 @@ const Checkout = () => {
         CREATE_ORDER({
           accountId,
           voucherId: voucherManagement.appliedVoucher?.id || null,
+          paymentMethod: checkoutForm.selectedPaymentMethod,
         })
       ).unwrap();
     } catch (error) {

@@ -47,11 +47,12 @@ export const CREATE_VOUCHER = createAsyncThunk(
 // Thunk: Tạo đơn hàng
 export const CREATE_ORDER = createAsyncThunk(
   "checkout/createOrder",
-  async ({ accountId, voucherId }, { rejectWithValue }) => {
+  async ({ accountId, voucherId, paymentMethod }, { rejectWithValue }) => {
     try {
       const response = await CheckoutService.createOrder({
         accountId,
         voucherId,
+        paymentMethod,
       });
       return response.data;
     } catch (error) {

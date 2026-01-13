@@ -99,9 +99,9 @@ public class VNPayService {
         response.put("bankCode", request.getParameter("vnp_BankCode"));
         response.put("bankTranNo", request.getParameter("vnp_BankTranNo"));
 
-        // Lấy bookingId từ orderInfo
+        // Lấy orderID từ orderInfo
         String orderIdStr = orderInfo != null && orderInfo.contains("#") ? orderInfo.replaceAll("[^0-9]", "") : "";
-        response.put("bookingId", orderIdStr);
+        response.put("orderID", orderIdStr);
 
         // Xác định trạng thái
         String status;
@@ -150,9 +150,9 @@ public class VNPayService {
         transaction.setUpdateDate(LocalDateTime.now());
 
         if (orderInfo != null && orderInfo.contains("#")) {
-            int bookingId = Integer.parseInt(orderInfo.replaceAll("[^0-9]", ""));
-            if (bookingId != 0) {
-                Order order = orderRepository.findById(bookingId).orElseGet(
+            int orderId = Integer.parseInt(orderInfo.replaceAll("[^0-9]", ""));
+            if (orderId != 0) {
+                Order order = orderRepository.findById(orderId).orElseGet(
                         Order::new);
                 transaction.setOrder(order);
             }
