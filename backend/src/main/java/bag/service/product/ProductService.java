@@ -14,6 +14,7 @@ public interface ProductService {
     List<ProductDto> getByCategoryId(int categoryId);
     List<ProductDto> getProductByRangePrice(double minPrice, double maxPrice );
     ProductDto getProductById(int productId);
+    List<ProductDto> getProductsHighToLow();
 
     ProductDto addProduct(ProductRequest request);
 

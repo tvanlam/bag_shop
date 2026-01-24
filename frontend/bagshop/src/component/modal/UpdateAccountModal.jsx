@@ -7,6 +7,7 @@ import {
   Tabs,
   message,
   ConfigProvider,
+  DatePicker,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +30,8 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
     () => ({
       username: account?.username || "",
       phoneNumber: account?.phoneNumber || "",
+      dateOfBirth: account?.dateOfBirth || "",
+
       city: account?.city || "",
       address: account?.address || "",
     }),
@@ -216,6 +219,12 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
                     label={<span className="font-medium">Số điện thoại</span>}
                   >
                     <Input size="large" placeholder="Nhập số điện thoại" />
+                  </Form.Item>
+                  <Form.Item
+                    name="dateOfBirth"
+                    label={<span className="font-medium">Ngày sinh</span>}
+                  >
+                    <DatePicker size="large" />
                   </Form.Item>
                   <Form.Item
                     name="city"

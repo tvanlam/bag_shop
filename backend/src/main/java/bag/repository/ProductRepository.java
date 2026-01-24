@@ -1,6 +1,9 @@
 package bag.repository;
 
 import bag.modal.entity.Product;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,5 +34,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             @Param("minPrice") double minPrice,
             @Param("maxPrice") double maxPrice
     );
+
+    @Query("SELECT p FROM Product p ORDER BY p.price DESC")
+    List<Product> findAllPriceByDesc();
+
+    @Query("SELECT p FROM Product p ORDER BY p.price DESC")
+    Page<Product> findAllByPriceDesc(Pageable pageable);
 
 }

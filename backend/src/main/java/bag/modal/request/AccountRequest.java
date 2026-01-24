@@ -8,6 +8,8 @@ import lombok.Data;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Date;
+
 @Data
 public class AccountRequest {
     @UniqueUsername
@@ -16,6 +18,9 @@ public class AccountRequest {
     @UniqueEmail
     private String email;
     private String phoneNumber;
+    private String firstName;
+    private String lastName;
+        private Date dateOfBirth;
     private String city;
     private String address;
     private Double point;
@@ -42,6 +47,9 @@ public class AccountRequest {
         account.setPassword(passwordEncoder.encode(password));
         account.setEmail(email);
         account.setPhoneNumber(phoneNumber);
+//        account.setFirstName(firstName);
+//        account.setLastName(lastName);
+//        account.setDateOfBirth(dateOfBirth);
         account.setCity(null);
         account.setAddress(null);
         account.setPoint(point);
@@ -50,6 +58,9 @@ public class AccountRequest {
     public void updateInformation(Account account){
         account.setUsername(username);
         account.setPhoneNumber(phoneNumber);
+//        account.setFirstName(firstName);
+//        account.setLastName(lastName);
+//        account.setDateOfBirth(dateOfBirth);
         account.setCity(city);
         account.setAddress(address);
     }

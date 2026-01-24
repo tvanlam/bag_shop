@@ -12,9 +12,11 @@ import {
   PhoneOutlined,
   HomeOutlined,
   EnvironmentOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 import UpdateAccountModal from "../../component/modal/UpdateAccountModal";
 import ButtonDeleteAccount from "../../component/button/ButtonDeleteAccount";
+import UserLayout from "./UserLayout/UserLayout";
 
 const Profile = () => {
   const accountId = useSelector((state) => state.auth.accountId);
@@ -44,7 +46,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 py-10">
+    <UserLayout>
       <Card
         className="shadow-lg rounded-2xl"
         title={
@@ -54,7 +56,7 @@ const Profile = () => {
               style={{ backgroundColor: "#1890ff" }}
               icon={<UserOutlined />}
             />
-            <div>
+            <div className="mt-6 pb-6">
               <h2 className="text-xl font-bold m-0">{account.username}</h2>
               <p className="text-gray-500 m-0">Mã KH: {account.id}</p>
             </div>
@@ -78,13 +80,13 @@ const Profile = () => {
         bodyStyle={{ paddingTop: 12 }}
       >
         {/* Thông tin liên hệ */}
-        <Divider orientation="left" plain>
-          <span className="font-semibold">📞 Thông tin liên hệ</span>
+        <Divider plain>
+          <span className="font-semibold"> Thông tin liên hệ</span>
         </Divider>
         <Descriptions
           bordered
           column={1}
-          labelStyle={{ fontWeight: 600, width: 160 }}
+          labelStyle={{ fontWeight: 600, width: 60 }}
           contentStyle={{ background: "#fff" }}
           className="rounded-xl overflow-hidden"
         >
@@ -93,6 +95,9 @@ const Profile = () => {
           </Descriptions.Item>
           <Descriptions.Item label={<PhoneOutlined />}>
             {account.phoneNumber}
+          </Descriptions.Item>
+          <Descriptions.Item label={<CalendarOutlined />}>
+            {account.dateOfBirth || "Chưa cập nhật"}
           </Descriptions.Item>
           <Descriptions.Item label={<EnvironmentOutlined />}>
             {account.city || "Chưa cập nhật"}
@@ -125,7 +130,7 @@ const Profile = () => {
           }
         `}
       </style>
-    </div>
+    </UserLayout>
   );
 };
 

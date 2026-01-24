@@ -166,6 +166,16 @@ const Product = () => {
         if (productPrice < min || productPrice > max) return false;
       }
 
+      //most popular
+      if (sortBy === "most-popular") return product.popularity;
+      // check product price from high to low
+      if (sortBy === "price-high") return product.price > productPrice;
+      // check product price from low to high
+      if (sortBy === "price-low") return product.price < productPrice;
+      // check product name from a to z
+      if (sortBy === "name-az") return product.name > productPrice;
+      // check product name from z to a
+      if (sortBy === "name-za") return product.name < productPrice;
       return true;
     });
   };
@@ -347,8 +357,10 @@ const Product = () => {
                         </div>
                       </div>
                     )}
-                    <p className="text-lg font-bold text-gray-800 mt-2">
-                      {product.price ? `${product.price} VNĐ` : "Liên hệ"}
+                    <p className="text-lg  text-gray-800 mt-2">
+                      {product.price
+                        ? `${product.price.toLocaleString("vi-VN")} VNĐ`
+                        : "Liên hệ"}
                     </p>
                   </div>
                   {/* Add to Cart Button - Appears on Hover */}

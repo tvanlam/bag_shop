@@ -16,6 +16,8 @@ import AccountDetails from "../page/admin/AccountDetails";
 import ProductManagement from "../page/admin/ProductManagement";
 import ErrorPage from "../component/user/ErrorPage";
 import ReviewManagement from "../page/admin/ReviewManagement";
+import Wishlist from "../component/user/Wishlist";
+import Order from "../page/user/Order";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,8 @@ const router = createBrowserRouter([
       { path: "/product/:id", element: <ProductDetails /> },
       { path: "/verify", element: <VerificationPage /> },
       { path: "/cart", element: <Cart /> },
+      { path: "/wishlist", element: <Wishlist /> },
+      { path: "/order", element: <Order /> },
       { path: "/error", element: <ErrorPage /> },
     ],
   },

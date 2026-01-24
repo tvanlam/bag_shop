@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -24,6 +25,15 @@ public class Account extends Time{
 
     @Column(nullable = false)
     private String email;
+
+//    @Column(nullable = false)
+//    private String firstName;
+//
+//    @Column(nullable = false)
+//    private String lastName;
+//
+//    @Column(nullable = false)
+//    private Date dateOfBirth;
 
     @Column(nullable = false)
     private String phoneNumber;

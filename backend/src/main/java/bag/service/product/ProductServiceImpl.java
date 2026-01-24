@@ -59,11 +59,19 @@ public class ProductServiceImpl implements ProductService {
         return products.stream().map(ProductDto::new).collect(Collectors.toList());
     }
 
+
+
     @Override
     public ProductDto getProductById(int productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return new ProductDto(product);
+    }
+
+    @Override
+    public List<ProductDto> getProductsHighToLow() {
+
+        return null;
     }
 
     @Override
