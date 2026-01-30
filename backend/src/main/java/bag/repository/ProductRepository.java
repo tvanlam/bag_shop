@@ -29,16 +29,22 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.images WHERE p.id = :productId")
     Optional<Product> findByIdWithImages(@Param("productId") int productId);
 
-    @Query("SELECT p FROM Product p WHERE p.price BETWEEN :minPrice AND :maxPrice")
+    @Query("SELECT p FROM Product p WHERE p.basePrice BETWEEN :minPrice AND :maxPrice")
     List<Product> findByRangePrice(
             @Param("minPrice") double minPrice,
             @Param("maxPrice") double maxPrice
     );
 
-    @Query("SELECT p FROM Product p ORDER BY p.price DESC")
+    @Query("SELECT p FROM Product p ORDER BY p.basePrice DESC")
     List<Product> findAllPriceByDesc();
 
-    @Query("SELECT p FROM Product p ORDER BY p.price DESC")
+    @Query("SELECT p FROM Product p ORDER BY p.basePrice DESC")
     Page<Product> findAllByPriceDesc(Pageable pageable);
+
+    //tìm sp theo variant
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.productVariants WHERE p.id = :productId")
+    Optional<Product> findByIdWithVariants(@Param("productId") Integer productId);
+
+
 
 }

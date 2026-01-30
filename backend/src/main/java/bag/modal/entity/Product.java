@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,10 +23,10 @@ public class Product extends Time{
     private String description;
 
     @Column(nullable = false)
-    private double price;
+    private double basePrice;
 
     @Column(nullable = false)
-    private int stockQuantity;
+    private int totalStockQuantity;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<ProductImage> images;
@@ -37,10 +38,18 @@ public class Product extends Time{
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @OneToMany(mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER)
+    private List<ProductVariant> productVariants = new ArrayList<>();
+
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<OrderDetails> orderDetails;
+
+
 
 }

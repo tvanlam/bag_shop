@@ -89,7 +89,7 @@ public class SecurityConfig {
                                 // product
                                 "/product",
                                 "/product/getAllProductsWithPaging/{page}/{size}/{sortBy}/{sortDir}",
-                                "/product/getProductById",
+                                "/product/{id}",
                                 "/product/create",
                                 "/product/update",
                                 "/product/category/{categoryId}",
@@ -125,7 +125,10 @@ public class SecurityConfig {
                                 "/address/update",
 
                                 // Payment
-                                "/vnpay-payment/**"
+                                "/vnpay-payment/**",
+
+                                //variant
+                                "product/{id}/variants"
 
                         ).permitAll()
                         .anyRequest().authenticated()

@@ -1,11 +1,15 @@
 package bag.service.product;
 
 import bag.modal.dto.ProductDto;
+import bag.modal.dto.ProductVariantDto;
 import bag.modal.entity.Category;
 import bag.modal.entity.Product;
+import bag.modal.entity.ProductVariant;
 import bag.modal.request.ProductRequest;
+import bag.modal.request.ProductVariantRequest;
 import bag.repository.CategoryRepository;
 import bag.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+
 
     public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
@@ -68,6 +73,8 @@ public class ProductServiceImpl implements ProductService {
         return new ProductDto(product);
     }
 
+
+
     @Override
     public List<ProductDto> getProductsHighToLow() {
 
@@ -109,8 +116,63 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto deleteProductById(int productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
-        product.setStockQuantity(0);
+        product.setTotalStockQuantity(0);
         productRepository.save(product);
         return new ProductDto(product);
+    }
+
+    @Override
+    @Transactional
+    public ProductVariantDto createVariant(ProductVariantRequest request, String id) {
+        ProductVariant productVariant = new ProductVariant();
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product" + request.getProductId() + "not found"));
+        boolean exists = product.getProductVariants().stream()
+                .anyMatch(v -> v.getColor().equalsIgnoreCase(request.getColor())
+                        && v.getSize().equalsIgnoreCase(request.getSize()));
+        if (exists){
+            throw new IllegalArgumentException("Variant with Color" + request.getColor()
+            + "and Size " +request.getSize() + "is already existed");
+        }
+
+        if (productVariant.getSku() == null || productVariant.getSku().trim().isEmpty()) {
+            String colorPart = (productVariant.getColor() != null) ? productVariant.getColor().toUpperCase() : "";
+            String sizePart  = (productVariant.getSize() != null)  ? productVariant.getSize().toUpperCase()  : "";
+
+            productVariant.setSku(product.getId() + "-" + colorPart + "-" + sizePart);
+        }
+        request.setProductVariant(productVariant);
+        productVariant.setProduct(product);
+
+        product.getProductVariants().add(productVariant);
+
+        productRepository.save(product);
+        return new ProductVariantDto(productVariant);
+
+    }
+
+    @Override
+    public ProductVariantDto updateVariant(ProductVariantRequest request, int id) {
+        return null;
+    }
+
+    @Override
+    public ProductVariantDto getVariantBySku(String sku) {
+        return null;
+    }
+
+    @Override
+    public ProductVariantDto getVariantByColorAndSize(int productId, String color, String size) {
+        return null;
+    }
+
+    @Override
+    public List<ProductVariantDto> getVariantByProductId(int productId) {
+        return null;
+    }
+
+    @Override
+    public void deleteVariant(int variantId) {
+
     }
 }

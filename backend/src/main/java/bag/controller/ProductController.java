@@ -1,6 +1,7 @@
 package bag.controller;
 
 import bag.modal.request.ProductRequest;
+import bag.modal.request.ProductVariantRequest;
 import bag.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ public class ProductController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
     @GetMapping
     public ResponseEntity<?> getAllProductsWithoutPaging(){
@@ -68,6 +70,14 @@ public class ProductController {
     public ResponseEntity<?> createProduct(@RequestBody ProductRequest request){
         try{
             return ResponseEntity.ok(productService.addProduct(request));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/{id}/variants")
+    public ResponseEntity<?> createVariant(@RequestBody ProductVariantRequest request, @PathVariable String id){
+        try{
+            return ResponseEntity.ok(productService.createVariant(request, id));
         }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -108,8 +108,8 @@ public class ProductSeeder {
         Product p = new Product();
         p.setName(name);
         p.setDescription(desc);
-        p.setPrice(price);
-        p.setStockQuantity(stock);
+        p.setBasePrice(price);
+        p.setTotalStockQuantity(stock);
         p.setCategory(cat);
         // images và reviews để null (hoặc empty list nếu cần)
         return p;

@@ -4,8 +4,11 @@ import bag.modal.request.CategoryRequest;
 import bag.service.Category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+
+@Order(1)
 @Component
 @RequiredArgsConstructor
 public class CategorySeeder implements CommandLineRunner {

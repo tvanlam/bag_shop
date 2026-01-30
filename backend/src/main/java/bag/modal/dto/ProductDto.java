@@ -14,23 +14,23 @@ public class ProductDto {
     private int id;
     private String name;
     private String description;
-    private double price;
-    private int stockQuantity;
+    private double basePrice;
+    private int totalStockQuantity;
     private List<ProductImageDto> images;
     private List<ReviewDto> reviews;
+    private List<ProductVariantDto> productVariants;
     private int categoryId;
     private String categoryName;
     private double averageRating;
     private int totalReviews;
-    private double minPrice;
-    private double maxPrice;
+
 
     public ProductDto(Product product){
         this.id = product.getId();
         this.name = product.getName();
         this.description = product.getDescription();
-        this.price =  product.getPrice();
-        this.stockQuantity = product.getStockQuantity();
+        this.basePrice =  product.getBasePrice();
+        this.totalStockQuantity = product.getTotalStockQuantity();
         this.images = product.getImages() != null
                 ? product.getImages().stream()
                 .map(ProductImageDto::new)
@@ -41,6 +41,10 @@ public class ProductDto {
                 .map(ReviewDto::new)
                 .collect(Collectors.toList())
                 : Collections.emptyList();
+        this.productVariants = product.getProductVariants() != null
+                ? product.getProductVariants().stream()
+                .map(ProductVariantDto::new)
+                .collect(Collectors.toList()) : null;
         this.categoryId = product.getCategory().getId();
 
 

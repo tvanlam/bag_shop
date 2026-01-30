@@ -19,22 +19,19 @@ public class ProductRequest {
     @NotBlank(message = "description is required")
     private String description;
     @NotNull(message = "price must be required")
-    private double price;
+    private double basePrice;
     @NotNull(message = "quantity is required")
     @Min(value = 0)
-    private int stockQuantity;
+    private int totalStockQuantity;
     @NotEmpty(message = "At least one image is required")
     private List<String> images;
     private int categoryId;
-    private double minPrice;
-    private double maxPrice;
-
 
     public void populate(Product product){
         product.setName(name);
         product.setDescription(description);
-        product.setPrice(price);
-        product.setStockQuantity(stockQuantity);
+        product.setBasePrice(basePrice);
+        product.setTotalStockQuantity(totalStockQuantity);
 
     }
 

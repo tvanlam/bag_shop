@@ -12,19 +12,19 @@ public class ProductVariant {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(unique = true, nullable = true)
     private String sku; // tự generate: productId + colorCode + size
 
-    @Column
+    @Column(nullable = true)
     private String color;
 
     @Column
     private String colorCode; // "#B22222" → dùng cho hiển thị swatch
 
-    @Column
+    @Column(nullable = true)
     private String size;
 
     @Column
