@@ -49,7 +49,7 @@ const Product = () => {
     setFavorites((prev) =>
       prev.includes(productId)
         ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
+        : [...prev, productId],
     );
   };
 
@@ -114,27 +114,70 @@ const Product = () => {
       });
   };
 
-  const colorMap = {
-    black: "bg-black",
-    brown: "bg-amber-800",
-    white: "bg-white border border-gray-300",
-    green: "bg-green-600",
-    beige: "bg-amber-200",
-    red: "bg-red-600",
-    navy: "bg-blue-900",
-    pink: "bg-pink-400",
-    blue: "bg-blue-500",
-    yellow: "bg-yellow-400",
-    purple: "bg-purple-500",
-    gray: "bg-gray-500",
-    orange: "bg-orange-500",
+  // Helper function to get unique colors from productVariants
+  const getUniqueColors = (productVariants) => {
+    if (!productVariants || !Array.isArray(productVariants)) return [];
+    const colorMap = new Map();
+    productVariants.forEach((variant) => {
+      if (variant.color && !colorMap.has(variant.color)) {
+        colorMap.set(variant.color, variant.colorCode || null);
+      }
+    });
+    return Array.from(colorMap.entries()).map(([color, colorCode]) => ({
+      color,
+      colorCode,
+    }));
   };
 
-  // Function to get color class with fallback
-  const getColorClass = (color) => {
-    return (
-      colorMap[color?.toLowerCase()] || "bg-gray-300 border border-gray-400"
-    );
+  // Helper function to get unique sizes from productVariants
+  const getUniqueSizes = (productVariants) => {
+    if (!productVariants || !Array.isArray(productVariants)) return [];
+    const sizes = new Set();
+    productVariants.forEach((variant) => {
+      if (variant.size) {
+        sizes.add(variant.size);
+      }
+    });
+    return Array.from(sizes);
+  };
+
+  // Helper function to get display price (basePrice or first variant price)
+  const getDisplayPrice = (product) => {
+    if (product.basePrice) return product.basePrice;
+    if (
+      product.productVariants &&
+      product.productVariants.length > 0 &&
+      product.productVariants[0].price
+    ) {
+      return product.productVariants[0].price;
+    }
+    return 0;
+  };
+
+  // Function to get color style (use colorCode from backend if available)
+  const getColorStyle = (colorCode, colorName) => {
+    if (colorCode) {
+      return { backgroundColor: colorCode };
+    }
+    // Fallback to predefined colors if no colorCode
+    const colorMap = {
+      black: "#000000",
+      brown: "#92400e",
+      white: "#ffffff",
+      green: "#059669",
+      beige: "#fde68a",
+      red: "#dc2626",
+      navy: "#1e3a8a",
+      pink: "#f472b6",
+      blue: "#3b82f6",
+      yellow: "#facc15",
+      purple: "#a855f7",
+      gray: "#6b7280",
+      orange: "#f97316",
+    };
+    return {
+      backgroundColor: colorMap[colorName?.toLowerCase()] || "#d1d5db",
+    };
   };
 
   // Handle filter apply
@@ -150,12 +193,12 @@ const Product = () => {
     if (!appliedFilters) return products;
 
     return products.filter((product) => {
-      const productPrice = product.price || 0;
+      const productPrice = getDisplayPrice(product);
 
       // Check predefined price ranges
       if (appliedFilters.priceRanges && appliedFilters.priceRanges.length > 0) {
         const matchesRange = appliedFilters.priceRanges.some(
-          (range) => productPrice >= range.min && productPrice <= range.max
+          (range) => productPrice >= range.min && productPrice <= range.max,
         );
         if (!matchesRange) return false;
       }
@@ -169,9 +212,11 @@ const Product = () => {
       //most popular
       if (sortBy === "most-popular") return product.popularity;
       // check product price from high to low
-      if (sortBy === "price-high") return product.price > productPrice;
+      if (sortBy === "price-high")
+        return getDisplayPrice(product) > productPrice;
       // check product price from low to high
-      if (sortBy === "price-low") return product.price < productPrice;
+      if (sortBy === "price-low")
+        return getDisplayPrice(product) < productPrice;
       // check product name from a to z
       if (sortBy === "name-az") return product.name > productPrice;
       // check product name from z to a
@@ -262,9 +307,11 @@ const Product = () => {
                   <div className="relative">
                     <Link to={`/product/${product.id}`}>
                       <div className="relative w-full h-64">
-                        {product.image ? (
+                        {product.images &&
+                        product.images.length > 0 &&
+                        product.images[0].imageUrl ? (
                           <img
-                            src={product.image[0]}
+                            src={product.images[0].imageUrl}
                             alt={product.name || "Product"}
                             className="w-full h-64 object-cover cursor-pointer"
                             onError={(e) => {
@@ -272,7 +319,7 @@ const Product = () => {
                               e.target.style.display = "none";
                               const placeholder =
                                 e.target.parentElement.querySelector(
-                                  ".placeholder-div"
+                                  ".placeholder-div",
                                 );
                               if (placeholder) {
                                 placeholder.style.display = "flex";
@@ -283,7 +330,14 @@ const Product = () => {
                         {/* Placeholder div - shown when no image or image fails to load */}
                         <div
                           className="placeholder-div absolute inset-0 w-full h-64 bg-gray-200 flex items-center justify-center cursor-pointer"
-                          style={{ display: product.image ? "none" : "flex" }}
+                          style={{
+                            display:
+                              product.images &&
+                              product.images.length > 0 &&
+                              product.images[0].imageUrl
+                                ? "none"
+                                : "flex",
+                          }}
                         >
                           <span className="text-gray-500 text-sm">
                             Không có hình ảnh
@@ -307,59 +361,70 @@ const Product = () => {
                     <h3 className="text-lg font-semibold text-gray-800 truncate">
                       {product.name || "Unnamed Product"}
                     </h3>
-                    {/* Sizes - only show if sizes exist */}
-                    {product.sizes && product.sizes.length > 0 && (
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm text-gray-600">
-                          Kích thước:
-                        </span>
-                        <div className="flex gap-2">
-                          {product.sizes.map((size) => (
-                            <button
-                              key={size}
-                              onClick={() =>
-                                handleSelection(product.id, "size", size)
-                              }
-                              className={`w-8 h-8 flex items-center justify-center rounded-full border ${
-                                selectOption[product.id]?.size === size
-                                  ? "border-purple-600 bg-purple-100 text-purple-600"
-                                  : "border-gray-300 text-gray-600"
-                              } text-sm font-medium hover:border-purple-600 hover:text-purple-600 transition-colors`}
-                            >
-                              {size}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    {/* Sizes - only show if sizes exist from productVariants */}
+                    {(() => {
+                      const sizes = getUniqueSizes(product.productVariants);
+                      return (
+                        sizes.length > 0 && (
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-sm text-gray-600">
+                              Kích thước:
+                            </span>
+                            <div className="flex gap-2">
+                              {sizes.map((size) => (
+                                <button
+                                  key={size}
+                                  onClick={() =>
+                                    handleSelection(product.id, "size", size)
+                                  }
+                                  className={`w-8 h-8 flex items-center justify-center rounded-full border ${
+                                    selectOption[product.id]?.size === size
+                                      ? "border-purple-600 bg-purple-100 text-purple-600"
+                                      : "border-gray-300 text-gray-600"
+                                  } text-sm font-medium hover:border-purple-600 hover:text-purple-600 transition-colors`}
+                                >
+                                  {size}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      );
+                    })()}
 
-                    {/* Colors - only show if colors exist */}
-                    {product.colors && product.colors.length > 0 && (
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm text-gray-600">Màu sắc:</span>
-                        <div className="flex gap-2">
-                          {product.colors.map((color) => (
-                            <button
-                              key={color}
-                              onClick={() =>
-                                handleSelection(product.id, "color", color)
-                              }
-                              className={`w-6 h-6 rounded-full ${getColorClass(
-                                color
-                              )} ${
-                                selectOption[product.id]?.color === color
-                                  ? "ring-2 ring-purple-600 ring-offset-2"
-                                  : ""
-                              } hover:ring-2 hover:ring-purple-600 hover:ring-offset-2 transition-all`}
-                              title={color}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    {/* Colors - only show if colors exist from productVariants */}
+                    {(() => {
+                      const colors = getUniqueColors(product.productVariants);
+                      return (
+                        colors.length > 0 && (
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-sm text-gray-600">
+                              Màu sắc:
+                            </span>
+                            <div className="flex gap-2">
+                              {colors.map(({ color, colorCode }) => (
+                                <button
+                                  key={color}
+                                  onClick={() =>
+                                    handleSelection(product.id, "color", color)
+                                  }
+                                  style={getColorStyle(colorCode, color)}
+                                  className={`w-6 h-6 rounded-full border ${
+                                    selectOption[product.id]?.color === color
+                                      ? "ring-2 ring-purple-600 ring-offset-2"
+                                      : "border-gray-300"
+                                  } hover:ring-2 hover:ring-purple-600 hover:ring-offset-2 transition-all`}
+                                  title={color}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      );
+                    })()}
                     <p className="text-lg  text-gray-800 mt-2">
-                      {product.price
-                        ? `${product.price.toLocaleString("vi-VN")} VNĐ`
+                      {getDisplayPrice(product)
+                        ? `${getDisplayPrice(product).toLocaleString("vi-VN")} VNĐ`
                         : "Liên hệ"}
                     </p>
                   </div>

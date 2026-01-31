@@ -33,8 +33,20 @@ const ProductDetails = () => {
     navigate("/admin/products");
   };
 
-  if (loading) return <Spin size="large" className="flex justify-center items-center h-64" />;
-  if (error) return <Alert message="Lỗi tải sản phẩm" description={error} type="error" showIcon className="mb-4" />;
+  if (loading)
+    return (
+      <Spin size="large" className="flex justify-center items-center h-64" />
+    );
+  if (error)
+    return (
+      <Alert
+        message="Lỗi tải sản phẩm"
+        description={error}
+        type="error"
+        showIcon
+        className="mb-4"
+      />
+    );
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-xl border border-gray-200">
@@ -49,12 +61,26 @@ const ProductDetails = () => {
         </Button>
       </div>
 
-      <Descriptions title="Thông tin sản phẩm" bordered column={1} className="mb-6 bg-gray-50 rounded-md p-4 shadow-inner">
+      <Descriptions
+        title="Thông tin sản phẩm"
+        bordered
+        column={1}
+        className="mb-6 bg-gray-50 rounded-md p-4 shadow-inner"
+      >
         <Descriptions.Item label="ID">{product.id}</Descriptions.Item>
         <Descriptions.Item label="Tên">{product.name}</Descriptions.Item>
-        <Descriptions.Item label="Mô tả">{product.description}</Descriptions.Item>
-        <Descriptions.Item label="Giá">{product.price}₫</Descriptions.Item>
-        <Descriptions.Item label="Tồn kho">{product.stockQuantity}</Descriptions.Item>
+        <Descriptions.Item label="Mô tả">
+          {product.description}
+        </Descriptions.Item>
+        <Descriptions.Item label="Giá cơ bản">
+          {product.basePrice || product.price}₫
+        </Descriptions.Item>
+        <Descriptions.Item label="Tồn kho">
+          {product.totalStockQuantity || product.stockQuantity}
+        </Descriptions.Item>
+        <Descriptions.Item label="Danh mục">
+          {product.categoryName || product.categoryId}
+        </Descriptions.Item>
       </Descriptions>
 
       <div className="mb-6">
@@ -67,14 +93,18 @@ const ProductDetails = () => {
         </Button>
       </div>
 
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Đánh giá từ khách hàng</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-4">
+        Đánh giá từ khách hàng
+      </h2>
       <List
         itemLayout="vertical"
         dataSource={reviews}
         renderItem={(review) => (
           <List.Item key={review.id}>
             <div className="flex justify-between items-center mb-1">
-              <span className="font-semibold text-gray-700">{review.comment}</span>
+              <span className="font-semibold text-gray-700">
+                {review.comment}
+              </span>
               <Rate disabled defaultValue={review.rating} />
             </div>
           </List.Item>

@@ -18,7 +18,7 @@ public class ProductVariantDto {
     private String colorCode;
     private String size;
     private String imageUrl;
-    private double price;
+    private Double price;
     private int stockQuantity;
 
     public ProductVariantDto(ProductVariant productVariant){
@@ -32,7 +32,9 @@ public class ProductVariantDto {
 
         this.colorCode = productVariant.getColorCode();
         this.imageUrl = productVariant.getImageUrl();
-        this.price = productVariant.getPrice();
+        this.price = (productVariant.getPrice() != null)
+                ? productVariant.getPrice()
+                : productVariant.getProduct().getBasePrice();
         this.stockQuantity = productVariant.getStockQuantity();
 
     }

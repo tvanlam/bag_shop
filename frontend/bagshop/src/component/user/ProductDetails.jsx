@@ -204,7 +204,7 @@ const ProductDetails = () => {
             </p>
 
             <p className="text-2xl text-gray-800 font-bold mb-4">
-              {formatVND(currentProduct.price)}
+              {formatVND(currentProduct.basePrice || currentProduct.price)}
             </p>
 
             {/* Số lượng tồn kho */}
@@ -212,13 +212,17 @@ const ProductDetails = () => {
               <span className="font-semibold text-gray-700">Tồn kho: </span>
               <span
                 className={`${
-                  (currentProduct.stockQuantity || 0) > 0
+                  (currentProduct.totalStockQuantity ||
+                    currentProduct.stockQuantity ||
+                    0) > 0
                     ? "text-green-600"
                     : "text-red-600"
                 }`}
               >
-                {(currentProduct.stockQuantity || 0) > 0
-                  ? `${currentProduct.stockQuantity || 0} sản phẩm`
+                {(currentProduct.totalStockQuantity ||
+                  currentProduct.stockQuantity ||
+                  0) > 0
+                  ? `${currentProduct.totalStockQuantity || currentProduct.stockQuantity || 0} sản phẩm`
                   : "Hết hàng"}
               </span>
             </div>
@@ -230,7 +234,7 @@ const ProductDetails = () => {
                 <span className="text-yellow-500">
                   {"★".repeat(Math.floor(currentProduct.averageRating || 0))}
                   {"☆".repeat(
-                    5 - Math.floor(currentProduct.averageRating || 0)
+                    5 - Math.floor(currentProduct.averageRating || 0),
                   )}
                 </span>
                 <span className="text-gray-600 ml-2">
@@ -241,7 +245,9 @@ const ProductDetails = () => {
             )}
 
             {/* Quantity selector - chỉ hiển thị nếu còn hàng */}
-            {(currentProduct.stockQuantity || 0) > 0 && (
+            {(currentProduct.totalStockQuantity ||
+              currentProduct.stockQuantity ||
+              0) > 0 && (
               <div className="quantity-section mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Số lượng:

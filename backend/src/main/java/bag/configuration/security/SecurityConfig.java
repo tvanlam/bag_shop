@@ -87,13 +87,13 @@ public class SecurityConfig {
                                 "/productImage/update",
 
                                 // product
-                                "/product",
-                                "/product/getAllProductsWithPaging/{page}/{size}/{sortBy}/{sortDir}",
-                                "/product/{id}",
-                                "/product/create",
-                                "/product/update",
-                                "/product/category/{categoryId}",
+                                "/product",                                     // get all without paging
+                                "/product/{id}",                                // get by id
+                                "/product/getAllProductsWithPaging/**",         // paging ── dùng /** cho an toàn
+                                "/product/category/**",                         // by category
                                 "/product/filterByRangePrice",
+                                "/product/create",                              // create
+                                "/product/update/**",
 
                                 //review
                                 "/review",
@@ -128,7 +128,8 @@ public class SecurityConfig {
                                 "/vnpay-payment/**",
 
                                 //variant
-                                "product/{id}/variants"
+                                "/product/{id}/variants",
+                                "/product/{productId}/variants/{variantId}"
 
                         ).permitAll()
                         .anyRequest().authenticated()

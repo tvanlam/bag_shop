@@ -74,10 +74,11 @@ public class ProductController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/{id}/variants")
-    public ResponseEntity<?> createVariant(@RequestBody ProductVariantRequest request, @PathVariable String id){
+    @PostMapping("/{productId}/variants")
+    public ResponseEntity<?> createVariant(@PathVariable int productId,
+                                           @RequestBody ProductVariantRequest request){
         try{
-            return ResponseEntity.ok(productService.createVariant(request, id));
+            return ResponseEntity.ok(productService.createVariant(productId, request));
         }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -88,6 +89,15 @@ public class ProductController {
     public ResponseEntity<?> updateProduct(@RequestBody ProductRequest request, @PathVariable int id){
         try{
             return ResponseEntity.ok(productService.updateProduct(request,id));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{productId}/variants/{variantId}")
+    public ResponseEntity<?> updateVariant(@RequestBody ProductVariantRequest request, @PathVariable int variantId){
+        try{
+            return ResponseEntity.ok(productService.updateVariant(request,variantId));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

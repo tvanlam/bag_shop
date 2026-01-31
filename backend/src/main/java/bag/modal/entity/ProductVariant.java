@@ -31,7 +31,7 @@ public class ProductVariant {
     private String imageUrl;// ảnh variant riêng
 
     @Column
-    private double price;
+    private Double price;
 
     @Column
     private int stockQuantity;

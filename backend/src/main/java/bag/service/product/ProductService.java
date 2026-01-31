@@ -23,9 +23,9 @@ public interface ProductService {
     ProductDto deleteProductById(int productId);
 
     //variant
-    ProductVariantDto createVariant(ProductVariantRequest request, String id);
+    ProductVariantDto createVariant(int productId, ProductVariantRequest request);
 
-    ProductVariantDto updateVariant(ProductVariantRequest request, int id);
+    ProductVariantDto updateVariant( ProductVariantRequest request, int id) ;
 
     ProductVariantDto getVariantBySku(String sku);
 

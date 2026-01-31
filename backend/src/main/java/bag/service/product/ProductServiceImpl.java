@@ -9,6 +9,7 @@ import bag.modal.request.ProductRequest;
 import bag.modal.request.ProductVariantRequest;
 import bag.repository.CategoryRepository;
 import bag.repository.ProductRepository;
+import bag.repository.VariantRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
@@ -18,17 +19,20 @@ import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final VariantRepository variantRepository;
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, VariantRepository variantRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.variantRepository = variantRepository;
     }
 
     @Override
@@ -123,18 +127,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductVariantDto createVariant(ProductVariantRequest request, String id) {
+    public ProductVariantDto createVariant(int productId, ProductVariantRequest request) {
         ProductVariant productVariant = new ProductVariant();
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product" + request.getProductId() + "not found"));
-        boolean exists = product.getProductVariants().stream()
-                .anyMatch(v -> v.getColor().equalsIgnoreCase(request.getColor())
-                        && v.getSize().equalsIgnoreCase(request.getSize()));
-        if (exists){
-            throw new IllegalArgumentException("Variant with Color" + request.getColor()
-            + "and Size " +request.getSize() + "is already existed");
-        }
 
+        Optional<ProductVariant> existing = variantRepository.findByProductIdAndColorAndSize(request.getProductId(), request.getColor(), request.getSize());
+        if (existing.isPresent()) {
+            throw new IllegalArgumentException(
+                    "Variant with color '" + request.getColor() +
+                            "' and size '" + request.getSize() + "' already exists");
+        }
         if (productVariant.getSku() == null || productVariant.getSku().trim().isEmpty()) {
             String colorPart = (productVariant.getColor() != null) ? productVariant.getColor().toUpperCase() : "";
             String sizePart  = (productVariant.getSize() != null)  ? productVariant.getSize().toUpperCase()  : "";
@@ -143,17 +146,31 @@ public class ProductServiceImpl implements ProductService {
         }
         request.setProductVariant(productVariant);
         productVariant.setProduct(product);
-
         product.getProductVariants().add(productVariant);
-
         productRepository.save(product);
         return new ProductVariantDto(productVariant);
 
     }
 
+    @Transactional
     @Override
-    public ProductVariantDto updateVariant(ProductVariantRequest request, int id) {
-        return null;
+    public ProductVariantDto updateVariant(ProductVariantRequest request, int id){
+        ProductVariant productVariant = variantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(("Variant not found")));
+        Product product = productVariant.getProduct();
+        if(productVariant.getPrice() == null){
+            productVariant.setPrice(productVariant.getPrice());
+        }
+        Optional<ProductVariant> existing = variantRepository.findByProductIdAndColorAndSize(request.getProductId(), request.getColor(), request.getSize());
+        if (existing.isPresent()) {
+            throw new IllegalArgumentException(
+                    "Variant with color '" + request.getColor() +
+                            "' and size '" + request.getSize() + "' already exists");
+        }
+        productVariant.setProduct(product);
+        request.setProductVariant(productVariant);
+        variantRepository.save(productVariant);
+        return new ProductVariantDto(productVariant);
     }
 
     @Override
@@ -173,6 +190,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteVariant(int variantId) {
-
+//        ProductVariant productVariant = variantRepository.findById(variantId)
+//                .orElseThrow(() -> new RuntimeException("Variant not found"));
+//        productRepository.save(productVariant);
+//        return new ProductDto(productVariant);
     }
 }
