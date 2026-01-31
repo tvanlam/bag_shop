@@ -19,7 +19,7 @@ public class ProductVariantDto {
     private String size;
     private String imageUrl;
     private Double price;
-    private int stockQuantity;
+    private Integer stockQuantity;
 
     public ProductVariantDto(ProductVariant productVariant){
         this.id = productVariant.getId();

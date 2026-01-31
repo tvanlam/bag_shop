@@ -34,7 +34,7 @@ public class ProductVariant {
     private Double price;
 
     @Column
-    private int stockQuantity;
+    private Integer stockQuantity;
 
 
 }

@@ -11,8 +11,8 @@ public class ProductVariantRequest {
     private String colorCode;
     private String size;
     private String imageUrl;
-    private double price;
-    private int stockQuantity;
+    private Double price;
+    private Integer stockQuantity;
 
     public void setProductVariant(ProductVariant productVariant){
         productVariant.setSku(sku);

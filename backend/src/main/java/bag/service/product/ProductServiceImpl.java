@@ -161,14 +161,25 @@ public class ProductServiceImpl implements ProductService {
         if(productVariant.getPrice() == null){
             productVariant.setPrice(productVariant.getPrice());
         }
-        Optional<ProductVariant> existing = variantRepository.findByProductIdAndColorAndSize(request.getProductId(), request.getColor(), request.getSize());
-        if (existing.isPresent()) {
-            throw new IllegalArgumentException(
-                    "Variant with color '" + request.getColor() +
-                            "' and size '" + request.getSize() + "' already exists");
-        }
+//        Optional<ProductVariant> existing = variantRepository.findByProductIdAndColorAndSize(request.getProductId(), request.getColor(), request.getSize());
+//        if (existing.isPresent()) {
+//            throw new IllegalArgumentException(
+//                    "Variant with color '" + request.getColor() +
+//                            "' and size '" + request.getSize() + "' already exists");
+//        }
         productVariant.setProduct(product);
-        request.setProductVariant(productVariant);
+        if (request.getPrice() != null) {
+            productVariant.setPrice(request.getPrice());
+        }
+        if (request.getStockQuantity() != null) {
+            productVariant.setStockQuantity(request.getStockQuantity());
+        }
+        if (request.getImageUrl() != null && !request.getImageUrl().isBlank()) {
+            productVariant.setImageUrl(request.getImageUrl());
+        }
+        if(request.getColorCode() != null){
+            productVariant.setColorCode(request.getColorCode());
+        }
         variantRepository.save(productVariant);
         return new ProductVariantDto(productVariant);
     }
