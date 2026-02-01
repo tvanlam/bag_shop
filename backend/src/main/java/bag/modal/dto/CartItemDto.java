@@ -6,7 +6,8 @@ import lombok.Data;
 @Data
 public class CartItemDto {
     private int itemId;
-    private int productId;
+    private Integer productId;
+    private Integer productVariantId;
     private String productName;
 //    private String thumbnail;
     private int quantity;
@@ -16,6 +17,7 @@ public class CartItemDto {
     public CartItemDto(CartItem cartItem){
         this.itemId = cartItem.getId();
         this.productId = cartItem.getProduct().getId();
+        this.productVariantId = cartItem.getProductVariant().getId();
         this.productName = cartItem.getProduct().getName();
 //        this.thumbnail = cartItem.getProduct().getImages() != null ? cartItem.getProduct().getImages().get(0).getImageUrl() : null;
         this.quantity = cartItem.getQuantity();

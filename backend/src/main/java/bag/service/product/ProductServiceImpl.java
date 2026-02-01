@@ -200,10 +200,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteVariant(int variantId) {
-//        ProductVariant productVariant = variantRepository.findById(variantId)
-//                .orElseThrow(() -> new RuntimeException("Variant not found"));
-//        productRepository.save(productVariant);
-//        return new ProductDto(productVariant);
+    public ProductVariantDto deleteVariant(int variantId) {
+        ProductVariant productVariant = variantRepository.findById(variantId)
+                .orElseThrow(() -> new RuntimeException("Variant not found"));
+        productVariant.setStockQuantity(0);
+        variantRepository.save(productVariant);
+        return new ProductVariantDto(productVariant);
     }
+
 }

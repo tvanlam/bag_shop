@@ -22,6 +22,10 @@ public class CartItem extends Time {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @ManyToOne(fetch = FetchType.LAZY)  //
+    @JoinColumn(name = "variant_id")
+    private ProductVariant productVariant;
+
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;

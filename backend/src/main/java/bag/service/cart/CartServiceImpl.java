@@ -1,16 +1,10 @@
 package bag.service.cart;
 
 import bag.modal.dto.CartDto;
-import bag.modal.entity.Account;
-import bag.modal.entity.Cart;
-import bag.modal.entity.CartItem;
-import bag.modal.entity.Product;
+import bag.modal.entity.*;
 import bag.modal.request.CartItemRequest;
 import bag.modal.request.CartRequest;
-import bag.repository.AccountRepository;
-import bag.repository.CartItemRepository;
-import bag.repository.CartRepository;
-import bag.repository.ProductRepository;
+import bag.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +18,14 @@ public class CartServiceImpl implements CartService {
     private final AccountRepository accountRepository;
     private final ProductRepository productRepository;
     private final CartItemRepository cartItemRepository;
+    private final VariantRepository variantRepository;
 
-    public CartServiceImpl(CartRepository cartRepository, AccountRepository accountRepository, ProductRepository productRepository, CartItemRepository cartItemRepository) {
+    public CartServiceImpl(CartRepository cartRepository, AccountRepository accountRepository, ProductRepository productRepository, CartItemRepository cartItemRepository, VariantRepository variantRepository) {
         this.cartRepository = cartRepository;
         this.accountRepository = accountRepository;
         this.productRepository = productRepository;
         this.cartItemRepository = cartItemRepository;
+        this.variantRepository = variantRepository;
     }
 
     @Override
@@ -65,23 +61,32 @@ public class CartServiceImpl implements CartService {
             cartRepository.save(cart);
         }
         Map<Integer, CartItem> cartItemMap = cart.getCartItems().stream()
+                .filter(ci -> ci.getProductVariant() != null && ci.getProductVariant().getId() != null)
                 .collect(Collectors.toMap(
-                        ci -> ci.getProduct().getId(), // key: productId
-                        ci -> ci));                    // value: CartItem object
+                        ci -> ci.getProductVariant().getId(),
+                        ci -> ci,
+                        (old, neu) -> old   // xử lý trùng key nếu có
+                ));
 
         for (CartItemRequest itemRequest : request.getItems()) {
-            Product product = productRepository.findById(itemRequest.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product " + itemRequest.getProductId() + " not found"));
+            ProductVariant variant = variantRepository.findById(itemRequest.getProductVariantId())
+                    .orElseThrow(() -> new RuntimeException("Variant " + itemRequest.getProductVariantId() + " not found"));
 
-            CartItem existingItem = cartItemMap.get(itemRequest.getProductId());
+            CartItem existingItem = cartItemMap.get(itemRequest.getProductVariantId());
 
             if (existingItem != null) {
-                existingItem.setQuantity(existingItem.getQuantity() + itemRequest.getQuantity());
+                int newQuantity = existingItem.getQuantity() + itemRequest.getQuantity();
+                if(newQuantity > variant.getStockQuantity()){
+                    throw new IllegalArgumentException("Tổng số lượng vượt quá tồn kho");
+                }
+                existingItem.setQuantity(newQuantity);
+
             } else {
                 CartItem newItem = new CartItem();
-                newItem.setProduct(product);
+                newItem.setProduct(variant.getProduct());
+                newItem.setProductVariant(variant);
                 newItem.setQuantity(itemRequest.getQuantity());
-                newItem.setPriceAtAdd(product.getBasePrice());
+                newItem.setPriceAtAdd(variant.getPrice());
                 newItem.setCart(cart);
                 cart.getCartItems().add(newItem);
             }
@@ -98,11 +103,24 @@ public class CartServiceImpl implements CartService {
 
         // Map productId -> CartItem hiện có
         Map<Integer, CartItem> itemMap = cart.getCartItems().stream()
-                .collect(Collectors.toMap(ci -> ci.getProduct().getId(), ci -> ci));
+                .filter(ci -> ci.getProductVariant() != null)
+                .collect(Collectors.toMap(
+                        ci -> ci.getProductVariant().getId(),
+                        ci -> ci,
+                        (oldVal, newVal) -> oldVal
+                ));
         for (CartItemRequest req : request.getItems()) {
-            CartItem item = itemMap.get(req.getProductId());
+            CartItem item = itemMap.get(req.getProductVariantId());
             if (item == null) {
-                throw new IllegalArgumentException("Product " + req.getProductId() + " not in cart");
+                throw new IllegalArgumentException("Product " + req.getProductVariantId() + " not in cart");
+            }
+            ProductVariant variant = item.getProductVariant();
+            if (req.getQuantity() > 0 && req.getQuantity() > variant.getStockQuantity()) {
+                throw new IllegalArgumentException(
+                        "Số lượng yêu cầu (" + req.getQuantity() +
+                                ") vượt quá tồn kho (" + variant.getStockQuantity() +
+                                ") cho variant " + req.getProductVariantId()
+                );
             }
             if (req.getQuantity() <= 0) {
                 // XÓA ITEM

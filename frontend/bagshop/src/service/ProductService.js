@@ -6,7 +6,7 @@ const ProductService = {
   },
   getProductsWithPaging(pageNumber, pageSize, sortBy, sortDir) {
     return axiosClient.get(
-      `product/getAllProductsWithPaging/${pageNumber}/${pageSize}/${sortBy}/${sortDir}`
+      `product/getAllProductsWithPaging/${pageNumber}/${pageSize}/${sortBy}/${sortDir}`,
     );
   },
   getProductById(productId) {
@@ -18,13 +18,28 @@ const ProductService = {
   createProduct(productRequest) {
     return axiosClient.post("product/create", productRequest);
   },
+
+  createVariant(productId, productVariantRequest) {
+    return axiosClient.post(
+      `product/${productId}/variants`,
+      productVariantRequest,
+    );
+  },
   updateProduct(productId, productRequest) {
-    return axiosClient.put("product/update", productRequest, {
-      params: { id: productId },
-    });
+    return axiosClient.put(`product/update/${productId}`, productRequest);
+  },
+
+  updateVariant(productId, variantId, productVariantRequest) {
+    return axiosClient.put(
+      `product/${productId}/variants/${variantId}`,
+      productVariantRequest,
+    );
   },
   deleteProduct(productId) {
     return axiosClient.delete(`product/${productId}`);
+  },
+  deleteVariant(variantId) {
+    return axiosClient.delete(`product/variants/${variantId}`);
   },
 };
 

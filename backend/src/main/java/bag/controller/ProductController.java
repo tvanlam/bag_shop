@@ -104,9 +104,18 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAccount(@PathVariable int id){
+    public ResponseEntity<?> deleteProduct(@PathVariable int id){
         try{
             return ResponseEntity.ok(productService.deleteProductById(id));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/variants/{variantId}")
+    public ResponseEntity<?> deleteVariant(@PathVariable int variantId){
+        try{
+            return ResponseEntity.ok(productService.deleteVariant(variantId));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

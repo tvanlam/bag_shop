@@ -33,5 +33,5 @@ public interface ProductService {
 
     List<ProductVariantDto> getVariantByProductId(int productId);
 
-    void deleteVariant(int variantId);
+    ProductVariantDto deleteVariant(int variantId);
 }

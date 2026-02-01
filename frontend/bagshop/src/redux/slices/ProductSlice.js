@@ -7,20 +7,20 @@ export const FETCH_PRODUCTS = createAsyncThunk(
   "product/fetchProducts",
   async (
     { pageNumber = 0, pageSize = 10, sortBy = "id", sortDir = "asc" } = {},
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await ProductService.getProductsWithPaging(
         pageNumber,
         pageSize,
         sortBy,
-        sortDir
+        sortDir,
       );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetch products failed");
     }
-  }
+  },
 );
 
 export const FETCH_PRODUCT = createAsyncThunk(
@@ -32,7 +32,7 @@ export const FETCH_PRODUCT = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetch product failed");
     }
-  }
+  },
 );
 
 export const FETCH_PRODUCT_BY_CATEGORY = createAsyncThunk(
@@ -43,10 +43,10 @@ export const FETCH_PRODUCT_BY_CATEGORY = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || "Fetch products by category failed"
+        error.response?.data || "Fetch products by category failed",
       );
     }
-  }
+  },
 );
 
 export const CREATE_PRODUCT = createAsyncThunk(
@@ -58,7 +58,22 @@ export const CREATE_PRODUCT = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || "Create product failed");
     }
-  }
+  },
+);
+
+export const CREATE_VARIANT = createAsyncThunk(
+  "product/createVariant",
+  async ({ productId, productVariantRequest }, { rejectWithValue }) => {
+    try {
+      const response = await ProductService.createVariant(
+        productId,
+        productVariantRequest,
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Create variant failed");
+    }
+  },
 );
 
 export const UPDATE_PRODUCT = createAsyncThunk(
@@ -67,13 +82,32 @@ export const UPDATE_PRODUCT = createAsyncThunk(
     try {
       const response = await ProductService.updateProduct(
         productId,
-        productRequest
+        productRequest,
       );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Update product failed");
     }
-  }
+  },
+);
+
+export const UPDATE_VARIANT = createAsyncThunk(
+  "product/updateVariant",
+  async (
+    { productId, variantId, productVariantRequest },
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await ProductService.updateVariant(
+        productId,
+        variantId,
+        productVariantRequest,
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Update variant failed");
+    }
+  },
 );
 
 export const DELETE_PRODUCT = createAsyncThunk(
@@ -81,11 +115,23 @@ export const DELETE_PRODUCT = createAsyncThunk(
   async (productId, { rejectWithValue }) => {
     try {
       await ProductService.deleteProduct(productId);
-      return productId; // Trả về id để xóa
+      return productId;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Delete product failed");
     }
-  }
+  },
+);
+
+export const DELETE_VARIANT = createAsyncThunk(
+  "product/deleteVariant",
+  async (variantId, { rejectWithValue }) => {
+    try {
+      await ProductService.deleteVariant(variantId);
+      return variantId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Delete variant failed");
+    }
+  },
 );
 
 // ==================== INITIAL STATE ====================
@@ -98,7 +144,6 @@ const initialState = {
   products: [],
   product: null,
 
-  // Lưu theo categoryId → { 1: { products: [], loading: false }, ... }
   byCategory: {},
 
   pagination: {
@@ -126,7 +171,8 @@ const ProductSlice = createSlice({
       })
       .addCase(FETCH_PRODUCTS.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload.content || action.payload.products || action.payload;
+        state.products =
+          action.payload.content || action.payload.products || action.payload;
 
         if (action.payload.number !== undefined) {
           state.pagination = {
@@ -177,7 +223,7 @@ const ProductSlice = createSlice({
       })
       .addCase(FETCH_PRODUCT_BY_CATEGORY.rejected, (state, action) => {
         const categoryId = action.meta.arg;
-        state.by27Category[categoryId] = {
+        state.byCategory[categoryId] = {
           products: [],
           loading: false,
           error: action.payload,
@@ -192,13 +238,31 @@ const ProductSlice = createSlice({
       // === UPDATE_PRODUCT ===
       .addCase(UPDATE_PRODUCT.fulfilled, (state, action) => {
         state.products = state.products.map((p) =>
-          p.id === action.payload.id ? action.payload : p
+          p.id === action.payload.id ? action.payload : p,
         );
         state.product = action.payload;
       })
 
       // === DELETE_PRODUCT ===
       .addCase(DELETE_PRODUCT.fulfilled, (state, action) => {
+        const deletedId = action.payload;
+        state.products = state.products.filter((p) => p.id !== deletedId);
+      })
+      // === CREATE_VARIANT ===
+      .addCase(CREATE_VARIANT.fulfilled, (state, action) => {
+        state.products.push(action.payload);
+      })
+
+      // === UPDATE_VARIANT ===
+      .addCase(UPDATE_VARIANT.fulfilled, (state, action) => {
+        state.products = state.products.map((p) =>
+          p.id === action.payload.id ? action.payload : p,
+        );
+        state.product = action.payload;
+      })
+
+      // === DELETE_VARIANT ===
+      .addCase(DELETE_VARIANT.fulfilled, (state, action) => {
         const deletedId = action.payload;
         state.products = state.products.filter((p) => p.id !== deletedId);
       });
@@ -213,7 +277,6 @@ export const selectProducts = (state) => state.product.products;
 export const selectProduct = (state) => state.product.product;
 export const selectProductPagination = (state) => state.product.pagination;
 
-// QUAN TRỌNG: Trả về { 1: { products: [...] }, 2: {...} }
 export const selectProductsByCategory = (state) => state.product.byCategory;
 
 export const { clearProduct } = ProductSlice.actions;
