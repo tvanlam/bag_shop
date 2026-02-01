@@ -139,7 +139,14 @@ public class ProductServiceImpl implements ProductService {
             throw new IllegalArgumentException(
                     "Variant with color '" + request.getColor() +
                             "' and size '" + request.getSize() + "' already exists");
+        }else{
+            int currentTotalStock = product.getProductVariants().stream().mapToInt(ProductVariant::getStockQuantity).sum();
+            int newTotal = currentTotalStock + request.getStockQuantity();
+            if (newTotal > product.getTotalStockQuantity()) {
+                throw new IllegalArgumentException("Tổng số lượng vượt quá tồn kho cho phép của sản phẩm");
+            }
         }
+
         if (productVariant.getSku() == null || productVariant.getSku().trim().isEmpty()) {
             String colorPart = (productVariant.getColor() != null) ? productVariant.getColor().toUpperCase() : "";
             String sizePart  = (productVariant.getSize() != null)  ? productVariant.getSize().toUpperCase()  : "";

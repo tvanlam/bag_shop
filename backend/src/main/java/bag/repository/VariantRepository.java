@@ -20,6 +20,8 @@ public interface VariantRepository extends JpaRepository<ProductVariant, Integer
             @Param("color") String color,
             @Param("size") String size);
 
+    Optional<ProductVariant> findBySku(String sku);
+
 
 
 }
