@@ -125,6 +125,8 @@ public class ProductServiceImpl implements ProductService {
         return new ProductDto(product);
     }
 
+
+
     @Override
     @Transactional
     public ProductVariantDto createVariant(int productId, ProductVariantRequest request) {
@@ -152,6 +154,7 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+
     @Transactional
     @Override
     public ProductVariantDto updateVariant(ProductVariantRequest request, int id){
@@ -161,12 +164,6 @@ public class ProductServiceImpl implements ProductService {
         if(productVariant.getPrice() == null){
             productVariant.setPrice(productVariant.getPrice());
         }
-//        Optional<ProductVariant> existing = variantRepository.findByProductIdAndColorAndSize(request.getProductId(), request.getColor(), request.getSize());
-//        if (existing.isPresent()) {
-//            throw new IllegalArgumentException(
-//                    "Variant with color '" + request.getColor() +
-//                            "' and size '" + request.getSize() + "' already exists");
-//        }
         productVariant.setProduct(product);
         if (request.getPrice() != null) {
             productVariant.setPrice(request.getPrice());

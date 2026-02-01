@@ -91,21 +91,12 @@ const Cart = () => {
     try {
       // Tìm sản phẩm cần cập nhật - sử dụng itemId
       const itemToUpdate = cartItems.find(
-        (item) => (item.itemId || item.id || item.productId) === itemKey
+        (item) => (item.itemId || item.id || item.productId) === itemKey,
       );
 
       if (!itemToUpdate) {
         throw new Error("Không tìm thấy sản phẩm");
       }
-
-      console.log("DEBUG - Item to update:", {
-        itemKey,
-        itemId: itemToUpdate.itemId,
-        productId: itemToUpdate.productId,
-        currentQuantity,
-        newQuantity,
-        itemToUpdate,
-      });
 
       // CHỈ GỬI sản phẩm cần cập nhật (backend sẽ GHI ĐÈ số lượng mới)
       const cartRequest = {
@@ -117,17 +108,11 @@ const Cart = () => {
         ],
       };
 
-      console.log("📤 UPDATE REQUEST - AccountId:", accountId);
-      console.log(
-        "📤 UPDATE REQUEST - CartRequest:",
-        JSON.stringify(cartRequest, null, 2)
-      );
-
       const response = await dispatch(
         UPDATE_CART({
           accountId: parseInt(accountId),
           cartRequest,
-        })
+        }),
       ).unwrap();
 
       console.log("✅ UPDATE RESPONSE:", response);
@@ -188,7 +173,7 @@ const Cart = () => {
         DELETE_CART({
           accountId: parseInt(accountId),
           cartItemId: parseInt(cartItemId),
-        })
+        }),
       ).unwrap();
       await dispatch(FETCH_CARTS(parseInt(accountId)));
       toast.success("Xóa sản phẩm thành công!", {

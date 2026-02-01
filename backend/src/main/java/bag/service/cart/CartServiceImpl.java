@@ -61,7 +61,7 @@ public class CartServiceImpl implements CartService {
             cartRepository.save(cart);
         }
         Map<Integer, CartItem> cartItemMap = cart.getCartItems().stream()
-                .filter(ci -> ci.getProductVariant() != null && ci.getProductVariant().getId() != null)
+                .filter(ci -> ci.getProductVariant() != null && ci.getProductVariant().getId() > 0)
                 .collect(Collectors.toMap(
                         ci -> ci.getProductVariant().getId(),
                         ci -> ci,
