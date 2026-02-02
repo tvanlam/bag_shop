@@ -54,13 +54,35 @@ const Product = () => {
   };
 
   const handleSelection = (productId, type, value) => {
-    setSelectOption((prev) => ({
-      ...prev,
-      [productId]: {
-        ...prev[productId],
-        [type]: value,
-      },
-    }));
+    setSelectOption((prev) => {
+      const newOptions = {
+        ...prev,
+        [productId]: {
+          ...prev[productId],
+          [type]: value,
+        },
+      };
+
+      // Nếu đổi màu, reset size nếu size không tồn tại cho màu mới
+      if (type === "color") {
+        const product = products.find((p) => p.id === productId);
+        if (product && product.productVariants) {
+          const sizesForColor = product.productVariants
+            .filter((v) => v.color === value)
+            .map((v) => v.size);
+
+          // Nếu size hiện tại không có trong màu mới → reset
+          if (
+            newOptions[productId]?.size &&
+            !sizesForColor.includes(newOptions[productId].size)
+          ) {
+            newOptions[productId].size = null;
+          }
+        }
+      }
+
+      return newOptions;
+    });
   };
 
   const handleAddToCart = (product) => {
@@ -77,10 +99,53 @@ const Product = () => {
       return;
     }
 
+    // Kiểm tra xem sản phẩm có variants không
+    if (!product.productVariants || product.productVariants.length === 0) {
+      toast.error("Sản phẩm này chưa có biến thể!", {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "light",
+      });
+      return;
+    }
+
+    // Lấy màu và size đã chọn từ selectOption
+    const selectedColor = selectOption[product.id]?.color;
+    const selectedSize = selectOption[product.id]?.size;
+
+    // Tìm variant theo màu và size đã chọn
+    let selectedVariant = null;
+
+    if (selectedColor && selectedSize) {
+      selectedVariant = product.productVariants.find(
+        (v) =>
+          v.color === selectedColor &&
+          v.size === selectedSize &&
+          v.stockQuantity > 0,
+      );
+    }
+
+    // Nếu không tìm thấy, lấy variant đầu tiên có stock
+    if (!selectedVariant) {
+      selectedVariant = product.productVariants.find(
+        (v) => v.stockQuantity > 0,
+      );
+    }
+
+    if (!selectedVariant) {
+      toast.error("Sản phẩm này hiện đã hết hàng!", {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "light",
+      });
+      return;
+    }
+
     const cartRequest = {
       items: [
         {
           productId: product.id,
+          productVariantId: selectedVariant.id,
           quantity: 1,
         },
       ],
@@ -88,7 +153,8 @@ const Product = () => {
 
     dispatch(ADD_TO_CART({ accountId, cartRequest }))
       .unwrap()
-      .then(() => {
+      .then((response) => {
+        console.log("✅ ADD TO CART RESPONSE:", response);
         // Fetch lại danh sách giỏ hàng sau khi add to cart thành công
         dispatch(FETCH_CARTS(accountId));
         toast.success("Thêm vào giỏ hàng thành công!", {
@@ -101,8 +167,9 @@ const Product = () => {
           theme: "light",
         });
       })
-      .catch(() => {
-        toast.error("Thêm vào giỏ hàng thất bại!", {
+      .catch((error) => {
+        console.error("❌ ADD TO CART ERROR:", error);
+        toast.error(error || "Thêm vào giỏ hàng thất bại!", {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: false,
@@ -114,7 +181,6 @@ const Product = () => {
       });
   };
 
-  // Helper function to get unique colors from productVariants
   const getUniqueColors = (productVariants) => {
     if (!productVariants || !Array.isArray(productVariants)) return [];
     const colorMap = new Map();
@@ -130,10 +196,18 @@ const Product = () => {
   };
 
   // Helper function to get unique sizes from productVariants
-  const getUniqueSizes = (productVariants) => {
+  const getUniqueSizes = (productVariants, productId) => {
     if (!productVariants || !Array.isArray(productVariants)) return [];
+
+    const selectedColor = selectOption[productId]?.color;
+
+    // Nếu đã chọn màu, chỉ lấy sizes của màu đó
+    const filteredVariants = selectedColor
+      ? productVariants.filter((v) => v.color === selectedColor)
+      : productVariants;
+
     const sizes = new Set();
-    productVariants.forEach((variant) => {
+    filteredVariants.forEach((variant) => {
       if (variant.size) {
         sizes.add(variant.size);
       }
@@ -141,7 +215,7 @@ const Product = () => {
     return Array.from(sizes);
   };
 
-  // Helper function to get display price (basePrice or first variant price)
+  // Helper function to get display price
   const getDisplayPrice = (product) => {
     if (product.basePrice) return product.basePrice;
     if (
@@ -363,7 +437,10 @@ const Product = () => {
                     </h3>
                     {/* Sizes - only show if sizes exist from productVariants */}
                     {(() => {
-                      const sizes = getUniqueSizes(product.productVariants);
+                      const sizes = getUniqueSizes(
+                        product.productVariants,
+                        product.id,
+                      );
                       return (
                         sizes.length > 0 && (
                           <div className="flex items-center gap-2 mt-1">

@@ -32,6 +32,13 @@ const CartItemList = ({ cartItems, parsePrice }) => {
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium">{item.productName}</p>
+              {(item.color || item.size) && (
+                <p className="text-xs text-gray-500">
+                  {item.color && <span>Màu: {item.color}</span>}
+                  {item.color && item.size && <span> • </span>}
+                  {item.size && <span>Size: {item.size}</span>}
+                </p>
+              )}
               <p className="text-xs text-gray-500">Số lượng: {quantity}</p>
               <p className="text-sm font-semibold text-gray-700">
                 {(price * quantity).toLocaleString("vi-VN")}đ
@@ -45,4 +52,3 @@ const CartItemList = ({ cartItems, parsePrice }) => {
 };
 
 export default CartItemList;
-

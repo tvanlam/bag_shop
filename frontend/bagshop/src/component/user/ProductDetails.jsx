@@ -24,6 +24,9 @@ const ProductDetails = () => {
   const [mainImage, setMainImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [currentProduct, setCurrentProduct] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
 
   useEffect(() => {
     // Thử fetch product từ API trước
@@ -72,6 +75,16 @@ const ProductDetails = () => {
     }
   }, [currentProduct]);
 
+  // Auto-select first variant when product loads
+  useEffect(() => {
+    if (currentProduct?.productVariants?.length > 0) {
+      const firstVariant = currentProduct.productVariants[0];
+      setSelectedVariant(firstVariant);
+      setSelectedColor(firstVariant.color);
+      setSelectedSize(firstVariant.size);
+    }
+  }, [currentProduct]);
+
   const handleThumbnailClick = (imageUrl) => {
     setMainImage(imageUrl);
   };
@@ -96,18 +109,43 @@ const ProductDetails = () => {
       return;
     }
 
+    // Kiểm tra variant đã được chọn chưa
+    if (!selectedVariant) {
+      toast.error("Vui lòng chọn màu sắc và kích thước!", {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "light",
+      });
+      return;
+    }
+
+    // Kiểm tra variant còn hàng không
+    if (selectedVariant.stockQuantity === 0) {
+      toast.error("Sản phẩm này hiện đã hết hàng!", {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "light",
+      });
+      return;
+    }
+
     const cartRequest = {
       items: [
         {
           productId: currentProduct.id,
+          productVariantId: selectedVariant.id,
           quantity: quantity,
         },
       ],
     };
 
+    console.log("🛒 ADD TO CART REQUEST:", cartRequest);
+    console.log("📦 Selected Variant:", selectedVariant);
+
     dispatch(ADD_TO_CART({ accountId, cartRequest }))
       .unwrap()
-      .then(() => {
+      .then((response) => {
+        console.log("✅ ADD TO CART RESPONSE:", response);
         // Fetch lại danh sách giỏ hàng sau khi add to cart thành công
         dispatch(FETCH_CARTS(accountId));
         toast.success("Thêm vào giỏ hàng thành công!", {
@@ -120,8 +158,9 @@ const ProductDetails = () => {
           theme: "light",
         });
       })
-      .catch(() => {
-        toast.error("Thêm vào giỏ hàng thất bại!", {
+      .catch((error) => {
+        console.error("❌ ADD TO CART ERROR:", error);
+        toast.error(error || "Thêm vào giỏ hàng thất bại!", {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: false,
@@ -204,7 +243,9 @@ const ProductDetails = () => {
             </p>
 
             <p className="text-2xl text-gray-800 font-bold mb-4">
-              {formatVND(currentProduct.basePrice || currentProduct.price)}
+              {selectedVariant
+                ? formatVND(selectedVariant.price)
+                : formatVND(currentProduct.basePrice || currentProduct.price)}
             </p>
 
             {/* Số lượng tồn kho */}
@@ -244,6 +285,135 @@ const ProductDetails = () => {
               </div>
             )}
 
+            {/* Variant Selection - Color & Size */}
+            {currentProduct.productVariants &&
+              currentProduct.productVariants.length > 0 && (
+                <div className="mb-6">
+                  {/* Color Selection */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Màu sắc:
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        ...new Set(
+                          currentProduct.productVariants.map((v) => v.color),
+                        ),
+                      ].map((color) => {
+                        const variant = currentProduct.productVariants.find(
+                          (v) => v.color === color,
+                        );
+                        return (
+                          <button
+                            key={color}
+                            onClick={() => {
+                              setSelectedColor(color);
+                              // Tìm variant phù hợp với color và size hiện tại
+                              const matchingVariant =
+                                currentProduct.productVariants.find(
+                                  (v) =>
+                                    v.color === color &&
+                                    v.size === selectedSize,
+                                ) ||
+                                currentProduct.productVariants.find(
+                                  (v) => v.color === color,
+                                );
+                              setSelectedVariant(matchingVariant);
+                              if (matchingVariant)
+                                setSelectedSize(matchingVariant.size);
+                            }}
+                            className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                              selectedColor === color
+                                ? "border-blue-500 bg-blue-50 text-blue-700"
+                                : "border-gray-300 hover:border-blue-300"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              {variant?.colorCode && (
+                                <div
+                                  className="w-4 h-4 rounded-full border border-gray-300"
+                                  style={{ backgroundColor: variant.colorCode }}
+                                />
+                              )}
+                              <span>{color}</span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Size Selection */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Kích thước:
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        ...new Set(
+                          currentProduct.productVariants
+                            .filter(
+                              (v) =>
+                                !selectedColor || v.color === selectedColor,
+                            )
+                            .map((v) => v.size),
+                        ),
+                      ].map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => {
+                            setSelectedSize(size);
+                            // Tìm variant phù hợp với color và size
+                            const matchingVariant =
+                              currentProduct.productVariants.find(
+                                (v) =>
+                                  v.color === selectedColor && v.size === size,
+                              );
+                            if (matchingVariant)
+                              setSelectedVariant(matchingVariant);
+                          }}
+                          className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                            selectedSize === size
+                              ? "border-blue-500 bg-blue-50 text-blue-700"
+                              : "border-gray-300 hover:border-blue-300"
+                          }`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Selected Variant Info */}
+                  {selectedVariant && (
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold">Đã chọn:</span>{" "}
+                        {selectedVariant.color} - {selectedVariant.size}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold">Giá:</span>{" "}
+                        {formatVND(selectedVariant.price)}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold">Tồn kho:</span>{" "}
+                        <span
+                          className={
+                            selectedVariant.stockQuantity > 0
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }
+                        >
+                          {selectedVariant.stockQuantity > 0
+                            ? `${selectedVariant.stockQuantity} sản phẩm`
+                            : "Hết hàng"}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
             {/* Quantity selector - chỉ hiển thị nếu còn hàng */}
             {(currentProduct.totalStockQuantity ||
               currentProduct.stockQuantity ||
@@ -276,16 +446,21 @@ const ProductDetails = () => {
             <div className="action-buttons space-y-3">
               <button
                 onClick={handleAddToCart}
-                disabled={(currentProduct.stockQuantity || 0) === 0}
+                disabled={
+                  !selectedVariant ||
+                  (selectedVariant && selectedVariant.stockQuantity === 0)
+                }
                 className={`w-full px-6 py-3 rounded-lg font-semibold transition-colors ${
-                  (currentProduct.stockQuantity || 0) > 0
+                  selectedVariant && selectedVariant.stockQuantity > 0
                     ? "bg-blue-600 text-white hover:bg-blue-700"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
               >
-                {(currentProduct.stockQuantity || 0) > 0
-                  ? "Thêm vào giỏ hàng"
-                  : "Hết hàng"}
+                {!selectedVariant
+                  ? "Vui lòng chọn màu sắc và kích thước"
+                  : selectedVariant.stockQuantity > 0
+                    ? "Thêm vào giỏ hàng"
+                    : "Hết hàng"}
               </button>
               <button className="flex gap-2 items-center justify-center py-2 bg-transparent text-gray-800 hover:text-red-500 transition-colors">
                 <MdFavoriteBorder className="text-3xl" />

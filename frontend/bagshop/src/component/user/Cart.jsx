@@ -103,6 +103,7 @@ const Cart = () => {
         items: [
           {
             productId: parseInt(itemToUpdate.productId),
+            productVariantId: parseInt(itemToUpdate.productVariantId),
             quantity: newQuantity,
           },
         ],
@@ -279,7 +280,22 @@ const Cart = () => {
                               className="w-16 h-16 object-cover mx-auto rounded"
                             />
                           </td>
-                          <td className="px-4 py-4">{item.productName}</td>
+                          <td className="px-4 py-4">
+                            <div className="flex flex-col">
+                              <span className="font-medium text-gray-800">
+                                {item.productName}
+                              </span>
+                              {(item.color || item.size) && (
+                                <span className="text-sm text-gray-500 mt-1">
+                                  {item.color && <span>Màu: {item.color}</span>}
+                                  {item.color && item.size && (
+                                    <span className="mx-1">•</span>
+                                  )}
+                                  {item.size && <span>Size: {item.size}</span>}
+                                </span>
+                              )}
+                            </div>
+                          </td>
                           <td className="px-4 py-4 text-center">
                             <span className="text-sm text-gray-600">
                               {formatCurrency(parsePrice(item.priceAtAdd))}

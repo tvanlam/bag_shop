@@ -7,7 +7,7 @@ import lombok.Data;
 public class CartItemDto {
     private int itemId;
     private Integer productId;
-    private Integer productVariantId;
+    private int productVariantId;
     private String productName;
 //    private String thumbnail;
     private int quantity;

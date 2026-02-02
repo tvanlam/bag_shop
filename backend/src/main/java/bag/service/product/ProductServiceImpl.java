@@ -184,6 +184,11 @@ public class ProductServiceImpl implements ProductService {
         if(request.getColorCode() != null){
             productVariant.setColorCode(request.getColorCode());
         }
+        int currentTotalStock = product.getProductVariants().stream().mapToInt(ProductVariant::getStockQuantity).sum();
+        int newTotal = currentTotalStock + request.getStockQuantity();
+        if (newTotal > product.getTotalStockQuantity()) {
+            throw new IllegalArgumentException("Tổng số lượng vượt quá tồn kho cho phép của sản phẩm");
+        }
         variantRepository.save(productVariant);
         return new ProductVariantDto(productVariant);
     }
