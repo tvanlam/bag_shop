@@ -22,4 +22,6 @@ public class Wishlist {
 
     @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<WishlistItem> wishlistItems = new ArrayList<>();
+
+
 }

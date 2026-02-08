@@ -41,7 +41,7 @@ const Header = () => {
 
   useEffect(() => {
     if (accountId) {
-      dispatch(FETCH_CARTS());
+      dispatch(FETCH_CARTS(accountId));
     }
   }, [dispatch, accountId]);
 
@@ -117,7 +117,7 @@ const Header = () => {
                 >
                   {item.label}
                 </Link>
-              )
+              ),
             )}
           </nav>
 

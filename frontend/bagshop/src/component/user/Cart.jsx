@@ -30,6 +30,14 @@ const Cart = () => {
     }
   }, [dispatch, accountId]);
 
+  // Debug: Log cart items để kiểm tra cấu trúc dữ liệu
+  useEffect(() => {
+    if (cartItems && cartItems.length > 0) {
+      console.log("🛒 CART ITEMS IN COMPONENT:", cartItems);
+      console.log("🔍 FIRST ITEM STRUCTURE:", cartItems[0]);
+    }
+  }, [cartItems]);
+
   useEffect(() => {
     if (!accountId) {
       setShowAuthModal(true);
@@ -283,17 +291,21 @@ const Cart = () => {
                           <td className="px-4 py-4">
                             <div className="flex flex-col">
                               <span className="font-medium text-gray-800">
-                                {item.productName}
-                              </span>
-                              {(item.color || item.size) && (
-                                <span className="text-sm text-gray-500 mt-1">
-                                  {item.color && <span>Màu: {item.color}</span>}
-                                  {item.color && item.size && (
-                                    <span className="mx-1">•</span>
-                                  )}
-                                  {item.size && <span>Size: {item.size}</span>}
+                                {item.productName} <br />
+                                {/* Debug: Hiển thị tất cả các trường có thể */}
+                                <span className="text-sm text-gray-600">
+                                  {item.color &&
+                                    item.size &&
+                                    `${item.color} - ${item.size}`}
+
+                                  {/* Fallback: Hiển thị SKU nếu có */}
+                                  {!item.color &&
+                                    !item.variantColor &&
+                                    !item.productVariant &&
+                                    item.sku &&
+                                    `SKU: ${item.sku}`}
                                 </span>
-                              )}
+                              </span>
                             </div>
                           </td>
                           <td className="px-4 py-4 text-center">

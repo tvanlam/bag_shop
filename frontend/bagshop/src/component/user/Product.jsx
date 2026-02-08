@@ -195,7 +195,6 @@ const Product = () => {
     }));
   };
 
-  // Helper function to get unique sizes from productVariants
   const getUniqueSizes = (productVariants, productId) => {
     if (!productVariants || !Array.isArray(productVariants)) return [];
 
@@ -389,7 +388,6 @@ const Product = () => {
                             alt={product.name || "Product"}
                             className="w-full h-64 object-cover cursor-pointer"
                             onError={(e) => {
-                              // Hide the broken image and show placeholder div
                               e.target.style.display = "none";
                               const placeholder =
                                 e.target.parentElement.querySelector(
@@ -401,7 +399,7 @@ const Product = () => {
                             }}
                           />
                         ) : null}
-                        {/* Placeholder div - shown when no image or image fails to load */}
+
                         <div
                           className="placeholder-div absolute inset-0 w-full h-64 bg-gray-200 flex items-center justify-center cursor-pointer"
                           style={{

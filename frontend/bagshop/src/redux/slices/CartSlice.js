@@ -13,7 +13,7 @@ export const FETCH_CARTS = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetch cart failed");
     }
-  }
+  },
 );
 
 export const FETCH_CART = createAsyncThunk(
@@ -24,7 +24,7 @@ export const FETCH_CART = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetch cart failed");
     }
-  }
+  },
 );
 
 export const CREATE_CART = createAsyncThunk(
@@ -35,7 +35,7 @@ export const CREATE_CART = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || "Create cart failed");
     }
-  }
+  },
 );
 
 export const ADD_TO_CART = createAsyncThunk(
@@ -46,7 +46,7 @@ export const ADD_TO_CART = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || "Add to cart failed");
     }
-  }
+  },
 );
 
 export const UPDATE_CART = createAsyncThunk(
@@ -57,7 +57,7 @@ export const UPDATE_CART = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || "Update cart failed");
     }
-  }
+  },
 );
 
 export const DELETE_CART = createAsyncThunk(
@@ -70,7 +70,7 @@ export const DELETE_CART = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || "Delete cart failed");
     }
-  }
+  },
 );
 
 const initialState = {
@@ -179,7 +179,7 @@ const CartSlice = createSlice({
           state.carts = state.carts.filter((item) => item.id !== deletedId);
           if (state.cart && Array.isArray(state.cart.items)) {
             state.cart.items = state.cart.items.filter(
-              (item) => item.id !== deletedId
+              (item) => item.id !== deletedId,
             );
           }
         } else if (payload && payload.items) {

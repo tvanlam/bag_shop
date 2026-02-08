@@ -20,4 +20,19 @@ public class WishlistItem {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "variant_id")
+    private ProductVariant productVariant;
+
+    @Column(nullable = false)
+    private int quantity;
+
+    @Column(nullable = false)
+    private double priceAtAdd;
+
+    public double getSubTotal() {
+        return priceAtAdd * quantity;
+    }
+
 }
