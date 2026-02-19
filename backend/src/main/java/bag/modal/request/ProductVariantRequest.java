@@ -3,6 +3,8 @@ import bag.modal.entity.Product;
 import bag.modal.entity.ProductVariant;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ProductVariantRequest {
     private int productId;
@@ -10,7 +12,7 @@ public class ProductVariantRequest {
     private String color;
     private String colorCode;
     private String size;
-    private String imageUrl;
+    private List<String> images;
     private Double price;
     private Integer stockQuantity;
 
@@ -19,9 +21,9 @@ public class ProductVariantRequest {
         productVariant.setColor(color);
         productVariant.setColorCode(colorCode);
         productVariant.setSize(size);
-        productVariant.setImageUrl(imageUrl);
         productVariant.setPrice(price);
         productVariant.setStockQuantity(stockQuantity);
+
 
     }
 

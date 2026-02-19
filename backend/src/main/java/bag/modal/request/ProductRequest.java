@@ -27,6 +27,7 @@ public class ProductRequest {
     private List<String> images;
     private int categoryId;
 
+
     public void populate(Product product){
         product.setName(name);
         product.setDescription(description);

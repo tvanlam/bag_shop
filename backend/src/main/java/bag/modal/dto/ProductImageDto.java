@@ -10,6 +10,7 @@ public class ProductImageDto {
     private String alt;
     private boolean isMain;
     private int productId;
+    private int productVariantId;
 
     public ProductImageDto(ProductImage productImage){
         this.id = productImage.getId();
@@ -17,5 +18,6 @@ public class ProductImageDto {
         this.alt = productImage.getAlt();
         this.isMain = productImage.isMain();
         this.productId = productImage.getProduct().getId();
+        this.productVariantId = productImage.getProductVariant().getId();
     }
 }

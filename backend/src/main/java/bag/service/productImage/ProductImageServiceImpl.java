@@ -3,9 +3,12 @@ package bag.service.productImage;
 import bag.modal.dto.ProductImageDto;
 import bag.modal.entity.Product;
 import bag.modal.entity.ProductImage;
+import bag.modal.entity.ProductVariant;
 import bag.modal.request.ProductImageRequest;
 import bag.repository.ProductImageRepository;
 import bag.repository.ProductRepository;
+import bag.repository.VariantRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +18,12 @@ import java.util.stream.Collectors;
 public class ProductImageServiceImpl implements ProductImageService {
     private final ProductImageRepository productImageRepository;
     private final ProductRepository productRepository;
+    private final VariantRepository variantRepository;
 
-    public ProductImageServiceImpl(ProductImageRepository productImageRepository, ProductRepository productRepository) {
+    public ProductImageServiceImpl(ProductImageRepository productImageRepository, ProductRepository productRepository, VariantRepository variantRepository) {
         this.productImageRepository = productImageRepository;
         this.productRepository = productRepository;
+        this.variantRepository = variantRepository;
     }
 
     @Override
@@ -33,6 +38,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         return new ProductImageDto(productImage);
     }
 
+    @Transactional
     @Override
     public ProductImageDto createProductImage(ProductImageRequest request) {
         try {
@@ -40,8 +46,12 @@ public class ProductImageServiceImpl implements ProductImageService {
             request.populate(productImage);
             Product product = productRepository.findById(request.getProductId())
                     .orElseThrow(() -> new RuntimeException(request.getProductId() + "not found"));
+            ProductVariant variant = variantRepository.findById(request.getProductVariantId())
+                    .orElseThrow(() -> new RuntimeException(request.getProductVariantId() + "not found"));
+
             productImage.setProduct(product);
-            if (productImageRepository.countByProduct(product) == 0) {
+            productImage.setProductVariant(variant);
+            if (productImageRepository.countByProduct(variant) == 0) {
                 productImage.setMain(true);
             }
             productImageRepository.save(productImage);
@@ -49,9 +59,9 @@ public class ProductImageServiceImpl implements ProductImageService {
         }catch(Exception e){
             throw new RuntimeException("Create failed");
         }
-
     }
 
+    @Transactional
     @Override
     public ProductImageDto updateProductImage(ProductImageRequest request, int id) {
         try {
@@ -59,19 +69,20 @@ public class ProductImageServiceImpl implements ProductImageService {
                     .orElseThrow(() -> new RuntimeException(request.getId() + "not found"));
             Product product = productRepository.findById(request.getProductId())
                     .orElseThrow(() -> new RuntimeException(request.getProductId() + "not found"));
-            productImage.setProduct(product);
-            if(productImageRepository.countByProduct(product) == 0){
-                productImage.setMain(true);
-            }else if(request.isMain()){
-                productImageRepository.findByProductAndIsMainTrue(product)
-                        .ifPresent(mainImage -> {
-                            if(mainImage.isMain() != productImage.isMain()){
-                                mainImage.setMain(false);
-                                productImageRepository.save(mainImage);
-                            }
-                        });
-            }
+            ProductVariant variant = variantRepository.findById(request.getProductVariantId())
+                    .orElseThrow(() -> new RuntimeException(request.getProductVariantId() + "not found"));
             request.populate(productImage);
+            productImage.setProduct(product);
+            productImage.setProductVariant(variant);
+            if(request.isMain() && !productImage.isMain()){
+                productImageRepository.findByProductAndIsMainTrue(variant)
+                        .ifPresent(oldMain -> {
+                            oldMain.setMain(false);
+                            productImageRepository.save(oldMain);
+                        });
+                productImage.setMain(true);
+            }
+
             productImageRepository.save(productImage);
             return new ProductImageDto(productImage);
         }catch(Exception e){
@@ -80,7 +91,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         }
 
     @Override
-    public void deleteProductImage(int id) {
+    public void deleteProductImage(int variantId, int id) {
         ProductImage productImage = productImageRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product image not found"));
         productImageRepository.delete(productImage);

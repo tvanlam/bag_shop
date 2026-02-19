@@ -178,9 +178,7 @@ public class ProductServiceImpl implements ProductService {
         if (request.getStockQuantity() != null) {
             productVariant.setStockQuantity(request.getStockQuantity());
         }
-        if (request.getImageUrl() != null && !request.getImageUrl().isBlank()) {
-            productVariant.setImageUrl(request.getImageUrl());
-        }
+
         if(request.getColorCode() != null){
             productVariant.setColorCode(request.getColorCode());
         }
@@ -200,11 +198,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductVariantDto getVariantByColorAndSize(int productId, String color, String size) {
-        return null;
-    }
-
-    @Override
-    public List<ProductVariantDto> getVariantByProductId(int productId) {
         return null;
     }
 

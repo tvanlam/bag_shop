@@ -14,5 +14,5 @@ public interface ProductImageService {
 
     ProductImageDto updateProductImage(ProductImageRequest request, int id);
 
-    void deleteProductImage(int id );
+    void deleteProductImage(int variantId, int imageId);
 }

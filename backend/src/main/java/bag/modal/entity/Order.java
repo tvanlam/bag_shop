@@ -17,7 +17,7 @@ public class Order extends Time{
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false, unique = true)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     //@ManyToOne mặc định là EAGER

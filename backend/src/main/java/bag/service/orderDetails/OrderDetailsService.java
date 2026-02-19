@@ -1,4 +1,4 @@
-package bag.service.productDetails;
+package bag.service.orderDetails;
 
 
 import bag.modal.dto.OrderDetailsDto;

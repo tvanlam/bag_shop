@@ -85,6 +85,7 @@ public class SecurityConfig {
                                 "/productImage",
                                 "/productImage/create",
                                 "/productImage/update",
+                                "/productImage/variants/{variantId}/images/{imageId}",
 
                                 // product
                                 "/product",                                     // get all without paging

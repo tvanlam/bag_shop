@@ -47,4 +47,14 @@ public class ProductImageController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/variants/{variantId}/images/{imageId}")
+    public ResponseEntity<?> deleteProductImage(@PathVariable int variantId, @PathVariable int imageId){
+        try{
+            productImageService.deleteProductImage(variantId,imageId);
+            return ResponseEntity.ok("Delete successfully");
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

@@ -1,7 +1,11 @@
 package bag.modal.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -27,8 +31,9 @@ public class ProductVariant {
     @Column(nullable = true)
     private String size;
 
-    @Column
-    private String imageUrl;// ảnh variant riêng
+    @JsonManagedReference
+    @OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ProductImage> images = new ArrayList<>();
 
     @Column
     private Double price;

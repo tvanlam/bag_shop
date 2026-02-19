@@ -31,7 +31,6 @@ public interface ProductService {
 
     ProductVariantDto getVariantByColorAndSize(int productId, String color, String size);
 
-    List<ProductVariantDto> getVariantByProductId(int productId);
 
     ProductVariantDto deleteVariant(int variantId);
 }

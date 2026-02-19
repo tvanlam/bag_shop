@@ -17,7 +17,7 @@ public class ProductVariantDto {
     private String color;
     private String colorCode;
     private String size;
-    private String imageUrl;
+    private List<ProductImageDto> images;
     private Double price;
     private Integer stockQuantity;
 
@@ -31,7 +31,11 @@ public class ProductVariantDto {
         ? productVariant.getSize().trim() : null;
 
         this.colorCode = productVariant.getColorCode();
-        this.imageUrl = productVariant.getImageUrl();
+        this.images = productVariant.getImages() != null
+                ? productVariant.getImages().stream()
+                .map(ProductImageDto::new)
+                .collect(Collectors.toList())
+                : Collections.emptyList();
         this.price = (productVariant.getPrice() != null)
                 ? productVariant.getPrice()
                 : productVariant.getProduct().getBasePrice();

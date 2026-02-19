@@ -9,13 +9,15 @@ public class ProductImageRequest {
     private int id;
     private String imageUrl;
     private String alt;
-    private boolean main;
+    private boolean isMain;
     private int productId;
+    private int productVariantId;
 
     public void populate(ProductImage productImage){
         productImage.setImageUrl(imageUrl);
         productImage.setAlt(alt);
-        productImage.setMain(main);
+        productImage.setMain(isMain);
+
     }
 
 
