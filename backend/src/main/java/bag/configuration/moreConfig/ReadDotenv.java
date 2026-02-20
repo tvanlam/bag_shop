@@ -47,11 +47,12 @@ public class ReadDotenv {
         setProp(dotenv, "APP_CLOUDINARY_KEY", "app.cloudinary.key");
         setProp(dotenv, "APP_CLOUDINARY_SECRET", "app.cloudinary.secret");
 
-        // APP – VNPAY
-        setProp(dotenv, "APP_VNPAY_TMN", "app.vnpay.tmn");
-        setProp(dotenv, "APP_VNPAY_SECRET", "app.vnpay.secret");
-        setProp(dotenv, "APP_VNPAY_URL", "app.vnpay.url");
-        setProp(dotenv, "APP_VNPAY_RETURN", "app.vnpay.return");
+        // VNPAY
+        setProp(dotenv, "VNP_PAY_URL", "vnp.payUrl");
+        setProp(dotenv, "VNP_RETURN_URL", "vnp.returnUrl");
+        setProp(dotenv, "VNP_TMN_CODE", "vnp.tmnCode");
+        setProp(dotenv, "VNP_HASH_SECRET", "vnp.hashSecret");
+        setProp(dotenv, "VNP_API_URL", "vnp.apiUrl");
     }
 
     private void setProp(Dotenv dotenv, String envKey, String springKey) {

@@ -23,6 +23,9 @@ public class VNPayController {
     private final VNPayService vnpayService;
     private final OrderService orderService;
 
+    @org.springframework.beans.factory.annotation.Value("${vnp.returnUrl}")
+    private String defaultReturnUrl;
+
     @GetMapping("/get")
     public ResponseEntity<String> handleVNPayReturn(HttpServletRequest request) {
         Map<String, String> response = vnpayService.orderReturn(request);
@@ -149,9 +152,28 @@ public class VNPayController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createVnPay(@RequestBody VNPayRequest request, HttpServletRequest http){
-        String paymentUrl = vnpayService.createOrder(Math.toIntExact(request.getTotal()), request.getOrderId(), request.getReturnUrl(), http);
+        // Sử dụng returnUrl từ config nếu request không có hoặc rỗng
+        String returnUrl = (request.getReturnUrl() == null || request.getReturnUrl().isEmpty())
+                ? defaultReturnUrl
+                : request.getReturnUrl();
+
+        log.info("Creating VNPay payment - Total: {}, OrderId: {}, ReturnUrl: {}",
+                request.getTotal(), request.getOrderId(), returnUrl);
+
+        String paymentUrl = vnpayService.createOrder(Math.toIntExact(request.getTotal()), request.getOrderId(), returnUrl, http);
+
+        log.info("Generated payment URL: {}", paymentUrl);
+
         Map<String, String> response = new HashMap<>();
         response.put("paymentUrl", paymentUrl);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/config-test")
+    public ResponseEntity<?> testConfig() {
+        Map<String, String> config = new HashMap<>();
+        config.put("defaultReturnUrl", defaultReturnUrl);
+        config.put("message", "VNPay config loaded successfully");
+        return ResponseEntity.ok(config);
     }
 }

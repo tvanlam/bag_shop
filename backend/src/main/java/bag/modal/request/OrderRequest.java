@@ -12,10 +12,9 @@ import java.util.List;
 
 @Data
 public class OrderRequest {
-    @Min(1)
-    @NotNull(message = "AccountID must be required")
-    private int accountId;
-    private int voucherId;
+    // Không bắt buộc khi chỉ update status
+    private Integer accountId;
+    private Integer voucherId;
     private Order.OrderStatus orderStatus;
 
 }

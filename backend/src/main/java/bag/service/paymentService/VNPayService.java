@@ -35,6 +35,10 @@ public class VNPayService {
         String vnp_TmnCode = vnpayConfig.getVnpTmnCode();
         String orderType = "order-type";
 
+        log.info("VNPay Config - TmnCode: {}, PayUrl: {}, HashSecret: {}",
+                vnp_TmnCode, vnpayConfig.getVnpPayUrl(),
+                vnpayConfig.getVnpHashSecret() != null ? "***" + vnpayConfig.getVnpHashSecret().substring(vnpayConfig.getVnpHashSecret().length() - 4) : "NULL");
+
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", "2.1.0");
         vnp_Params.put("vnp_Command", "pay");
@@ -55,6 +59,9 @@ public class VNPayService {
         cld.add(Calendar.MINUTE, 15);
         vnp_Params.put("vnp_ExpireDate", formatter.format(cld.getTime()));
 
+        log.info("VNPay Params - TxnRef: {}, Amount: {}, ReturnUrl: {}, CreateDate: {}",
+                vnp_TxnRef, total * 100, urlReturn, vnp_Params.get("vnp_CreateDate"));
+
         String[] queryAndHash = buildQueryAndHashData(vnp_Params);
         String queryUrl = queryAndHash[0];
         String hashData = queryAndHash[1];
@@ -62,8 +69,10 @@ public class VNPayService {
         String vnp_SecureHash = VNPayConfig.hmacSHA512(vnpayConfig.getVnpHashSecret(), hashData);
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
 
-        log.info("Create order w value {} - {} - {} - {}", total, orderInfo, urlReturn, request);
-        return vnpayConfig.getVnpPayUrl() + "?" + queryUrl;
+        String finalUrl = vnpayConfig.getVnpPayUrl() + "?" + queryUrl;
+        log.info("Final payment URL length: {}, SecureHash: {}", finalUrl.length(), vnp_SecureHash.substring(0, 10) + "...");
+
+        return finalUrl;
     }
 
     public Map<String, String> orderReturn(HttpServletRequest request) {
@@ -106,7 +115,10 @@ public class VNPayService {
         // Xác định trạng thái
         String status;
         if (signValue.equals(vnp_SecureHash)) {
-            status = "00".equals(request.getParameter("vnp_TransactionStatus")) ? "success" : "failed";
+            // VNPay trả về vnp_ResponseCode, không phải vnp_TransactionStatus
+            String responseCode = request.getParameter("vnp_ResponseCode");
+            log.info("VNPay ResponseCode: {}", responseCode);
+            status = "00".equals(responseCode) ? "success" : "failed";
         } else {
             status = "invalid_signature";
         }
@@ -115,7 +127,7 @@ public class VNPayService {
         // Lưu transaction
         saveTransaction(request, status);
 
-//         === CỘNG ĐIỂM NẾU SUCCESS ===
+//          CỘNG ĐIỂM NẾU SUCCESS
         if("success".equals(status) && !orderIdStr.isEmpty()){
               try{
                   int orderId = Integer.parseInt(orderIdStr);
@@ -130,6 +142,7 @@ public class VNPayService {
 
         return response;
     }
+
 
 
     private void saveTransaction(HttpServletRequest request, String status) {
@@ -149,12 +162,17 @@ public class VNPayService {
         transaction.setCreateDate(LocalDateTime.now());
         transaction.setUpdateDate(LocalDateTime.now());
 
-        if (orderInfo != null && orderInfo.contains("#")) {
-            int orderId = Integer.parseInt(orderInfo.replaceAll("[^0-9]", ""));
-            if (orderId != 0) {
-                Order order = orderRepository.findById(orderId).orElseGet(
-                        Order::new);
+
+        // Thay toàn bộ khối if (orderInfo != null && orderInfo.contains("#")) bằng:
+        String orderIdStr = orderInfo != null ? orderInfo.replaceAll("[^0-9]", "") : "";
+        if (!orderIdStr.isEmpty()) {
+            try {
+                int orderId = Integer.parseInt(orderIdStr);
+                Order order = orderRepository.findById(orderId)
+                        .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
                 transaction.setOrder(order);
+            } catch (NumberFormatException e) {
+                log.warn("Invalid orderId format in orderInfo: {}", orderInfo);
             }
         }
 
@@ -173,8 +191,8 @@ public class VNPayService {
             while (itr.hasNext()) {
                 String fieldName = itr.next();
                 String fieldValue = params.get(fieldName);
-                String encodedFieldName = URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString());
-                String encodedFieldValue = URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString());
+                String encodedFieldName = URLEncoder.encode(fieldName, StandardCharsets.UTF_8.toString());
+                String encodedFieldValue = URLEncoder.encode(fieldValue, StandardCharsets.UTF_8.toString());
 
                 hashData.append(encodedFieldName).append('=').append(encodedFieldValue);
                 query.append(encodedFieldName).append('=').append(encodedFieldValue);

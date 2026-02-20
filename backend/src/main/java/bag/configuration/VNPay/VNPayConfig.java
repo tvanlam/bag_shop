@@ -15,19 +15,19 @@ import java.util.*;
 @Component
 @Getter
 public class VNPayConfig {
-    @Value("${app.vnpay.url}")
+    @Value("${vnp.payUrl}")
     private String vnpPayUrl;
 
-    @Value("${app.vnpay.return}")
+    @Value("${vnp.returnUrl}")
     private String vnpReturnUrl;
 
-    @Value("${app.vnpay.tmn}")
+    @Value("${vnp.tmnCode}")
     private String vnpTmnCode;
 
-    @Value("${app.vnpay.secret}")
+    @Value("${vnp.hashSecret}")
     private String vnpHashSecret;
 
-    @Value("${app.vnpay.apiUrl:}")
+    @Value("${vnp.apiUrl:}")
     private String vnpApiUrl;
 
     public static String hmacSHA512(final String key, final String data) {

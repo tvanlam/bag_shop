@@ -50,13 +50,16 @@ public class OrderServiceImpl implements OrderService{
     @Transactional
     @Override
     public OrderDto createOrder(OrderRequest request) {
+            if(request.getAccountId() == null || request.getAccountId() <= 0) {
+                throw new IllegalArgumentException("AccountID is required for creating order");
+            }
+
             Account account = accountRepository.findById(request.getAccountId())
                     .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccountId()));
 
             Voucher voucher = null;
-                if(request.getVoucherId() > 0) {
-
-                    voucherRepository.findById(request.getVoucherId())
+                if(request.getVoucherId() != null && request.getVoucherId() > 0) {
+                    voucher = voucherRepository.findById(request.getVoucherId())
                             .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucherId()));
                 }
                     // 3. Lấy CartItems của user (chưa có order)
@@ -87,12 +90,26 @@ public class OrderServiceImpl implements OrderService{
     public OrderDto updateOrder(OrderRequest request, int id) {
             Order order = orderRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Order not found"));
-            Account account = accountRepository.findById(request.getAccountId())
-                    .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccountId()));
-            Voucher voucher = voucherRepository.findById(request.getVoucherId())
-                    .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucherId()));
-            order.setAccount(account);
-            order.setVoucher(voucher);
+
+            // Chỉ cập nhật account nếu có trong request
+            if(request.getAccountId() != null && request.getAccountId() > 0) {
+                Account account = accountRepository.findById(request.getAccountId())
+                        .orElseThrow(() -> new RuntimeException("Account not found with id " + request.getAccountId()));
+                order.setAccount(account);
+            }
+
+            // Chỉ cập nhật voucher nếu có trong request
+            if(request.getVoucherId() != null && request.getVoucherId() > 0) {
+                Voucher voucher = voucherRepository.findById(request.getVoucherId())
+                        .orElseThrow(() -> new RuntimeException("Voucher not found with id " + request.getVoucherId()));
+                order.setVoucher(voucher);
+            }
+
+            // Cập nhật status nếu có
+            if(request.getOrderStatus() != null){
+                order.setStatus(request.getOrderStatus());
+            }
+
             orderRepository.save(order);
             return new OrderDto(order);
     }
