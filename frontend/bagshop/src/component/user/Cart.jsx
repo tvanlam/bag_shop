@@ -136,11 +136,6 @@ const Cart = () => {
         setQuantities(updatedQuantities);
         console.log("🔄 UPDATED QUANTITIES FROM RESPONSE:", updatedQuantities);
       }
-
-      toast.success("Cập nhật số lượng thành công!", {
-        position: "top-right",
-        autoClose: 1500,
-      });
     } catch (error) {
       console.error("UPDATE ERROR:", error);
 

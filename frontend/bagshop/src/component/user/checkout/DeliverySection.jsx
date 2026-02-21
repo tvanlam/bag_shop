@@ -17,6 +17,7 @@ const DeliverySection = ({
   onDistrictSelect,
   onWardSelect,
   onContinue,
+  formErrors,
 }) => {
   return (
     <div className="deliveryStep">
@@ -61,6 +62,7 @@ const DeliverySection = ({
           onProvinceSelect={onProvinceSelect}
           onDistrictSelect={onDistrictSelect}
           onWardSelect={onWardSelect}
+          formErrors={formErrors}
         />
       )}
 
@@ -95,4 +97,3 @@ const DeliverySection = ({
 };
 
 export default DeliverySection;
-

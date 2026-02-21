@@ -13,6 +13,7 @@ const PaymentSection = ({
   onPaymentMethodChange,
   onPlaceOrder,
   loading,
+  paymentError,
 }) => {
   const paymentMethods = [
     {
@@ -57,6 +58,9 @@ const PaymentSection = ({
           />
         ))}
       </div>
+      {paymentError && (
+        <p className="text-red-500 text-sm mt-2">{paymentError}</p>
+      )}
 
       {/* Place Order Button */}
       <div className="flex justify-center">
@@ -73,4 +77,3 @@ const PaymentSection = ({
 };
 
 export default PaymentSection;
-

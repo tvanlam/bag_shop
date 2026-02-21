@@ -6,8 +6,10 @@ import { useState } from "react";
  */
 export const useCheckoutForm = () => {
   const [selectedAddressOption, setSelectedAddressOption] = useState("default");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState("standard");
+  const [selectedPaymentMethodState, setSelectedPaymentMethodState] =
+    useState("");
+  const [selectedShippingMethod, setSelectedShippingMethod] =
+    useState("standard");
   const [newAddress, setNewAddress] = useState({
     firstName: "",
     lastName: "",
@@ -18,6 +20,15 @@ export const useCheckoutForm = () => {
     phoneNumber: "",
     saveAddress: false,
   });
+  const [formErrors, setFormErrors] = useState({});
+
+  // Wrap setSelectedPaymentMethod để tự clear lỗi khi chọn
+  const setSelectedPaymentMethod = (value) => {
+    setSelectedPaymentMethodState(value);
+    if (value) {
+      setFormErrors((prev) => ({ ...prev, paymentMethod: "" }));
+    }
+  };
 
   // Update single field in new address
   const updateNewAddressField = (field, value) => {
@@ -25,6 +36,8 @@ export const useCheckoutForm = () => {
       ...prev,
       [field]: value,
     }));
+    // Clear lỗi của field khi người dùng bắt đầu nhập
+    setFormErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   // Update multiple fields in new address
@@ -49,100 +62,87 @@ export const useCheckoutForm = () => {
     });
   };
 
-  // Validate new address
+  // Validate new address - trả về object lỗi từng field
   const validateNewAddress = () => {
-    const errors = [];
-    
-    if (!newAddress.firstName.trim()) {
-      errors.push("Vui lòng nhập họ");
-    }
-    if (!newAddress.lastName.trim()) {
-      errors.push("Vui lòng nhập tên");
-    }
-    if (!newAddress.address.trim()) {
-      errors.push("Vui lòng nhập địa chỉ");
-    }
-    if (!newAddress.city.trim()) {
-      errors.push("Vui lòng chọn tỉnh/thành phố");
-    }
-    if (!newAddress.district.trim()) {
-      errors.push("Vui lòng chọn quận/huyện");
-    }
-    if (!newAddress.ward.trim()) {
-      errors.push("Vui lòng chọn phường/xã");
-    }
+    const fieldErrors = {};
+
+    if (!newAddress.firstName.trim())
+      fieldErrors.firstName = "Vui lòng nhập họ";
+    if (!newAddress.lastName.trim()) fieldErrors.lastName = "Vui lòng nhập tên";
+    if (!newAddress.address.trim())
+      fieldErrors.address = "Vui lòng nhập địa chỉ";
+    if (!newAddress.city.trim())
+      fieldErrors.city = "Vui lòng chọn tỉnh/thành phố";
+    if (!newAddress.district.trim())
+      fieldErrors.district = "Vui lòng chọn quận/huyện";
+    if (!newAddress.ward.trim()) fieldErrors.ward = "Vui lòng chọn phường/xã";
     if (!newAddress.phoneNumber.trim()) {
-      errors.push("Vui lòng nhập số điện thoại");
+      fieldErrors.phoneNumber = "Vui lòng nhập số điện thoại";
     } else if (!/^[0-9]{10,11}$/.test(newAddress.phoneNumber.trim())) {
-      errors.push("Số điện thoại không hợp lệ (10-11 chữ số)");
+      fieldErrors.phoneNumber = "Số điện thoại không hợp lệ (10-11 chữ số)";
     }
 
     return {
-      isValid: errors.length === 0,
-      errors,
+      isValid: Object.keys(fieldErrors).length === 0,
+      fieldErrors,
     };
   };
 
   // Validate payment method
   const validatePaymentMethod = () => {
-    if (!selectedPaymentMethod) {
-      return {
-        isValid: false,
-        errors: ["Vui lòng chọn phương thức thanh toán"],
-      };
+    if (!selectedPaymentMethodState) {
+      return { isValid: false, error: "Vui lòng chọn phương thức thanh toán" };
     }
-    return {
-      isValid: true,
-      errors: [],
-    };
+    return { isValid: true, error: "" };
   };
 
-  // Validate entire checkout form
+  // Validate entire checkout form - cập nhật formErrors state để hiển thị inline
   const validateCheckoutForm = () => {
-    const errors = [];
+    let newErrors = {};
 
     // Validate payment method
     const paymentValidation = validatePaymentMethod();
     if (!paymentValidation.isValid) {
-      errors.push(...paymentValidation.errors);
+      newErrors.paymentMethod = paymentValidation.error;
     }
 
-    // Validate address if new address is selected
+    // Validate address nếu chọn địa chỉ mới
     if (selectedAddressOption === "new") {
       const addressValidation = validateNewAddress();
       if (!addressValidation.isValid) {
-        errors.push(...addressValidation.errors);
+        newErrors = { ...newErrors, ...addressValidation.fieldErrors };
       }
     }
 
+    setFormErrors(newErrors);
+
     return {
-      isValid: errors.length === 0,
-      errors,
+      isValid: Object.keys(newErrors).length === 0,
     };
   };
 
   return {
     // State
     selectedAddressOption,
-    selectedPaymentMethod,
+    selectedPaymentMethod: selectedPaymentMethodState,
     selectedShippingMethod,
     newAddress,
-    
+    formErrors,
+
     // Setters
     setSelectedAddressOption,
     setSelectedPaymentMethod,
     setSelectedShippingMethod,
     setNewAddress,
-    
+
     // Helpers
     updateNewAddressField,
     updateNewAddressFields,
     resetNewAddress,
-    
+
     // Validation
     validateNewAddress,
     validatePaymentMethod,
     validateCheckoutForm,
   };
 };
-

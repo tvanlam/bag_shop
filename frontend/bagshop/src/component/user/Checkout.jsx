@@ -33,7 +33,7 @@ const Checkout = () => {
   const account = useSelector((state) => state.account.account);
   const cartItems = useSelector((state) => state.cart.carts);
   const { loading, error, createdOrder } = useSelector(
-    (state) => state.checkout
+    (state) => state.checkout,
   );
 
   // Custom hooks
@@ -42,7 +42,7 @@ const Checkout = () => {
   const voucherManagement = useVoucherManagement();
   const orderCalculation = useOrderCalculation(
     cartItems,
-    voucherManagement.appliedVoucher
+    voucherManagement.appliedVoucher,
   );
 
   // Fetch data on mount
@@ -114,10 +114,9 @@ const Checkout = () => {
       return;
     }
 
-    // Validate form
+    // Validate form - lỗi sẽ hiển thị inline dạng <p> đỏ
     const validation = checkoutForm.validateCheckoutForm();
     if (!validation.isValid) {
-      validation.errors.forEach((error) => toast.error(error));
       return;
     }
 
@@ -128,7 +127,7 @@ const Checkout = () => {
           accountId,
           voucherId: voucherManagement.appliedVoucher?.id || null,
           paymentMethod: checkoutForm.selectedPaymentMethod,
-        })
+        }),
       ).unwrap();
     } catch (error) {
       console.error("Order creation failed:", error);
@@ -166,6 +165,7 @@ const Checkout = () => {
                 onDistrictSelect={handleDistrictSelect}
                 onWardSelect={handleWardSelect}
                 onContinue={handleContinueToShipping}
+                formErrors={checkoutForm.formErrors}
               />
 
               {/* 2. Shipping Section */}
@@ -182,6 +182,7 @@ const Checkout = () => {
                 onPaymentMethodChange={checkoutForm.setSelectedPaymentMethod}
                 onPlaceOrder={handlePlaceOrder}
                 loading={loading}
+                paymentError={checkoutForm.formErrors.paymentMethod}
               />
             </div>
 

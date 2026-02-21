@@ -22,9 +22,9 @@ const CartItemList = ({ cartItems, parsePrice }) => {
         return (
           <div key={itemKey} className="flex gap-3 mb-3 pb-3 border-b">
             <div className="w-16 h-16 bg-gray-200 rounded flex-shrink-0">
-              {item.productImage && (
+              {item.thumbnail && (
                 <img
-                  src={item.productImage}
+                  src={item.thumbnail}
                   alt={item.productName}
                   className="w-full h-full object-cover rounded"
                 />

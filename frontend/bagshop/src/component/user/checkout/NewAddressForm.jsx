@@ -11,6 +11,7 @@ const NewAddressForm = ({
   onProvinceSelect,
   onDistrictSelect,
   onWardSelect,
+  formErrors = {},
 }) => {
   const {
     provinces,
@@ -23,17 +24,13 @@ const NewAddressForm = ({
 
   const handleProvinceChange = (e) => {
     const code = e.target.value;
-    const selectedProvince = provinces.find(
-      (p) => p.code.toString() === code
-    );
+    const selectedProvince = provinces.find((p) => p.code.toString() === code);
     onProvinceSelect(code, selectedProvince?.name || "");
   };
 
   const handleDistrictChange = (e) => {
     const code = e.target.value;
-    const selectedDistrict = districts.find(
-      (d) => d.code.toString() === code
-    );
+    const selectedDistrict = districts.find((d) => d.code.toString() === code);
     onDistrictSelect(code, selectedDistrict?.name || "");
   };
 
@@ -51,20 +48,30 @@ const NewAddressForm = ({
 
       {/* Họ và Tên */}
       <div className="flex flex-row gap-4">
-        <input
-          type="text"
-          placeholder="Họ*"
-          value={newAddress.firstName}
-          onChange={(e) => onFieldChange("firstName", e.target.value)}
-          className="border border-gray-300 rounded-md p-2 w-1/2"
-        />
-        <input
-          type="text"
-          placeholder="Tên*"
-          value={newAddress.lastName}
-          onChange={(e) => onFieldChange("lastName", e.target.value)}
-          className="border border-gray-300 rounded-md p-2 w-1/2"
-        />
+        <div className="flex flex-col w-1/2">
+          <input
+            type="text"
+            placeholder="Họ*"
+            value={newAddress.firstName}
+            onChange={(e) => onFieldChange("firstName", e.target.value)}
+            className={`border rounded-md p-2 ${formErrors.firstName ? "border-red-500" : "border-gray-300"}`}
+          />
+          {formErrors.firstName && (
+            <p className="text-red-500 text-xs mt-1">{formErrors.firstName}</p>
+          )}
+        </div>
+        <div className="flex flex-col w-1/2">
+          <input
+            type="text"
+            placeholder="Tên*"
+            value={newAddress.lastName}
+            onChange={(e) => onFieldChange("lastName", e.target.value)}
+            className={`border rounded-md p-2 ${formErrors.lastName ? "border-red-500" : "border-gray-300"}`}
+          />
+          {formErrors.lastName && (
+            <p className="text-red-500 text-xs mt-1">{formErrors.lastName}</p>
+          )}
+        </div>
       </div>
 
       {/* Địa chỉ */}
@@ -75,8 +82,11 @@ const NewAddressForm = ({
           placeholder="Địa chỉ*"
           value={newAddress.address}
           onChange={(e) => onFieldChange("address", e.target.value)}
-          className="border border-gray-300 rounded-md p-2"
+          className={`border rounded-md p-2 ${formErrors.address ? "border-red-500" : "border-gray-300"}`}
         />
+        {formErrors.address && (
+          <p className="text-red-500 text-xs mt-1">{formErrors.address}</p>
+        )}
       </div>
 
       {/* Cascade Dropdown: Tỉnh → Quận → Phường */}
@@ -91,18 +101,39 @@ const NewAddressForm = ({
         onDistrictChange={handleDistrictChange}
         onWardChange={handleWardChange}
         loading={loading}
+        formErrors={formErrors}
       />
+      {(formErrors.city || formErrors.district || formErrors.ward) && (
+        <div className="flex flex-col gap-1">
+          {formErrors.city && (
+            <p className="text-red-500 text-xs">{formErrors.city}</p>
+          )}
+          {formErrors.district && (
+            <p className="text-red-500 text-xs">{formErrors.district}</p>
+          )}
+          {formErrors.ward && (
+            <p className="text-red-500 text-xs">{formErrors.ward}</p>
+          )}
+        </div>
+      )}
 
       {/* Số điện thoại */}
-      <div className="flex flex-row gap-4 pt-4">
-        <p>Số liên lạc*</p>
-        <input
-          type="text"
-          placeholder="Số điện thoại liên hệ"
-          value={newAddress.phoneNumber}
-          onChange={(e) => onFieldChange("phoneNumber", e.target.value)}
-          className="border border-gray-300 rounded-md p-2 w-1/2"
-        />
+      <div className="flex flex-col pt-4">
+        <div className="flex flex-row gap-4 items-center">
+          <p>Số liên lạc*</p>
+          <input
+            type="text"
+            placeholder="Số điện thoại liên hệ"
+            value={newAddress.phoneNumber}
+            onChange={(e) => onFieldChange("phoneNumber", e.target.value)}
+            className={`border rounded-md p-2 w-1/2 ${formErrors.phoneNumber ? "border-red-500" : "border-gray-300"}`}
+          />
+        </div>
+        {formErrors.phoneNumber && (
+          <p className="text-red-500 text-xs mt-1 ml-[5.5rem]">
+            {formErrors.phoneNumber}
+          </p>
+        )}
       </div>
 
       {/* Checkbox lưu địa chỉ */}
@@ -120,4 +151,3 @@ const NewAddressForm = ({
 };
 
 export default NewAddressForm;
-

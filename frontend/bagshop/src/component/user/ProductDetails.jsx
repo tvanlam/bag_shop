@@ -60,11 +60,12 @@ const ProductDetails = () => {
   }, [error, products, product, id]);
 
   useEffect(() => {
-    // Set main image khi currentProduct được load
+    // Set main image khi currentProduct được load (chỉ khi chưa có selectedVariant)
     if (
       currentProduct &&
       currentProduct.images &&
-      currentProduct.images.length > 0
+      currentProduct.images.length > 0 &&
+      !selectedVariant
     ) {
       const mainImg =
         currentProduct.images.find((img) => img.main) ||
@@ -74,6 +75,22 @@ const ProductDetails = () => {
       }
     }
   }, [currentProduct]);
+
+  useEffect(() => {
+    // Cập nhật ảnh khi đổi variant (màu/size)
+    if (
+      selectedVariant &&
+      selectedVariant.images &&
+      selectedVariant.images.length > 0
+    ) {
+      const mainImg =
+        selectedVariant.images.find((img) => img.main) ||
+        selectedVariant.images[0];
+      if (mainImg) {
+        setMainImage(mainImg.imageUrl);
+      }
+    }
+  }, [selectedVariant]);
 
   // Auto-select first variant when product loads
   useEffect(() => {
@@ -212,22 +229,22 @@ const ProductDetails = () => {
 
             {/* Các ảnh nhỏ thumbnail */}
             <div className="thumbnail-images flex gap-2 overflow-x-auto">
-              {currentProduct.images &&
-                currentProduct.images.map((image, index) => (
-                  <img
-                    key={image.id || index}
-                    src={image.imageUrl}
-                    alt={
-                      image.alt || `${currentProduct.name} view ${index + 1}`
-                    }
-                    className={`w-20 h-20 object-cover rounded cursor-pointer border-2 transition-all duration-200 ${
-                      mainImage === image.imageUrl
-                        ? "border-blue-500 ring-2 ring-blue-200"
-                        : "border-gray-300 hover:border-blue-400"
-                    }`}
-                    onClick={() => handleThumbnailClick(image.imageUrl)}
-                  />
-                ))}
+              {(selectedVariant?.images?.length > 0
+                ? selectedVariant.images
+                : currentProduct.images
+              )?.map((image, index) => (
+                <img
+                  key={image.id || index}
+                  src={image.imageUrl}
+                  alt={image.alt || `${currentProduct.name} view ${index + 1}`}
+                  className={`w-20 h-20 object-cover rounded cursor-pointer border-2 transition-all duration-200 ${
+                    mainImage === image.imageUrl
+                      ? "border-blue-500 ring-2 ring-blue-200"
+                      : "border-gray-300 hover:border-blue-400"
+                  }`}
+                  onClick={() => handleThumbnailClick(image.imageUrl)}
+                />
+              ))}
             </div>
           </div>
 
