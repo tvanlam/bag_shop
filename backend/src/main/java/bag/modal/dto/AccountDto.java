@@ -9,9 +9,9 @@ public class AccountDto {
     private String username;
     private String email;
     private String phoneNumber;
-//    private String firstName;
-//    private String lastName;
-//    private String dateOfBirth;
+    private String firstName;
+    private String lastName;
+    private String dateOfBirth;
     private String city;
     private String address;
     private String position;
@@ -22,11 +22,11 @@ public class AccountDto {
         this.id = account.getId();
         this.username = account.getUsername();
         this.email = account.getEmail();
-//        this.firstName = account.getFirstName();
-//        this.lastName = account.getLastName();
-//        this.dateOfBirth = account.getDateOfBirth() != null
-//                ? account.getDateOfBirth().toString()
-//                : null;
+        this.firstName = account.getFirstName();
+        this.lastName = account.getLastName();
+        this.dateOfBirth = account.getDateOfBirth() != null
+                ? account.getDateOfBirth().toString()
+                : null;
         this.phoneNumber = account.getPhoneNumber();
         this.city = account.getCity();
         this.address = account.getAddress();

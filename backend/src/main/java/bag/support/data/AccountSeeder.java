@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Date;
+
 @Configuration
 @Order(1)
 public class AccountSeeder {
@@ -23,6 +25,9 @@ public class AccountSeeder {
                 admin1.setPassword(passwordEncoder.encode("admin123"));
                 admin1.setEmail("admin1@example.com");
                 admin1.setPhoneNumber("0123456789");
+                admin1.setFirstName("Admin");
+                admin1.setLastName("One");
+                admin1.setDateOfBirth(new Date(0));
                 admin1.setPosition(Position.ADMIN);
                 admin1.setStatus(Account.AccountStatus.ACTIVE);
 
@@ -31,6 +36,9 @@ public class AccountSeeder {
                 admin2.setPassword(passwordEncoder.encode("admin123"));
                 admin2.setEmail("admin2@example.com");
                 admin2.setPhoneNumber("0987654321");
+                admin2.setFirstName("Admin");
+                admin2.setLastName("Two");
+                admin2.setDateOfBirth(new Date(0));
                 admin2.setPosition(Position.ADMIN);
                 admin2.setStatus(Account.AccountStatus.ACTIVE);
 
@@ -40,6 +48,9 @@ public class AccountSeeder {
                 user1.setPassword(passwordEncoder.encode("user123"));
                 user1.setEmail("user1@example.com");
                 user1.setPhoneNumber("0111111111");
+                user1.setFirstName("Nguyen");
+                user1.setLastName("Van A");
+                user1.setDateOfBirth(new Date(0));
                 user1.setPosition(Position.USER);
                 user1.setStatus(Account.AccountStatus.ACTIVE);
 
@@ -48,6 +59,9 @@ public class AccountSeeder {
                 user2.setPassword(passwordEncoder.encode("user123"));
                 user2.setEmail("user2@example.com");
                 user2.setPhoneNumber("0222222222");
+                user2.setFirstName("Tran");
+                user2.setLastName("Thi B");
+                user2.setDateOfBirth(new Date(0));
                 user2.setPosition(Position.USER);
                 user2.setStatus(Account.AccountStatus.ACTIVE);
 

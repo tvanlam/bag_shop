@@ -57,7 +57,12 @@ const Profile = () => {
               icon={<UserOutlined />}
             />
             <div className="mt-6 pb-6">
-              <h2 className="text-xl font-bold m-0">{account.username}</h2>
+              <h2 className="text-xl font-bold m-0">
+                {account.firstName && account.lastName
+                  ? `${account.firstName} ${account.lastName}`
+                  : account.username}
+              </h2>
+              <p className="text-gray-400 m-0 text-sm">@{account.username}</p>
               <p className="text-gray-500 m-0">Mã KH: {account.id}</p>
             </div>
           </div>
@@ -90,6 +95,11 @@ const Profile = () => {
           contentStyle={{ background: "#fff" }}
           className="rounded-xl overflow-hidden"
         >
+          <Descriptions.Item label={<UserOutlined />}>
+            {account.firstName && account.lastName
+              ? `${account.firstName} ${account.lastName}`
+              : "Chưa cập nhật"}
+          </Descriptions.Item>
           <Descriptions.Item label={<MailOutlined />}>
             {account.email}
           </Descriptions.Item>

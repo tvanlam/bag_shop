@@ -30,12 +30,13 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
     () => ({
       username: account?.username || "",
       phoneNumber: account?.phoneNumber || "",
+      firstName: account?.firstName || "",
+      lastName: account?.lastName || "",
       dateOfBirth: account?.dateOfBirth || "",
-
       city: account?.city || "",
       address: account?.address || "",
     }),
-    [account]
+    [account],
   );
 
   const handleFinish = (values, type) => {
@@ -44,7 +45,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
         UPDATE_EMAIL({
           accountRequest: { email: values.newEmail },
           accountId: account.id,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -60,7 +61,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
         UPDATE_PASSWORD({
           accountRequest: { password: values.newPassword },
           accountId: account.id,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -76,7 +77,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
         UPDATE_INFORMATION({
           accountRequest: { ...values },
           accountId: account.id,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -208,6 +209,18 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
                   className="space-y-3"
                   initialValues={initialInfo}
                 >
+                  <Form.Item
+                    name="firstName"
+                    label={<span className="font-medium">Họ</span>}
+                  >
+                    <Input size="large" placeholder="Nhập họ" />
+                  </Form.Item>
+                  <Form.Item
+                    name="lastName"
+                    label={<span className="font-medium">Tên</span>}
+                  >
+                    <Input size="large" placeholder="Nhập tên" />
+                  </Form.Item>
                   <Form.Item
                     name="username"
                     label={<span className="font-medium">Tên người dùng</span>}

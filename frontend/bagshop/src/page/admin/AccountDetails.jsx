@@ -37,11 +37,21 @@ const AccountDetails = () => {
   };
 
   if (loading) {
-    return <Spin size="large" className="flex justify-center items-center h-64" />;
+    return (
+      <Spin size="large" className="flex justify-center items-center h-64" />
+    );
   }
 
   if (error) {
-    return <Alert message="Lỗi tải dữ liệu" description={error} type="error" showIcon className="mb-4" />;
+    return (
+      <Alert
+        message="Lỗi tải dữ liệu"
+        description={error}
+        type="error"
+        showIcon
+        className="mb-4"
+      />
+    );
   }
 
   return (
@@ -58,14 +68,34 @@ const AccountDetails = () => {
         </Button>
       </div>
 
-      <Descriptions title="Thông tin tài khoản" bordered column={1} className="mb-6 bg-gray-50 rounded-md p-4 shadow-inner">
+      <Descriptions
+        title="Thông tin tài khoản"
+        bordered
+        column={1}
+        className="mb-6 bg-gray-50 rounded-md p-4 shadow-inner"
+      >
         <Descriptions.Item label="ID">{account.id}</Descriptions.Item>
-        <Descriptions.Item label="Username">{account.username}</Descriptions.Item>
+        <Descriptions.Item label="Username">
+          {account.username}
+        </Descriptions.Item>
+        <Descriptions.Item label="Họ">
+          {account.firstName || "Chưa cập nhật"}
+        </Descriptions.Item>
+        <Descriptions.Item label="Tên">
+          {account.lastName || "Chưa cập nhật"}
+        </Descriptions.Item>
+        <Descriptions.Item label="Ngày sinh">
+          {account.dateOfBirth || "Chưa cập nhật"}
+        </Descriptions.Item>
         <Descriptions.Item label="Email">{account.email}</Descriptions.Item>
-        <Descriptions.Item label="Phone Number">{account.phoneNumber}</Descriptions.Item>
+        <Descriptions.Item label="Phone Number">
+          {account.phoneNumber}
+        </Descriptions.Item>
         <Descriptions.Item label="City">{account.city}</Descriptions.Item>
         <Descriptions.Item label="Address">{account.address}</Descriptions.Item>
-        <Descriptions.Item label="Position">{account.position}</Descriptions.Item>
+        <Descriptions.Item label="Position">
+          {account.position}
+        </Descriptions.Item>
         <Descriptions.Item label="Status">{account.status}</Descriptions.Item>
       </Descriptions>
 

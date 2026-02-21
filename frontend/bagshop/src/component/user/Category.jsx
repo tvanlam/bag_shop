@@ -30,10 +30,10 @@ const Category = () => {
   ];
 
   return (
-    <div className="bg-[#f2e6f1] min-h-screen  px-20 py-24">
+    <div className="bg-[#F4F0EB] min-h-screen  px-20 py-24">
       <div className="flex gap-6 text-center mb-8 ">
         <h1 className="text-5xl font-bold text-black">BỘ SƯU TẬP</h1>
-        <p className="text-gray-500 mt-2 ">
+        <p className=" mt-2 ">
           Khám phá những chiếc túi xa hoa, chuến nghệp và phong cách độc đáo để
           làm nổi bật cá tính riêng của bạn
         </p>

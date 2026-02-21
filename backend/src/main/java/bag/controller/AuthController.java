@@ -2,6 +2,7 @@ package bag.controller;
 
 import bag.modal.dto.AuthResponse;
 import bag.modal.request.AuthRequest;
+import bag.modal.request.GoogleAuthRequest;
 import bag.service.auth.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +67,25 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<?> googleLogin(@RequestBody GoogleAuthRequest request) {
+        try {
+            AuthResponse authResponse = authService.googleLogin(request);
+            ResponseCookie cookie = ResponseCookie.from("refreshToken", authResponse.getRefreshToken())
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(3600)
+                    .sameSite("Strict")
+                    .build();
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                    .body(authResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/resent")

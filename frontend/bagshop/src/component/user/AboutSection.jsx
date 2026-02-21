@@ -1,30 +1,50 @@
 import React from "react";
 
 const AboutSection = () => {
-  const descriptions = [
-    "bagShop ra đời với khát khao mang đến những chiếc túi xa hoa, tinh tế được chế tác bằng tay tài hoa của những nghệ nhân Việt Nam với tình yêu và sự tỉ mỉ đến từng chi tiết nhỏ.",
-    "Chúng tôi không chỉ đơn thuần là một thương hiệu túi xách mà còn là cầu chuyển về sự sang trọng truyền thống kết hợp với thiết kế hiện đại, sang trọng và đẳng cấp quốc tế.",
-    "Mỗi sản phẩm của chúng tôi đều chứa đựng hơn cả của nghệ thuật chế tác, tinh thần Việt Nam và khát vọng mang đến trải nghiệm thời trang đích thực cho khách hàng.",
-  ];
-
   return (
-    <div className="bg-gray-100 py-24">
+    <div className="py-24 min-h-screen" style={{ backgroundColor: "#0C0600" }}>
       <div className="container mx-auto px-20">
-        <div className="flex items-start justify-between gap-16">
-          {/* Left Content - Title */}
-          <div className="flex-1">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl text-gray-700 ">
-              Khám Phá Nghệ Thuật Túi Xách Việt Nam Đích Thực
-            </h1>
+        {/* Header Section */}
+        <div className="mb-16">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl text-white mb-6">
+            Túi Xách Việt Nam
+          </h1>
+          <p className="text-white/80 text-base md:text-lg max-w-2xl leading-relaxed">
+            Khám phá nghệ thuật thiết kế túi xách đầy sáng tạo, nơi mỗi đường
+            chi tiết đều là câu chuyện của sự khéo léo và đam mê từ những bàn
+            tay người thợ Việt Nam
+          </p>
+        </div>
+
+        {/* Content Section - Image and Text */}
+        <div className="flex flex-col md:flex-row items-start gap-12">
+          {/* Left - Image */}
+          <div className="flex-1 ">
+            <img
+              src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&h=400&fit=crop"
+              alt="Túi xách Việt Nam"
+              className="w-full h-auto rounded-lg"
+            />
           </div>
 
-          {/* Right Content - Description */}
-          <div className="flex-1 space-y-6">
-            {descriptions.map((description, index) => (
-              <p key={index} className="text-lg text-gray-700 leading-relaxed">
-                {description}
+          {/* Right - Content */}
+          <div className="flex-1">
+            <h2 className="text-2xl md:text-3xl text-white mb-6">
+              Nghệ Thuật Túi Xách Việt Nam
+            </h2>
+
+            <div className="space-y-4 text-white/80 leading-relaxed">
+              <p>
+                Chúng tôi không chỉ tạo ra những chiếc túi, mà còn là những tác
+                phẩm nghệ thuật ai dùng, kết hợp phần truyền thống bậc phẩm nghệ
+                thuật của Việt Nam
               </p>
-            ))}
+              <p>
+                Mỗi thiết kế đều mang trong mình câu chuyện về sự sáng tạo và
+                nhẫn trù bài của nghệ nhân, sử dụng tay và nhẫn trù bài của nghệ
+                nhân, Việt Nam, hiện mỗi chiếc túi thành một nghệ thuật độc đáo
+              </p>
+            </div>
           </div>
         </div>
       </div>

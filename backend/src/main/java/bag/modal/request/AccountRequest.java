@@ -47,9 +47,9 @@ public class AccountRequest {
         account.setPassword(passwordEncoder.encode(password));
         account.setEmail(email);
         account.setPhoneNumber(phoneNumber);
-//        account.setFirstName(firstName);
-//        account.setLastName(lastName);
-//        account.setDateOfBirth(dateOfBirth);
+        account.setFirstName(firstName);
+        account.setLastName(lastName);
+        account.setDateOfBirth(dateOfBirth);
         account.setCity(null);
         account.setAddress(null);
         account.setPoint(point);
@@ -58,9 +58,9 @@ public class AccountRequest {
     public void updateInformation(Account account){
         account.setUsername(username);
         account.setPhoneNumber(phoneNumber);
-//        account.setFirstName(firstName);
-//        account.setLastName(lastName);
-//        account.setDateOfBirth(dateOfBirth);
+        account.setFirstName(firstName);
+        account.setLastName(lastName);
+        account.setDateOfBirth(dateOfBirth);
         account.setCity(city);
         account.setAddress(address);
     }

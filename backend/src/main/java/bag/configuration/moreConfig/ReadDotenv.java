@@ -42,6 +42,10 @@ public class ReadDotenv {
         setProp(dotenv, "APP_JWT_ACCESS_EXP_SECONDS", "app.jwt.access-exp-seconds");
         setProp(dotenv, "APP_JWT_REFRESH_EXP_SECONDS", "app.jwt.refresh-exp-seconds");
 
+        // GOOGLE OAUTH2
+        setProp(dotenv, "GOOGLE_CLIENT_ID", "app.google.client-id");
+        setProp(dotenv, "GOOGLE_CLIENT_SECRET", "app.google.client-secret");
+
         // APP – Cloudinary
         setProp(dotenv, "APP_CLOUDINARY_NAME", "app.cloudinary.name");
         setProp(dotenv, "APP_CLOUDINARY_KEY", "app.cloudinary.key");

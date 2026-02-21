@@ -65,6 +65,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 // auth
                                 "/auth/login",
+                                "/auth/google",
                                 "/auth/logout/{accountId}",
                                 "/auth/resent",
 

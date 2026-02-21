@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Random;
 
 @Configuration
-@Order(2)
+@Order(4)  // Chạy sau ProductSeeder (2) và ProductVariantSeeder (3), cần cả Account và Product
 public class ReviewSeeder {
 
     @Bean
