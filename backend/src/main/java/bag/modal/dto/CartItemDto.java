@@ -25,7 +25,12 @@ public class CartItemDto {
         this.color = cartItem.getProductVariant().getColor();
         this.size = cartItem.getProductVariant().getSize();;
         this.sku = cartItem.getProductVariant().getSku();
-//        this.thumbnail = cartItem.getProduct().getImages() != null ? cartItem.getProduct().getImages().get(0).getImageUrl() : null;
+        this.thumbnail = cartItem.getProductVariant() != null
+                && !cartItem.getProductVariant().getImages().isEmpty()
+                ? cartItem.getProductVariant().getImages().get(0).getImageUrl()
+                : (cartItem.getProduct().getImages() != null && !cartItem.getProduct().getImages().isEmpty()
+                        ? cartItem.getProduct().getImages().get(0).getImageUrl()
+                        : null);
         this.quantity = cartItem.getQuantity();
         this.priceAtAdd = cartItem.getPriceAtAdd();
         this.subTotal = cartItem.getQuantity() * cartItem.getPriceAtAdd();

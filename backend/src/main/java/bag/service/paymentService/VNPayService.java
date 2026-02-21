@@ -162,8 +162,6 @@ public class VNPayService {
         transaction.setCreateDate(LocalDateTime.now());
         transaction.setUpdateDate(LocalDateTime.now());
 
-
-        // Thay toàn bộ khối if (orderInfo != null && orderInfo.contains("#")) bằng:
         String orderIdStr = orderInfo != null ? orderInfo.replaceAll("[^0-9]", "") : "";
         if (!orderIdStr.isEmpty()) {
             try {

@@ -114,11 +114,6 @@ public class OrderServiceImpl implements OrderService{
             return new OrderDto(order);
     }
 
-    @Override
-    public OrderDto updateStatusOrder(int id) {
-
-        return null;
-    }
 
     @Override
     public void deleteOrder(int id) {

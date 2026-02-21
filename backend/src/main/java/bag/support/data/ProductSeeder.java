@@ -109,9 +109,8 @@ public class ProductSeeder {
         p.setName(name);
         p.setDescription(desc);
         p.setBasePrice(price);
-        p.setTotalStockQuantity(stock);
+        p.setTotalStockQuantity(0); // Sẽ được cộng từ tổng variant sau khi ProductVariantSeeder chạy
         p.setCategory(cat);
-        // images và reviews để null (hoặc empty list nếu cần)
         return p;
     }
 

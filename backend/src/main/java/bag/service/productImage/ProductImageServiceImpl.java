@@ -51,13 +51,13 @@ public class ProductImageServiceImpl implements ProductImageService {
 
             productImage.setProduct(product);
             productImage.setProductVariant(variant);
-            if (productImageRepository.countByProduct(variant) == 0) {
+            if (productImageRepository.countByProductVariant(variant) == 0) {
                 productImage.setMain(true);
             }
             productImageRepository.save(productImage);
             return new ProductImageDto(productImage);
         }catch(Exception e){
-            throw new RuntimeException("Create failed");
+            throw new RuntimeException("Create failed: " + e.getMessage(), e);
         }
     }
 
@@ -75,7 +75,7 @@ public class ProductImageServiceImpl implements ProductImageService {
             productImage.setProduct(product);
             productImage.setProductVariant(variant);
             if(request.isMain() && !productImage.isMain()){
-                productImageRepository.findByProductAndIsMainTrue(variant)
+                productImageRepository.findByProductVariantAndIsMainTrue(variant)
                         .ifPresent(oldMain -> {
                             oldMain.setMain(false);
                             productImageRepository.save(oldMain);
@@ -86,7 +86,7 @@ public class ProductImageServiceImpl implements ProductImageService {
             productImageRepository.save(productImage);
             return new ProductImageDto(productImage);
         }catch(Exception e){
-            throw new RuntimeException("Update failed");
+            throw new RuntimeException("Update failed: " + e.getMessage(), e);
         }
         }
 

@@ -16,5 +16,6 @@ public class OrderRequest {
     private Integer accountId;
     private Integer voucherId;
     private Order.OrderStatus orderStatus;
+    private Order.paymentMethod paymentMethod;
 
 }

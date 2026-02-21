@@ -20,6 +20,7 @@ public class OrderDto {
     private double totalPrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String paymentUrl; // URL thanh toán (VNPay, MoMo,...)
 
     public OrderDto(Order order) {
         this.id = order.getId();

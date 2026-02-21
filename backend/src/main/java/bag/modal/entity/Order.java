@@ -42,20 +42,18 @@ public class Order extends Time{
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.PENDING;
 
+    public enum paymentMethod{
+        COD, VNPAY,MOMO,ZALOPAY,BANK_TRANSFER,CREDIT_CARD;
+    }
+
     public enum OrderStatus {
         CONFIRMED,PENDING, SUCCESS,CANCELLED,REFUNDED;
     }
 
-    // Helper: add OrderDetails
-    public void addOrderDetail(OrderDetails detail) {
-        orderDetails.add(detail);
-        detail.setOrder(this);
+    public enum PaymentStatus{
+        UNPAID, PENDING, PAID, FAILED, REFUNDED;
     }
 
-    // Helper: remove OrderDetails
-    public void removeOrderDetail(OrderDetails detail) {
-        orderDetails.remove(detail);
-        detail.setOrder(null);
-    }
+
 
 }

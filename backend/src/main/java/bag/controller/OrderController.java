@@ -1,9 +1,13 @@
 package bag.controller;
 
+import bag.modal.dto.OrderDto;
+import bag.modal.entity.Order;
 import bag.modal.request.OrderRequest;
-import bag.modal.request.ProductRequest;
 import bag.service.order.OrderService;
+import bag.service.paymentService.VNPayService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+    private final VNPayService vnpayService;
+
+    @Value("${vnp.returnUrl}")
+    private String defaultReturnUrl;
     @GetMapping
     public ResponseEntity<?> getOrders(){
         try{
@@ -32,9 +40,22 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createOrder(@RequestBody OrderRequest request){
+    public ResponseEntity<?> createOrder(@RequestBody OrderRequest request, HttpServletRequest httpRequest){
         try{
-            return ResponseEntity.ok(orderService.createOrder(request));
+            OrderDto orderDto = orderService.createOrder(request);
+
+            // Nếu phương thức thanh toán là VNPAY, tạo URL thanh toán
+            if (Order.paymentMethod.VNPAY.equals(request.getPaymentMethod())) {
+                String paymentUrl = vnpayService.createOrder(
+                        (int) orderDto.getTotalPrice(),
+                        "Order #" + orderDto.getId(),
+                        defaultReturnUrl,
+                        httpRequest
+                );
+                orderDto.setPaymentUrl(paymentUrl);
+            }
+
+            return ResponseEntity.ok(orderDto);
         }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }

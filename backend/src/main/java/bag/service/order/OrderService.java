@@ -18,7 +18,6 @@ public interface OrderService {
 
     OrderDto updateOrder(OrderRequest request, int id);
 
-    OrderDto updateStatusOrder(int id);
 
     void deleteOrder(int id);
 }

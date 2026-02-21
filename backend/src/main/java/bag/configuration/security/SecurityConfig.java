@@ -84,7 +84,7 @@ public class SecurityConfig {
                                 //productImage
                                 "/productImage",
                                 "/productImage/create",
-                                "/productImage/update",
+                                "/productImage/update/{id}",
                                 "/productImage/variants/{variantId}/images/{imageId}",
 
                                 // product

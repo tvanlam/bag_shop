@@ -2,9 +2,9 @@ package bag.modal.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import lombok.Data;
-import net.minidev.json.annotate.JsonIgnore;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -18,12 +18,15 @@ public class ProductImage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Product product;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private ProductVariant productVariant;
 
     @Column
