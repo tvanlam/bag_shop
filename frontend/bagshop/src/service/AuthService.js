@@ -16,9 +16,12 @@ const AuthService = {
   refresh() {
     return axiosRaw.post("auth/refresh");
   },
-  resentOtp(email, action){
-    return axiosRaw.post(`auth/resent?email=${email}&action=${action}`)
-  }
+  resentOtp(email, action) {
+    return axiosRaw.post(`auth/resent?email=${email}&action=${action}`);
+  },
+  googleLogin(accessToken) {
+    return axiosRaw.post("auth/google", { accessToken });
+  },
 };
 
 export default AuthService;

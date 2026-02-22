@@ -1,38 +1,61 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import AuthService from '../../service/AuthService';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import AuthService from "../../service/AuthService";
 
-export const LOGIN = createAsyncThunk("auth/login", async (loginRequest, { rejectWithValue }) => {
-  try {
-    return (await AuthService.login(loginRequest)).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Login failed");
-  }
-});
+export const LOGIN = createAsyncThunk(
+  "auth/login",
+  async (loginRequest, { rejectWithValue }) => {
+    try {
+      return (await AuthService.login(loginRequest)).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Login failed");
+    }
+  },
+);
 
-export const LOGOUT = createAsyncThunk("auth/logout", async (accountId, { rejectWithValue }) => {
-  try {
-    await AuthService.logout(accountId);
-    return;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Logout failed");
-  }
-});
+export const LOGOUT = createAsyncThunk(
+  "auth/logout",
+  async (accountId, { rejectWithValue }) => {
+    try {
+      await AuthService.logout(accountId);
+      return;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Logout failed");
+    }
+  },
+);
 
-export const REFRESH = createAsyncThunk("auth/refresh", async (_, { rejectWithValue }) => {
-  try {
-    return (await AuthService.refresh()).data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Token refresh failed");
-  }
-});
+export const REFRESH = createAsyncThunk(
+  "auth/refresh",
+  async (_, { rejectWithValue }) => {
+    try {
+      return (await AuthService.refresh()).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Token refresh failed");
+    }
+  },
+);
 
-export const RESENT = createAsyncThunk("auth/resent", async({email, action}, { rejectWithValue })=>{
-  try {
-    return (await AuthService.resentOtp(email, action)).data
-  } catch (error) {
-    return rejectWithValue(error.response?.data || "Resent otp failed") 
-  }
-})
+export const RESENT = createAsyncThunk(
+  "auth/resent",
+  async ({ email, action }, { rejectWithValue }) => {
+    try {
+      return (await AuthService.resentOtp(email, action)).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Resent otp failed");
+    }
+  },
+);
+
+export const GOOGLE_LOGIN = createAsyncThunk(
+  "auth/googleLogin",
+  async (accessToken, { rejectWithValue }) => {
+    try {
+      return (await AuthService.googleLogin(accessToken)).data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Google login failed");
+    }
+  },
+);
 
 const initialState = {
   loading: false,
@@ -40,7 +63,7 @@ const initialState = {
   accessToken: null,
   accountId: null,
   position: null,
-  otp: null
+  otp: null,
 };
 
 const setPending = (state) => {
@@ -65,7 +88,7 @@ const AuthSlice = createSlice({
       state.loading = false;
       state.position = null;
       state.otp = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -101,10 +124,21 @@ const AuthSlice = createSlice({
       // Resent otp
       .addCase(RESENT.pending, setPending)
       .addCase(RESENT.fulfilled, (state, action) => {
-        state.loading = false
-        state.otp = action.payload
+        state.loading = false;
+        state.otp = action.payload;
       })
       .addCase(RESENT.rejected, setRejected)
+
+      // Google Login
+      .addCase(GOOGLE_LOGIN.pending, setPending)
+      .addCase(GOOGLE_LOGIN.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.accessToken = action.payload.accessToken;
+        state.accountId = action.payload.accountId || null;
+        state.position = action.payload.position || null;
+      })
+      .addCase(GOOGLE_LOGIN.rejected, setRejected);
   },
 });
 

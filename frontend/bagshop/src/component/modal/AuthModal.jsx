@@ -68,7 +68,13 @@ const AuthModal = ({ open, onClose }) => {
 
   const handleRegister = async (values) => {
     try {
-      await dispatch(REGISTER(values)).unwrap();
+      const payload = {
+        ...values,
+        dateOfBirth: values.dateOfBirth
+          ? values.dateOfBirth.toISOString()
+          : null,
+      };
+      await dispatch(REGISTER(payload)).unwrap();
       onClose?.();
       message.success(
         "Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.",

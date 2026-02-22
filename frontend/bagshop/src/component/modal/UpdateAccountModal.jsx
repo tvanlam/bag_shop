@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import dayjs from "dayjs";
 import {
   Modal,
   Form,
@@ -32,7 +33,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
       phoneNumber: account?.phoneNumber || "",
       firstName: account?.firstName || "",
       lastName: account?.lastName || "",
-      dateOfBirth: account?.dateOfBirth || "",
+      dateOfBirth: account?.dateOfBirth ? dayjs(account.dateOfBirth) : null,
       city: account?.city || "",
       address: account?.address || "",
     }),
@@ -73,9 +74,15 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
         })
         .catch((err) => message.error(err || "Đổi mật khẩu thất bại"));
     } else if (type === "UPDATE_INFORMATION") {
+      const payload = {
+        ...values,
+        dateOfBirth: values.dateOfBirth
+          ? values.dateOfBirth.toISOString()
+          : null,
+      };
       dispatch(
         UPDATE_INFORMATION({
-          accountRequest: { ...values },
+          accountRequest: payload,
           accountId: account.id,
         }),
       )
