@@ -38,8 +38,8 @@ public class ReadDotenv {
         setProp(dotenv, "SPRING_DATA_REDIS_SSL_ENABLED", "spring.data.redis.ssl.enabled");
 
         // APP – JWT
-        setProp(dotenv, "APP_JWT_ACCESS_SECRET_B64", "app.jwt.access-secret-b64");
-        setProp(dotenv, "APP_JWT_REFRESH_SECRET_B64", "app.jwt.refresh-secret-b64");
+        setProp(dotenv, "APP_JWT_ACCESS_TOKEN", "app.jwt.access-token");
+        setProp(dotenv, "APP_JWT_REFRESH_TOKEN", "app.jwt.refresh-token");
         setProp(dotenv, "APP_JWT_ACCESS_EXP_SECONDS", "app.jwt.access-exp-seconds");
         setProp(dotenv, "APP_JWT_REFRESH_EXP_SECONDS", "app.jwt.refresh-exp-seconds");
 
