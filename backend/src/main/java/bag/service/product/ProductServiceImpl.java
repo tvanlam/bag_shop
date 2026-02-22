@@ -7,6 +7,7 @@ import bag.modal.entity.Product;
 import bag.modal.entity.ProductVariant;
 import bag.modal.request.ProductRequest;
 import bag.modal.request.ProductVariantRequest;
+import bag.repository.CartItemRepository;
 import bag.repository.CategoryRepository;
 import bag.repository.ProductRepository;
 import bag.repository.VariantRepository;
@@ -27,12 +28,14 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final VariantRepository variantRepository;
+    private final CartItemRepository cartItemRepository;
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, VariantRepository variantRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, VariantRepository variantRepository, CartItemRepository cartItemRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.variantRepository = variantRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @Override
@@ -117,9 +120,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDto deleteProductById(int productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
+        cartItemRepository.deleteByProduct(product);
         product.setTotalStockQuantity(0);
         productRepository.save(product);
         return new ProductDto(product);

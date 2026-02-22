@@ -35,6 +35,7 @@ public class ReadDotenv {
         setProp(dotenv, "SPRING_DATA_REDIS_PORT", "spring.data.redis.port");
         setProp(dotenv, "SPRING_DATA_REDIS_PASSWORD", "spring.data.redis.password");
         setProp(dotenv, "SPRING_DATA_REDIS_TIMEOUT", "spring.data.redis.timeout");
+        setProp(dotenv, "SPRING_DATA_REDIS_SSL_ENABLED", "spring.data.redis.ssl.enabled");
 
         // APP – JWT
         setProp(dotenv, "APP_JWT_ACCESS_SECRET_B64", "app.jwt.access-secret-b64");

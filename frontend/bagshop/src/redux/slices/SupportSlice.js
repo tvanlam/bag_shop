@@ -1,21 +1,30 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import VerifyService from "../../service/VerifyService";
 
-export const VERIFY = createAsyncThunk('support/verify', async(request, {rejectWithValue})=>{
+export const VERIFY = createAsyncThunk(
+  "support/verify",
+  async (request, { rejectWithValue }) => {
     try {
-        return (await VerifyService.verify(request)).data
+      const result = (await VerifyService.verify(request)).data;
+      if (result === false) {
+        return rejectWithValue("Mã OTP không hợp lệ hoặc đã hết hạn");
+      }
+      return result;
     } catch (error) {
-        return rejectWithValue(error.data?.message || "Xảy ra lỗi không xác định trong quá trình xác thực")
+      return rejectWithValue(
+        error.response?.data ||
+          "Xảy ra lỗi không xác định trong quá trình xác thực",
+      );
     }
-})
-
+  },
+);
 
 const initialState = {
-    error: false,
-    loading: false,
-    response: null,
-    success: false
-}
+  error: false,
+  loading: false,
+  response: null,
+  success: false,
+};
 
 const setPending = (state) => {
   state.loading = true;
@@ -27,22 +36,22 @@ const setRejected = (state, action) => {
   state.error = action.payload;
 };
 const SupportSlice = createSlice({
-    name: "support",
-    initialState,
-    reducers: {
-        clearSupportSlice: () => initialState,
-    },
-    extraReducers: (builder) => {
-        builder
-        .addCase(VERIFY.pending, setPending)
-        .addCase(VERIFY.fulfilled, (state, action) => {
-            state.loading = false,
-            state.error = null,
-            state.success = action.payload
-        })
-        .addCase(VERIFY.rejected, setRejected)
-    }
-})
+  name: "support",
+  initialState,
+  reducers: {
+    clearSupportSlice: () => initialState,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(VERIFY.pending, setPending)
+      .addCase(VERIFY.fulfilled, (state, action) => {
+        ((state.loading = false),
+          (state.error = null),
+          (state.success = action.payload));
+      })
+      .addCase(VERIFY.rejected, setRejected);
+  },
+});
 
-export const { clearSupportSlice } = SupportSlice.actions
-export default SupportSlice.reducer
+export const { clearSupportSlice } = SupportSlice.actions;
+export default SupportSlice.reducer;

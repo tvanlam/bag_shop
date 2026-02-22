@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { clearSupportSlice, VERIFY } from "../../redux/slices/SupportSlice";
-import { RESENT } from "../../redux/slices/AuthSlice"
+import { RESENT } from "../../redux/slices/AuthSlice";
 const OTP_LENGTH = 5;
 
 const VerificationPage = () => {
@@ -41,7 +41,7 @@ const VerificationPage = () => {
       setCode(next);
       if (value && index < OTP_LENGTH - 1) inputs.current[index + 1]?.focus();
     },
-    [code]
+    [code],
   );
 
   const handleKeyDown = useCallback(
@@ -50,11 +50,14 @@ const VerificationPage = () => {
         inputs.current[index - 1]?.focus();
       }
     },
-    [code]
+    [code],
   );
 
   const handlePaste = useCallback((e) => {
-    const pasted = e.clipboardData.getData("text").slice(0, OTP_LENGTH).split("");
+    const pasted = e.clipboardData
+      .getData("text")
+      .slice(0, OTP_LENGTH)
+      .split("");
     if (pasted.every((c) => /^\d$/.test(c))) {
       setCode(pasted.concat(Array(OTP_LENGTH - pasted.length).fill("")));
       inputs.current[OTP_LENGTH - 1]?.focus();
@@ -81,7 +84,13 @@ const VerificationPage = () => {
     if (success) {
       dispatch(clearSupportSlice());
       message.success("Bạn đã xác thực thành công");
-      navigate(action === "REGISTER" ? "/" : action === "CHANGE_EMAIL" ? "/profile" : "/");
+      navigate(
+        action === "REGISTER"
+          ? "/"
+          : action === "CHANGE_EMAIL"
+            ? "/profile"
+            : "/",
+      );
     } else if (error) {
       message.error(error?.message || "Mã không hợp lệ");
       setCode(Array(OTP_LENGTH).fill(""));
@@ -92,9 +101,12 @@ const VerificationPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-4">Xác nhận OTP</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-4">
+          Xác nhận OTP
+        </h1>
         <p className="text-center text-gray-600 mb-2">
-          Nhập mã OTP được gửi đến <span className="font-semibold">{email}</span>
+          Nhập mã OTP được gửi đến{" "}
+          <span className="font-semibold">{email}</span>
         </p>
         <p className="text-center text-sm text-gray-500 mb-6">
           Hành động: {action.replace("_", " ").toLowerCase()}
@@ -127,12 +139,14 @@ const VerificationPage = () => {
           )}
         </div>
 
-        {loading && <p className="text-blue-500 text-center mb-4">Đang xác nhận...</p>}
+        {loading && (
+          <p className="text-blue-500 text-center mb-4">Đang xác nhận...</p>
+        )}
 
         <div className="flex justify-between gap-4">
           <button
             onClick={handleResend}
-            disabled={loading || timeLeft <= 0}
+            disabled={loading || timeLeft > 0}
             className="flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all disabled:opacity-50"
           >
             Gửi lại OTP

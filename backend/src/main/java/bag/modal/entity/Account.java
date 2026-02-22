@@ -26,13 +26,13 @@ public class Account extends Time{
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String firstName;
 
-    @Column(nullable = false)
+    @Column
     private String lastName;
 
-    @Column(nullable = false)
+    @Column
     private Date dateOfBirth;
 
     @Column(nullable = false)

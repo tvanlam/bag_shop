@@ -47,12 +47,12 @@ public class AccountRequest {
         account.setPassword(passwordEncoder.encode(password));
         account.setEmail(email);
         account.setPhoneNumber(phoneNumber);
-        account.setFirstName(firstName);
-        account.setLastName(lastName);
-        account.setDateOfBirth(dateOfBirth);
+        account.setFirstName(null);
+        account.setLastName(null);
+        account.setDateOfBirth(null);
         account.setCity(null);
         account.setAddress(null);
-        account.setPoint(point);
+        account.setPoint(0.0);
     }
 
     public void updateInformation(Account account){

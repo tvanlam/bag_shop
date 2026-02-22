@@ -47,11 +47,18 @@ public class VerificationService {
         String otpKey = buildKey(request.getEmail(), request.getAction());
         Map<Object, Object> tempData = redisTemplate.opsForHash().entries(otpKey);
         if (tempData.isEmpty()) {
+            System.out.println("❌ OTP không tìm thấy trong Redis. Key: " + otpKey);
             return false;
         }
 
         String storedOtp = (String) tempData.get("otp");
-        if (storedOtp == null || !storedOtp.equals(request.getOtp())) {
+        System.out.println("📧 Email: " + request.getEmail());
+        System.out.println("🔑 Action: " + request.getAction());
+        System.out.println("🔐 Stored OTP: '" + storedOtp + "' (length: " + (storedOtp != null ? storedOtp.length() : "null") + ")");
+        System.out.println("📝 Request OTP: '" + request.getOtp() + "' (length: " + request.getOtp().length() + ")");
+        System.out.println("✅ Khớp: " + (storedOtp != null && storedOtp.trim().equals(request.getOtp().trim())));
+        
+        if (storedOtp == null || !storedOtp.trim().equals(request.getOtp().trim())) {
             return false;
         }
         redisTemplate.delete(otpKey);

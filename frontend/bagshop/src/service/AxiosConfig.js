@@ -3,7 +3,8 @@ import { store } from "../redux/store";
 import AuthService from "./AuthService";
 import { setAuth, clearAuth } from "../redux/slices/AuthSlice";
 
-const API_BASE_URL = "http://localhost:8081/";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8081/";
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
@@ -33,7 +34,7 @@ axiosClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // --- INTERCEPTOR RESPONSE ---
@@ -76,7 +77,7 @@ axiosClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosClient;

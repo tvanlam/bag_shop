@@ -70,6 +70,9 @@ const AuthModal = ({ open, onClose }) => {
     try {
       const payload = {
         ...values,
+        username: values.email.split("@")[0] + "_" + Date.now(),
+        firstName: "",
+        lastName: "",
         dateOfBirth: values.dateOfBirth
           ? values.dateOfBirth.toISOString()
           : null,
@@ -179,17 +182,6 @@ const AuthModal = ({ open, onClose }) => {
                   onFinish={handleRegister}
                   className="space-y-4 px-4 py-2"
                 >
-                  <Form.Item
-                    name="username"
-                    label="Tài khoản"
-                    rules={[{ required: true, message: "Nhập tài khoản!" }]}
-                    className="font-medium italic"
-                  >
-                    <Input
-                      placeholder="Nhập tài khoản"
-                      className="rounded-md border-gray-300"
-                    />
-                  </Form.Item>
                   <Form.Item
                     name="email"
                     label="Email"
