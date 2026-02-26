@@ -36,7 +36,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        // Khi allowCredentials=true không được dùng "*"; phải liệt kê origin cụ thể
+        configuration.setAllowedOrigins(List.of(
+                "https://bagshop-23df6.web.app",
+                "https://bagshop-23df6.firebaseapp.com",
+                "http://localhost:5173"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
