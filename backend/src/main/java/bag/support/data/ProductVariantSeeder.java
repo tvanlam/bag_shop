@@ -34,8 +34,9 @@ public class ProductVariantSeeder {
             log.info("Starting product variant seeding...");
 
             List<Product> products = productRepository.findAll();
-            if (products.isEmpty()) {
-                throw new IllegalStateException("No products found in database. Run ProductSeeder first!");
+            if(products.isEmpty()){
+                log.warn("No products found. Skipping variant seeding.");
+                return;
             }
 
             int totalVariantsSeeded = 0;
