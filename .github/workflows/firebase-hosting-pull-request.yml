@@ -11,9 +11,6 @@ jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend/bagshop
     steps:
       - uses: actions/checkout@v4
 
@@ -23,6 +20,7 @@ jobs:
           node-version: "20"
 
       - name: Install deps & build frontend
+        working-directory: ./frontend/bagshop
         run: npm ci && npm run build
 
       - name: Deploy preview to Firebase Hosting

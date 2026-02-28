@@ -9,9 +9,6 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend/bagshop
     steps:
       - uses: actions/checkout@v4
 
@@ -21,6 +18,7 @@ jobs:
           node-version: "20"
 
       - name: Install deps & build frontend
+        working-directory: ./frontend/bagshop
         run: npm ci && npm run build
 
       - name: Deploy to Firebase Hosting (live)
