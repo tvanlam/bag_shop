@@ -10,7 +10,7 @@
 
 ```javascript
 createVariant(productRequest) {
-  return axiosClient.post("product/createVariant", productVariantRequest);
+  return axiosClient.post("product/createVariant", productVariantRequest)
 }
 
 updateProduct(variantId, productVariantRequest) {
