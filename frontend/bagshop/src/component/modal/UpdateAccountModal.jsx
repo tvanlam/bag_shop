@@ -26,7 +26,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
   const [formInfo] = Form.useForm();
   const loading = useSelector((s) => s.account.loading);
 
-  // Prefill cho tab Cập nhật thông tin
+  // Prefill cho tab Cập nhật thông tina
   const initialInfo = useMemo(
     () => ({
       username: account?.username || "",
