@@ -147,22 +147,29 @@ const handleSelectAddress = (address) => {
 };
 ```
 
-## 🎨 Hiển thị danh sách địa chỉ:
+## 🎨 Hiển thị danh sách địa chỉ:a
 
 ```javascript
-{addresses.map((address) => (
-  <div key={address.id} className="border p-4 rounded">
-    <h3>{address.fullName}</h3>
-    <p>📞 {address.phoneNumber}</p>
-    <p>📍 {address.addressLine}, {address.ward}, {address.district}, {address.city}</p>
-    {address.postalCode && <p>📮 {address.postalCode}</p>}
-    <p>🏷️ {address.type}</p>
-    {address.isDefault && <span className="badge">Mặc định</span>}
-    
-    <button onClick={() => handleSetDefault(address.id)}>Đặt làm mặc định</button>
-    <button onClick={() => handleDeleteAddress(address.id)}>Xóa</button>
-  </div>
-))}
+{
+  addresses.map((address) => (
+    <div key={address.id} className="border p-4 rounded">
+      <h3>{address.fullName}</h3>
+      <p>📞 {address.phoneNumber}</p>
+      <p>
+        📍 {address.addressLine}, {address.ward}, {address.district},{" "}
+        {address.city}
+      </p>
+      {address.postalCode && <p>📮 {address.postalCode}</p>}
+      <p>🏷️ {address.type}</p>
+      {address.isDefault && <span className="badge">Mặc định</span>}
+
+      <button onClick={() => handleSetDefault(address.id)}>
+        Đặt làm mặc định
+      </button>
+      <button onClick={() => handleDeleteAddress(address.id)}>Xóa</button>
+    </div>
+  ));
+}
 ```
 
 ## ✅ Tóm tắt:
@@ -174,4 +181,3 @@ const handleSelectAddress = (address) => {
 - ✅ **Actions**: setSelectedAddress, clearSelectedAddress, clearAddresses
 
 Bây giờ bạn có thể sử dụng hệ thống quản lý địa chỉ hoàn chỉnh! 🎉
-
