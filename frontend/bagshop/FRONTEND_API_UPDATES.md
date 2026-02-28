@@ -7,9 +7,10 @@
 ## 1. ProductService.js - Các thay đổi API endpoints
 
 ### Trước đây:
+
 ```javascript
 createVariant(productRequest) {
-  return axiosClient.post("product/createVariant", productVariantRequest);
+  return axiosClient.post("product/createVariant", productVariantRequest)
 }
 
 updateProduct(variantId, productVariantRequest) {
@@ -30,6 +31,7 @@ deleteVariant(variantId) {
 ```
 
 ### Sau khi cập nhật:
+
 ```javascript
 createVariant(productId, productVariantRequest) {
   return axiosClient.post(`product/${productId}/variants`, productVariantRequest);
@@ -51,95 +53,123 @@ deleteVariant(variantId) {
 ## 2. ProductSlice.js - Các thay đổi Redux Actions
 
 ### CREATE_VARIANT
+
 **Trước:**
+
 ```javascript
 async (productVariantRequest, { rejectWithValue }) => {
   const response = await ProductService.createProduct(productVariantRequest);
-}
+};
 ```
 
 **Sau:**
+
 ```javascript
 async ({ productId, productVariantRequest }, { rejectWithValue }) => {
-  const response = await ProductService.createVariant(productId, productVariantRequest);
-}
+  const response = await ProductService.createVariant(
+    productId,
+    productVariantRequest,
+  );
+};
 ```
 
 ### UPDATE_VARIANT
+
 **Trước:**
+
 ```javascript
 async ({ variantId, productVariantRequest }, { rejectWithValue }) => {
-  const response = await ProductService.updateVariant(variantId, productVariantRequest);
-}
+  const response = await ProductService.updateVariant(
+    variantId,
+    productVariantRequest,
+  );
+};
 ```
 
 **Sau:**
+
 ```javascript
-async ({ productId, variantId, productVariantRequest }, { rejectWithValue }) => {
-  const response = await ProductService.updateVariant(productId, variantId, productVariantRequest);
-}
+async (
+  { productId, variantId, productVariantRequest },
+  { rejectWithValue },
+) => {
+  const response = await ProductService.updateVariant(
+    productId,
+    variantId,
+    productVariantRequest,
+  );
+};
 ```
 
 ## 3. Cách sử dụng trong Components
 
 ### Tạo Variant mới:
+
 ```javascript
-import { CREATE_VARIANT } from '../../redux/slices/ProductSlice';
+import { CREATE_VARIANT } from "../../redux/slices/ProductSlice";
 
 // Trong component
 const handleCreateVariant = (productId, variantData) => {
-  dispatch(CREATE_VARIANT({
-    productId: productId,
-    productVariantRequest: {
+  dispatch(
+    CREATE_VARIANT({
       productId: productId,
-      sku: variantData.sku,
-      color: variantData.color,
-      colorCode: variantData.colorCode,
-      size: variantData.size,
-      imageUrl: variantData.imageUrl,
-      price: variantData.price,
-      stockQuantity: variantData.stockQuantity
-    }
-  }));
+      productVariantRequest: {
+        productId: productId,
+        sku: variantData.sku,
+        color: variantData.color,
+        colorCode: variantData.colorCode,
+        size: variantData.size,
+        imageUrl: variantData.imageUrl,
+        price: variantData.price,
+        stockQuantity: variantData.stockQuantity,
+      },
+    }),
+  );
 };
 ```
 
 ### Cập nhật Variant:
+
 ```javascript
-import { UPDATE_VARIANT } from '../../redux/slices/ProductSlice';
+import { UPDATE_VARIANT } from "../../redux/slices/ProductSlice";
 
 // Trong component
 const handleUpdateVariant = (productId, variantId, variantData) => {
-  dispatch(UPDATE_VARIANT({
-    productId: productId,
-    variantId: variantId,
-    productVariantRequest: {
-      price: variantData.price,
-      stockQuantity: variantData.stockQuantity,
-      imageUrl: variantData.imageUrl,
-      colorCode: variantData.colorCode
-    }
-  }));
+  dispatch(
+    UPDATE_VARIANT({
+      productId: productId,
+      variantId: variantId,
+      productVariantRequest: {
+        price: variantData.price,
+        stockQuantity: variantData.stockQuantity,
+        imageUrl: variantData.imageUrl,
+        colorCode: variantData.colorCode,
+      },
+    }),
+  );
 };
 ```
 
 ### Cập nhật Product:
+
 ```javascript
-import { UPDATE_PRODUCT } from '../../redux/slices/ProductSlice';
+import { UPDATE_PRODUCT } from "../../redux/slices/ProductSlice";
 
 // Trong component
 const handleUpdateProduct = (productId, productData) => {
-  dispatch(UPDATE_PRODUCT({
-    productId: productId,
-    productRequest: {
-      name: productData.name,
-      description: productData.description,
-      basePrice: productData.basePrice,
-      totalStockQuantity: productData.totalStockQuantity,
-      images: productData.images,
-      categoryId: productData.categoryId
-    }
-  }));
+  dispatch(
+    UPDATE_PRODUCT({
+      productId: productId,
+      productRequest: {
+        name: productData.name,
+        description: productData.description,
+        basePrice: productData.basePrice,
+        totalStockQuantity: productData.totalStockQuantity,
+        images: productData.images,
+        categoryId: productData.categoryId,
+      },
+    }),
+  );
 };
 ```
 
@@ -171,4 +201,3 @@ const handleUpdateProduct = (productId, productData) => {
 - [ ] Form cập nhật variant (admin)
 - [ ] Form cập nhật sản phẩm (admin)
 - [ ] Component quản lý variants trong ProductDetails
-
