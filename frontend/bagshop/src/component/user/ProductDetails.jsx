@@ -74,7 +74,7 @@ const ProductDetails = () => {
         setMainImage(mainImg.imageUrl);
       }
     }
-  }, [currentProduct]);
+  }, [currentProduct, selectedVariant]);
 
   useEffect(() => {
     // Cập nhật ảnh khi đổi variant (màu/size)

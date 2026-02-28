@@ -17,7 +17,6 @@ const PaymentCallback = () => {
         // Lấy các tham số từ URL
         const responseCode = searchParams.get("vnp_ResponseCode");
         const transactionStatus = searchParams.get("vnp_TransactionStatus");
-        const orderId = searchParams.get("vnp_TxnRef");
 
         // VNPay response code: 00 = success
         if (responseCode === "00" && transactionStatus === "00") {

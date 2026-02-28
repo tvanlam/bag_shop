@@ -4,7 +4,6 @@ import { GoArrowRight } from "react-icons/go";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 
 const ProductPage = ({ currentPage, totalPages, onPageChange }) => {
-  const [page, setPage] = useState(1);
   const getPageNumber = () => {
     const page = [];
     const maxPageToShow = 5;
