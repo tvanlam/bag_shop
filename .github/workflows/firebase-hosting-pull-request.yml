@@ -19,11 +19,9 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install deps & build frontend
-        working-directory: ./frontend/bagshop
-        env:
-          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
-        run: npm ci && npm run build
+	      - name: Install deps & build frontend
+	        working-directory: ./frontend/bagshop
+	        run: npm ci && npm run build
 
       - name: Deploy preview to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0

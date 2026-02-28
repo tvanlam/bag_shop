@@ -57,9 +57,7 @@ jobs:
       - name: Lint frontend
         run: npm run lint
 
-      - name: Build frontend
-	        env:
-	          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+	      - name: Build frontend
 	        run: npm run build
 
 	deploy:
@@ -98,10 +96,8 @@ jobs:
 	      working-directory: frontend/bagshop
 	      run: npm ci
 
-	    - name: Build frontend (deploy)
+		    - name: Build frontend (deploy)
 		      working-directory: frontend/bagshop
-		      env:
-		        VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
 		      run: npm run build
 
 	    - name: Deploy frontend to Firebase Hosting (live)
