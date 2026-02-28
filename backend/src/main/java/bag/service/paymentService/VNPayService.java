@@ -35,9 +35,18 @@ public class VNPayService {
         String vnp_TmnCode = vnpayConfig.getVnpTmnCode();
         String orderType = "order-type";
 
+        String hashSecret = vnpayConfig.getVnpHashSecret();
+        String maskedHashSecret;
+        if (hashSecret == null || hashSecret.isEmpty()) {
+            maskedHashSecret = "NULL";
+        } else if (hashSecret.length() <= 4) {
+            maskedHashSecret = "***" + hashSecret;
+        } else {
+            maskedHashSecret = "***" + hashSecret.substring(hashSecret.length() - 4);
+        }
+
         log.info("VNPay Config - TmnCode: {}, PayUrl: {}, HashSecret: {}",
-                vnp_TmnCode, vnpayConfig.getVnpPayUrl(),
-                vnpayConfig.getVnpHashSecret() != null ? "***" + vnpayConfig.getVnpHashSecret().substring(vnpayConfig.getVnpHashSecret().length() - 4) : "NULL");
+                vnp_TmnCode, vnpayConfig.getVnpPayUrl(), maskedHashSecret);
 
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", "2.1.0");
@@ -70,7 +79,18 @@ public class VNPayService {
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
 
         String finalUrl = vnpayConfig.getVnpPayUrl() + "?" + queryUrl;
-        log.info("Final payment URL length: {}, SecureHash: {}", finalUrl.length(), vnp_SecureHash.substring(0, 10) + "...");
+
+        // Log ngắn gọn mã hash, tránh lỗi substring khi null/chuỗi quá ngắn
+        String shortSecureHash;
+        if (vnp_SecureHash == null) {
+            shortSecureHash = "NULL";
+        } else if (vnp_SecureHash.length() <= 10) {
+            shortSecureHash = vnp_SecureHash;
+        } else {
+            shortSecureHash = vnp_SecureHash.substring(0, 10) + "...";
+        }
+
+        log.info("Final payment URL length: {}, SecureHash: {}", finalUrl.length(), shortSecureHash);
 
         return finalUrl;
     }
