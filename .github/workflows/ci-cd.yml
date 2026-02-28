@@ -96,9 +96,9 @@ deploy:
       working-directory: frontend/bagshop
       run: npm ci
 
-      - name: Build frontend (deploy)
-        working-directory: frontend/bagshop
-        run: npm run build
+    - name: Build frontend (deploy)
+      working-directory: frontend/bagshop
+      run: npm run build
 
     - name: Deploy frontend to Firebase Hosting (live)
       uses: FirebaseExtended/action-hosting-deploy@v0
