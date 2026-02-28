@@ -58,7 +58,9 @@ jobs:
         run: npm run lint
 
       - name: Build frontend
-        run: npm run build
+	        env:
+	          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+	        run: npm run build
 
 	deploy:
 	  name: Deploy backend (Render) & frontend (Firebase)
@@ -97,8 +99,10 @@ jobs:
 	      run: npm ci
 
 	    - name: Build frontend (deploy)
-	      working-directory: frontend/bagshop
-	      run: npm run build
+		      working-directory: frontend/bagshop
+		      env:
+		        VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+		      run: npm run build
 
 	    - name: Deploy frontend to Firebase Hosting (live)
 	      uses: FirebaseExtended/action-hosting-deploy@v0
