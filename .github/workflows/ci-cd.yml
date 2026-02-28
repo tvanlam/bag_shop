@@ -57,8 +57,8 @@ jobs:
       - name: Lint frontend
         run: npm run lint
 
-	      - name: Build frontend
-	        run: npm run build
+	    - name: Build frontend
+	      run: npm run build
 
 	deploy:
 	  name: Deploy backend (Render) & frontend (Firebase)
