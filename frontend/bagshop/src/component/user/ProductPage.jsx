@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { GoArrowRight } from "react-icons/go";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 
