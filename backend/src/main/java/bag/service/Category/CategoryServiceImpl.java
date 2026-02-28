@@ -6,6 +6,7 @@ import bag.modal.request.CategoryRequest;
 import bag.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,11 +17,13 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CategoryDto> getAll() {
         return categoryRepository.findAll().stream().map(CategoryDto::new).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CategoryDto getCategoryById(int categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));

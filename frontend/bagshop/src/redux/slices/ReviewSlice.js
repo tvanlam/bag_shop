@@ -8,9 +8,8 @@ const initialReview = {
   review: null,
   loading: false,
   error: null,
-};
+  };
 
-// Thunk: lấy danh sách review
 export const FETCH_REVIEWS = createAsyncThunk(
   "review/fetchReviews",
   async (_, { rejectWithValue }) => {
@@ -25,7 +24,6 @@ export const FETCH_REVIEWS = createAsyncThunk(
   }
 );
 
-// Thunk: lấy review theo productId
 export const FETCH_REVIEW_BY_PRODUCT_ID = createAsyncThunk(
   "review/fetchByProductId",
   async (productId, { rejectWithValue }) => {
@@ -66,7 +64,6 @@ const ReviewSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    // fetch All review
       .addCase(FETCH_REVIEWS.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -79,7 +76,7 @@ const ReviewSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-    // fetch Review by product
+        
       .addCase(FETCH_REVIEW_BY_PRODUCT_ID.pending, (state)=>{
         state.loading = true;
         state.error = null;

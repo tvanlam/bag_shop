@@ -1,6 +1,7 @@
 package bag.service.product;
 
 import bag.modal.dto.ProductDto;
+import bag.modal.dto.ProductListDto;
 import bag.modal.dto.ProductVariantDto;
 import bag.modal.request.ProductRequest;
 import bag.modal.request.ProductVariantRequest;
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ProductService {
-    Page<ProductDto> getAllProductsWithPaging(int page, int size, String sortBy, String sortDir);
+    Page<ProductListDto> getAllProductsWithPaging(int page, int size, String sortBy, String sortDir);
 
     List<ProductDto> getAllProductsWithoutPaging();
     List<ProductDto> getByCategoryId(int categoryId);

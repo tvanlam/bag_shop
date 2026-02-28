@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AccountService from "../../service/AccountService";
 
-// Thunk: danh sách tài khoản
 export const FETCH_ACCOUNTS = createAsyncThunk(
   "account/fetchAccounts",
   async (_, { rejectWithValue }) => {
@@ -13,7 +12,6 @@ export const FETCH_ACCOUNTS = createAsyncThunk(
   }
 );
 
-// Thunk: tài khoản đăng nhập
 export const FETCH_ACCOUNT = createAsyncThunk(
   "account/fetchAccount",
   async (accountId, { rejectWithValue }) => {
@@ -25,7 +23,6 @@ export const FETCH_ACCOUNT = createAsyncThunk(
   }
 );
 
-// Thunk: tài khoản đang được xem
 export const FETCH_SELECTED_ACCOUNT = createAsyncThunk(
   "account/fetchSelectedAccount",
   async (accountId, { rejectWithValue }) => {
@@ -39,7 +36,6 @@ export const FETCH_SELECTED_ACCOUNT = createAsyncThunk(
   }
 );
 
-// Các thao tác khác
 export const REGISTER = createAsyncThunk(
   "account/register",
   async (accountRequest, { rejectWithValue }) => {
@@ -110,7 +106,6 @@ export const DELETE_ACCOUNT = createAsyncThunk(
   }
 );
 
-// Initial state
 const initialState = {
   accounts: [],
   account: null,
@@ -125,7 +120,6 @@ const initialState = {
   errorSelected: null,
 };
 
-// Slice
 const AccountSlice = createSlice({
   name: "account",
   initialState,
@@ -143,7 +137,6 @@ const AccountSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch all accounts
       .addCase(FETCH_ACCOUNTS.pending, (state) => {
         state.loadingList = true;
         state.errorList = null;
@@ -157,7 +150,6 @@ const AccountSlice = createSlice({
         state.errorList = action.payload;
       })
 
-      // Fetch logged-in account
       .addCase(FETCH_ACCOUNT.pending, (state) => {
         state.loadingAccount = true;
         state.errorAccount = null;
@@ -171,7 +163,6 @@ const AccountSlice = createSlice({
         state.errorAccount = action.payload;
       })
 
-      // Fetch selected account
       .addCase(FETCH_SELECTED_ACCOUNT.pending, (state) => {
         state.loadingSelected = true;
         state.errorSelected = null;
@@ -185,7 +176,6 @@ const AccountSlice = createSlice({
         state.errorSelected = action.payload;
       })
 
-      // Create admin
       .addCase(CREATE_ADMIN.pending, (state) => {
         state.loadingList = true;
         state.errorList = null;
@@ -199,7 +189,6 @@ const AccountSlice = createSlice({
         state.errorList = action.payload;
       })
 
-      // Register
       .addCase(REGISTER.pending, (state) => {
         state.loadingList = true;
         state.errorList = null;
@@ -213,7 +202,6 @@ const AccountSlice = createSlice({
         state.errorList = action.payload;
       })
 
-      // Update email
       .addCase(UPDATE_EMAIL.pending, (state) => {
         state.loadingAccount = true;
         state.errorAccount = null;
@@ -227,7 +215,6 @@ const AccountSlice = createSlice({
         state.errorAccount = action.payload;
       })
 
-      // Update password
       .addCase(UPDATE_PASSWORD.pending, (state) => {
         state.loadingAccount = true;
         state.errorAccount = null;
@@ -241,7 +228,6 @@ const AccountSlice = createSlice({
         state.errorAccount = action.payload;
       })
 
-      // Update information
       .addCase(UPDATE_INFORMATION.pending, (state) => {
         state.loadingList = true;
         state.errorList = null;
@@ -258,7 +244,6 @@ const AccountSlice = createSlice({
         state.errorList = action.payload;
       })
 
-      // Delete account
       .addCase(DELETE_ACCOUNT.pending, (state) => {
         state.loadingList = true;
         state.errorList = null;
@@ -276,7 +261,6 @@ const AccountSlice = createSlice({
   },
 });
 
-// Selectors
 export const selectAccounts = (state) => state.account.accounts;
 export const selectAccount = (state) => state.account.account;
 export const selectSelectedAccount = (state) => state.account.selectedAccount;
@@ -287,7 +271,7 @@ export const selectSelectedAccountLoading = (state) =>
   state.account.loadingSelected;
 
 export const selectAccountError = (state) => state.account.errorAccount;
-export const selectAccountListError = (state) => state.account.errorList;
+export const selectAccountListError = (state) => state.account.errorList; 
 export const selectSelectedAccountError = (state) =>
   state.account.errorSelected;
 

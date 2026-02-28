@@ -1,6 +1,7 @@
 package bag.service.product;
 
 import bag.modal.dto.ProductDto;
+import bag.modal.dto.ProductListDto;
 import bag.modal.dto.ProductVariantDto;
 import bag.modal.entity.Category;
 import bag.modal.entity.Product;
@@ -11,7 +12,7 @@ import bag.repository.CartItemRepository;
 import bag.repository.CategoryRepository;
 import bag.repository.ProductRepository;
 import bag.repository.VariantRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,22 +40,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> getAllProductsWithPaging(int page, int size, String sortBy, String sortDir) {
+    @Transactional(readOnly = true)
+    public Page<ProductListDto> getAllProductsWithPaging(int page, int size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("asc")
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
         return productRepository.findAll(pageable)
-                .map(ProductDto::new);
+                .map(ProductListDto::new);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDto> getAllProductsWithoutPaging() {
-        return productRepository.findAll().stream().map(ProductDto::new).collect(Collectors.toList());
+        return productRepository.findAllWithImagesAndVariants().stream().map(ProductDto::new).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDto> getByCategoryId(int categoryId) {
         List<Product> products = productRepository.findByCategory(categoryId);
         if (products.isEmpty()){
@@ -64,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDto> getProductByRangePrice(double minPrice, double maxPrice) {
         if (minPrice < 0) minPrice = 0;
         if (maxPrice <= 0) maxPrice = Double.MAX_VALUE;
@@ -74,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public ProductDto getProductById(int productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -88,6 +94,7 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
+    @Transactional
     @Override
     public ProductDto addProduct(ProductRequest request) {
         try {
@@ -104,6 +111,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDto updateProduct(ProductRequest request, int id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));

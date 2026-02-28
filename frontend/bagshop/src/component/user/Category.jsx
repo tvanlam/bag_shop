@@ -46,11 +46,18 @@ const Category = () => {
               index % 2 === 0 ? "mt-8" : ""
             }`}
           >
-            <img
-              src={bag.image}
-              alt={bag.name}
-              className="w-full h-64 object-cover"
-            />
+            {bag.image ? (
+              <img
+                src={bag.image}
+                alt={bag.name}
+                className="w-full h-64 object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <div className="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+                {bag.name}
+              </div>
+            )}
             <div className="p-4 text-center">
               <p className="text-lg font-medium text-gray-800">{bag.name}</p>
             </div>

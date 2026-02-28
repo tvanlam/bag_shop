@@ -1,9 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import CheckoutService from "../../service/CheckoutService";
 
-// ==================== ASYNC THUNKS ====================
-
-// Thunk: Lấy thông tin địa chỉ giao hàng
 export const FETCH_SHIPPING_ADDRESSES = createAsyncThunk(
   "checkout/fetchShippingAddresses",
   async (accountId, { rejectWithValue }) => {
@@ -17,7 +14,6 @@ export const FETCH_SHIPPING_ADDRESSES = createAsyncThunk(
   }
 );
 
-// Thunk: Thêm địa chỉ giao hàng mới
 export const ADD_SHIPPING_ADDRESS = createAsyncThunk(
   "checkout/addShippingAddress",
   async ({ accountId, addressData }, { rejectWithValue }) => {
@@ -32,7 +28,6 @@ export const ADD_SHIPPING_ADDRESS = createAsyncThunk(
   }
 );
 
-// thunk: tạo mã giảm giá mới
 export const CREATE_VOUCHER = createAsyncThunk(
   "checkout/createVoucher",
   async ({ VoucherRequest }, { rejectWithValue }) => {
@@ -44,7 +39,6 @@ export const CREATE_VOUCHER = createAsyncThunk(
   }
 );
 
-// Thunk: Tạo đơn hàng
 export const CREATE_ORDER = createAsyncThunk(
   "checkout/createOrder",
   async ({ accountId, voucherId, paymentMethod }, { rejectWithValue }) => {
@@ -60,7 +54,6 @@ export const CREATE_ORDER = createAsyncThunk(
     }
   }
 );
-// ==================== INITIAL STATE ====================
 
 const initialState = {
   // Địa chỉ giao hàng
@@ -85,7 +78,6 @@ const initialState = {
   createdOrder: null,
 };
 
-// ==================== HELPER FUNCTIONS ====================
 
 const setPending = (state) => {
   state.loading = true;
@@ -97,13 +89,11 @@ const setRejected = (state, action) => {
   state.error = action.payload;
 };
 
-// ==================== SLICE ====================
 
 const CheckoutSlice = createSlice({
   name: "checkout",
   initialState,
   reducers: {
-    // Clear checkout state
     clearCheckoutState: () => initialState,
 
     clearErrorState: (state) => {
@@ -117,34 +107,28 @@ const CheckoutSlice = createSlice({
       state.appliedVoucherId = action.null;
     },
 
-    // Set địa chỉ được chọn
     setSelectedAddress: (state, action) => {
       state.selectedAddress = action.payload;
     },
 
-    // Set phương thức giao hàng
     setShippingMethod: (state, action) => {
       state.orderInfo.shippingMethod = action.payload;
     },
 
-    // Set phương thức thanh toán
     setPaymentMethod: (state, action) => {
       state.orderInfo.paymentMethod = action.payload;
     },
 
-    // Set ghi chú
     setNote: (state, action) => {
       state.orderInfo.note = action.payload;
     },
 
-    // Clear error
     clearError: (state) => {
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // === FETCH_SHIPPING_ADDRESSES ===
       .addCase(FETCH_SHIPPING_ADDRESSES.pending, setPending)
       .addCase(FETCH_SHIPPING_ADDRESSES.fulfilled, (state, action) => {
         state.loading = false;
@@ -153,7 +137,6 @@ const CheckoutSlice = createSlice({
       })
       .addCase(FETCH_SHIPPING_ADDRESSES.rejected, setRejected)
 
-      // === ADD_SHIPPING_ADDRESS ===
       .addCase(ADD_SHIPPING_ADDRESS.pending, setPending)
       .addCase(ADD_SHIPPING_ADDRESS.fulfilled, (state, action) => {
         state.loading = false;
@@ -163,7 +146,6 @@ const CheckoutSlice = createSlice({
       })
       .addCase(ADD_SHIPPING_ADDRESS.rejected, setRejected)
 
-      // === CREATE_ORDER ===
       .addCase(CREATE_ORDER.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -177,7 +159,6 @@ const CheckoutSlice = createSlice({
         state.error = action.payload;
       })
 
-      // VOUCHER
       .addCase(CREATE_VOUCHER.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -193,8 +174,6 @@ const CheckoutSlice = createSlice({
   },
 });
 
-// ==================== SELECTORS ====================
-
 export const selectShippingAddresses = (state) =>
   state.checkout.shippingAddresses;
 export const selectSelectedAddress = (state) => state.checkout.selectedAddress;
@@ -202,8 +181,6 @@ export const selectOrderInfo = (state) => state.checkout.orderInfo;
 export const selectCheckoutLoading = (state) => state.checkout.loading;
 export const selectCheckoutError = (state) => state.checkout.error;
 export const selectCreatedOrder = (state) => state.checkout.createdOrder;
-
-// ==================== EXPORTS ====================
 
 export const {
   clearCheckoutState,

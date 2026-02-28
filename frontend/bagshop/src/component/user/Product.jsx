@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { RiFilterLine } from "react-icons/ri";
 import {
   MdKeyboardArrowDown,
@@ -10,40 +10,78 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  FETCH_PRODUCT,
   FETCH_PRODUCTS,
+  FETCH_PRODUCTS_APPEND,
   selectProducts,
   selectProductLoading,
+  selectProductLoadingMore,
   selectProductError,
   selectProductPagination,
+  selectHasMoreProducts,
+  clearProduct,
 } from "../../redux/slices/ProductSlice";
 import { ADD_TO_CART, FETCH_CARTS } from "../../redux/slices/CartSlice";
-import ProductPage from "./ProductPage";
-import { Button } from "antd";
 import ModalFilter from "../utils/ModalFilter";
+
+const PAGE_SIZE = 12;
+const SORT_BY = "id";
+const SORT_DIR = "asc";
 
 const Product = () => {
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const loading = useSelector(selectProductLoading);
+  const loadingMore = useSelector(selectProductLoadingMore);
   const error = useSelector(selectProductError);
   const pagination = useSelector(selectProductPagination);
+  const hasMore = useSelector(selectHasMoreProducts);
   const { accountId } = useSelector((state) => state.auth);
   const [sortBy, setSortBy] = useState("default");
   const [favorites, setFavorites] = useState([]);
   const [selectOption, setSelectOption] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [modalFilter, setModalFilter] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState(null);
+  const sentinelRef = useRef(null);
+
+  // Lazy load: tải trang đầu khi vào trang
+  useEffect(() => {
+    dispatch(clearProduct());
+    dispatch(
+      FETCH_PRODUCTS({
+        pageNumber: 0,
+        pageSize: PAGE_SIZE,
+        sortBy: SORT_BY,
+        sortDir: SORT_DIR,
+      }),
+    );
+  }, [dispatch]);
+
+  // Infinite scroll: khi kéo tới cuối thì tải thêm
+  const loadMore = useCallback(() => {
+    if (loading || loadingMore || !hasMore) return;
+    const nextPage = (pagination?.currentPage ?? 0) + 1;
+    dispatch(
+      FETCH_PRODUCTS_APPEND({
+        pageNumber: nextPage,
+        pageSize: PAGE_SIZE,
+        sortBy: SORT_BY,
+        sortDir: SORT_DIR,
+      }),
+    );
+  }, [dispatch, loading, loadingMore, hasMore, pagination?.currentPage]);
 
   useEffect(() => {
-    dispatch(FETCH_PRODUCTS({ pageNumber: currentPage - 1, pageSize: 12 }));
-  }, [dispatch, currentPage]);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore();
+      },
+      { rootMargin: "200px", threshold: 0.1 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   const toggleFavorite = (productId) => {
     setFavorites((prev) =>
@@ -387,6 +425,7 @@ const Product = () => {
                             src={product.images[0].imageUrl}
                             alt={product.name || "Product"}
                             className="w-full h-64 object-cover cursor-pointer"
+                            loading="lazy"
                             onError={(e) => {
                               e.target.style.display = "none";
                               const placeholder =
@@ -524,14 +563,22 @@ const Product = () => {
             )}
           </div>
         )}
+
+        {/* Sentinel cho lazy loading: khi div này lọt vào viewport sẽ gọi loadMore */}
+        {!loading && !error && (products?.length ?? 0) > 0 && (
+          <div ref={sentinelRef} className="flex justify-center py-8 min-h-[60px]">
+            {loadingMore && (
+              <div className="flex items-center gap-2 text-gray-500">
+                <span className="inline-block w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                <span>Đang tải thêm...</span>
+              </div>
+            )}
+            {!loadingMore && !hasMore && products?.length > 0 && (
+              <span className="text-gray-500 text-sm">Đã xem hết sản phẩm</span>
+            )}
+          </div>
+        )}
       </div>
-      {pagination && pagination.totalPages > 0 && (
-        <ProductPage
-          currentPage={currentPage}
-          totalPages={pagination.totalPages}
-          onPageChange={handlePageChange}
-        />
-      )}
     </div>
   );
 };

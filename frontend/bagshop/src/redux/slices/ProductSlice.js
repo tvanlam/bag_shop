@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import ProductService from "../../service/ProductService";
 
-// ==================== ASYNC THUNKS ====================
-
 export const FETCH_PRODUCTS = createAsyncThunk(
   "product/fetchProducts",
   async (
@@ -19,6 +17,27 @@ export const FETCH_PRODUCTS = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Fetch products failed");
+    }
+  },
+);
+
+/** Lazy load: tải trang tiếp theo và append vào danh sách (infinite scroll) */
+export const FETCH_PRODUCTS_APPEND = createAsyncThunk(
+  "product/fetchProductsAppend",
+  async (
+    { pageNumber = 0, pageSize = 10, sortBy = "id", sortDir = "asc" } = {},
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await ProductService.getProductsWithPaging(
+        pageNumber,
+        pageSize,
+        sortBy,
+        sortDir,
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Fetch more products failed");
     }
   },
 );
@@ -134,13 +153,11 @@ export const DELETE_VARIANT = createAsyncThunk(
   },
 );
 
-// ==================== INITIAL STATE ====================
-
 const initialState = {
   loading: false,
+  loadingMore: false,
   error: null,
 
-  // Danh sách chung
   products: [],
   product: null,
 
@@ -154,8 +171,6 @@ const initialState = {
   },
 };
 
-// ==================== SLICE ====================
-
 const ProductSlice = createSlice({
   name: "product",
   initialState,
@@ -163,7 +178,7 @@ const ProductSlice = createSlice({
     clearProduct: () => initialState,
   },
   extraReducers: (builder) => {
-    // === FETCH_PRODUCTS ===
+    
     builder
       .addCase(FETCH_PRODUCTS.pending, (state) => {
         state.loading = true;
@@ -188,7 +203,31 @@ const ProductSlice = createSlice({
         state.error = action.payload;
       })
 
-      // === FETCH_PRODUCT ===
+     
+      .addCase(FETCH_PRODUCTS_APPEND.pending, (state) => {
+        state.loadingMore = true;
+        state.error = null;
+      })
+      .addCase(FETCH_PRODUCTS_APPEND.fulfilled, (state, action) => {
+        state.loadingMore = false;
+        const newContent = action.payload.content || action.payload.products || action.payload;
+        const list = Array.isArray(newContent) ? newContent : [];
+        state.products = [...(state.products || []), ...list];
+        if (action.payload.number !== undefined) {
+          state.pagination = {
+            currentPage: action.payload.number ?? 0,
+            totalPages: action.payload.totalPages ?? 0,
+            totalElements: action.payload.totalElements ?? 0,
+            pageSize: action.payload.size ?? 10,
+          };
+        }
+      })
+      .addCase(FETCH_PRODUCTS_APPEND.rejected, (state, action) => {
+        state.loadingMore = false;
+        state.error = action.payload;
+      })
+
+      
       .addCase(FETCH_PRODUCT.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -202,7 +241,7 @@ const ProductSlice = createSlice({
         state.error = action.payload;
       })
 
-      // === FETCH_PRODUCT_BY_CATEGORY ===
+     
       .addCase(FETCH_PRODUCT_BY_CATEGORY.pending, (state, action) => {
         const categoryId = action.meta.arg;
         if (!state.byCategory[categoryId]) {
@@ -230,12 +269,12 @@ const ProductSlice = createSlice({
         };
       })
 
-      // === CREATE_PRODUCT ===
+     
       .addCase(CREATE_PRODUCT.fulfilled, (state, action) => {
         state.products.push(action.payload);
       })
 
-      // === UPDATE_PRODUCT ===
+      
       .addCase(UPDATE_PRODUCT.fulfilled, (state, action) => {
         state.products = state.products.map((p) =>
           p.id === action.payload.id ? action.payload : p,
@@ -243,17 +282,17 @@ const ProductSlice = createSlice({
         state.product = action.payload;
       })
 
-      // === DELETE_PRODUCT ===
+      
       .addCase(DELETE_PRODUCT.fulfilled, (state, action) => {
         const deletedId = action.payload;
         state.products = state.products.filter((p) => p.id !== deletedId);
       })
-      // === CREATE_VARIANT ===
+      
       .addCase(CREATE_VARIANT.fulfilled, (state, action) => {
         state.products.push(action.payload);
       })
 
-      // === UPDATE_VARIANT ===
+     
       .addCase(UPDATE_VARIANT.fulfilled, (state, action) => {
         state.products = state.products.map((p) =>
           p.id === action.payload.id ? action.payload : p,
@@ -269,13 +308,19 @@ const ProductSlice = createSlice({
   },
 });
 
-// ==================== SELECTORS ====================
 
 export const selectProductLoading = (state) => state.product.loading;
+export const selectProductLoadingMore = (state) => state.product.loadingMore;
 export const selectProductError = (state) => state.product.error;
 export const selectProducts = (state) => state.product.products;
 export const selectProduct = (state) => state.product.product;
 export const selectProductPagination = (state) => state.product.pagination;
+
+/** Còn trang tiếp theo để lazy load không */
+export const selectHasMoreProducts = (state) => {
+  const p = state.product.pagination;
+  return p.totalPages > 0 && p.currentPage + 1 < p.totalPages;
+};
 
 export const selectProductsByCategory = (state) => state.product.byCategory;
 

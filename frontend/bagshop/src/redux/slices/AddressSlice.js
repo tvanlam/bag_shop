@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AddressService from "../../service/AddressService";
 
-// Thunk: Lấy tất cả địa chỉ của account
 export const FETCH_ADDRESSES = createAsyncThunk(
   "address/fetchAddresses",
   async (accountId, { rejectWithValue }) => {
@@ -13,7 +12,6 @@ export const FETCH_ADDRESSES = createAsyncThunk(
   }
 );
 
-// Thunk: Lấy địa chỉ mặc định
 export const FETCH_DEFAULT_ADDRESS = createAsyncThunk(
   "address/fetchDefaultAddress",
   async (accountId, { rejectWithValue }) => {
@@ -27,7 +25,6 @@ export const FETCH_DEFAULT_ADDRESS = createAsyncThunk(
   }
 );
 
-// Thunk: Lấy địa chỉ theo ID
 export const FETCH_ADDRESS_BY_ID = createAsyncThunk(
   "address/fetchAddressById",
   async (addressId, { rejectWithValue }) => {
@@ -39,7 +36,6 @@ export const FETCH_ADDRESS_BY_ID = createAsyncThunk(
   }
 );
 
-// Thunk: Tạo địa chỉ mới
 export const CREATE_ADDRESS = createAsyncThunk(
   "address/createAddress",
   async (addressRequest, { rejectWithValue }) => {
@@ -51,7 +47,6 @@ export const CREATE_ADDRESS = createAsyncThunk(
   }
 );
 
-// Thunk: Cập nhật địa chỉ
 export const UPDATE_ADDRESS = createAsyncThunk(
   "address/updateAddress",
   async ({ addressId, addressRequest }, { rejectWithValue }) => {
@@ -64,7 +59,6 @@ export const UPDATE_ADDRESS = createAsyncThunk(
   }
 );
 
-// Thunk: Đặt địa chỉ làm mặc định
 export const SET_DEFAULT_ADDRESS = createAsyncThunk(
   "address/setDefaultAddress",
   async (addressId, { rejectWithValue }) => {
@@ -78,7 +72,6 @@ export const SET_DEFAULT_ADDRESS = createAsyncThunk(
   }
 );
 
-// Thunk: Xóa địa chỉ
 export const DELETE_ADDRESS = createAsyncThunk(
   "address/deleteAddress",
   async (addressId, { rejectWithValue }) => {
@@ -91,7 +84,6 @@ export const DELETE_ADDRESS = createAsyncThunk(
   }
 );
 
-// Initial state
 const initialState = {
   addresses: [],
   defaultAddress: null,
@@ -100,7 +92,6 @@ const initialState = {
   error: null,
 };
 
-// Slice
 const AddressSlice = createSlice({
   name: "address",
   initialState,
@@ -120,7 +111,6 @@ const AddressSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch addresses
       .addCase(FETCH_ADDRESSES.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -134,7 +124,6 @@ const AddressSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch default address
       .addCase(FETCH_DEFAULT_ADDRESS.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -148,7 +137,6 @@ const AddressSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch address by ID
       .addCase(FETCH_ADDRESS_BY_ID.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -162,7 +150,6 @@ const AddressSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Create address
       .addCase(CREATE_ADDRESS.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -170,7 +157,6 @@ const AddressSlice = createSlice({
       .addCase(CREATE_ADDRESS.fulfilled, (state, action) => {
         state.loading = false;
         state.addresses.push(action.payload);
-        // Nếu là địa chỉ mặc định, cập nhật defaultAddress
         if (action.payload.isDefault) {
           state.defaultAddress = action.payload;
         }
@@ -180,7 +166,6 @@ const AddressSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Update address
       .addCase(UPDATE_ADDRESS.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -190,11 +175,9 @@ const AddressSlice = createSlice({
         state.addresses = state.addresses.map((addr) =>
           addr.id === action.payload.id ? action.payload : addr
         );
-        // Cập nhật defaultAddress nếu cần
         if (action.payload.isDefault) {
           state.defaultAddress = action.payload;
         }
-        // Cập nhật selectedAddress nếu đang được chọn
         if (state.selectedAddress?.id === action.payload.id) {
           state.selectedAddress = action.payload;
         }
@@ -204,14 +187,12 @@ const AddressSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Set default address
       .addCase(SET_DEFAULT_ADDRESS.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(SET_DEFAULT_ADDRESS.fulfilled, (state, action) => {
         state.loading = false;
-        // Cập nhật tất cả địa chỉ: bỏ isDefault của các địa chỉ khác
         state.addresses = state.addresses.map((addr) => ({
           ...addr,
           isDefault: addr.id === action.payload.id,
@@ -223,7 +204,6 @@ const AddressSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Delete address
       .addCase(DELETE_ADDRESS.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -233,11 +213,9 @@ const AddressSlice = createSlice({
         state.addresses = state.addresses.filter(
           (addr) => addr.id !== action.payload
         );
-        // Nếu xóa địa chỉ mặc định, clear defaultAddress
         if (state.defaultAddress?.id === action.payload) {
           state.defaultAddress = null;
         }
-        // Nếu xóa địa chỉ đang được chọn, clear selectedAddress
         if (state.selectedAddress?.id === action.payload) {
           state.selectedAddress = null;
         }
@@ -247,12 +225,11 @@ const AddressSlice = createSlice({
         state.error = action.payload;
       });
   },
-});
+}); 
 
 export const { setSelectedAddress, clearSelectedAddress, clearAddresses } =
   AddressSlice.actions;
 
-// Selectors
 export const selectAddresses = (state) => state.address.addresses;
 export const selectDefaultAddress = (state) => state.address.defaultAddress;
 export const selectSelectedAddress = (state) => state.address.selectedAddress;

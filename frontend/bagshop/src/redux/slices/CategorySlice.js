@@ -63,7 +63,6 @@ const CategorySlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-        // fetch Categories
         .addCase(FETCH_CATEGORIES.pending, setPending)
         .addCase(FETCH_CATEGORIES.fulfilled, (state, action)=>{
             state.loading = false
@@ -71,14 +70,12 @@ const CategorySlice = createSlice({
         })
         .addCase(FETCH_CATEGORIES.rejected, setRejected)
 
-        // fetch Category
         .addCase(FETCH_CATEGORY_BY_ID.pending, setPending)
         .addCase(FETCH_CATEGORY_BY_ID.fulfilled, (state, action)=>{
             state.loading = false
             state.category = action.payload
         })
 
-        // create category
         .addCase(POST_CATEGORY.pending, setPending)
         .addCase(POST_CATEGORY.fulfilled, (state, action)=>{
             state.loading = false
@@ -86,7 +83,6 @@ const CategorySlice = createSlice({
         })
         .addCase(POST_CATEGORY.rejected, setRejected)
 
-        // update category
         .addCase(PUT_CATEGORY.pending, setPending)
         .addCase(PUT_CATEGORY.fulfilled, (action, state)=>{
             state.loading = false

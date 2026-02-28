@@ -24,6 +24,7 @@ const AboutSection = () => {
               src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&h=400&fit=crop"
               alt="Túi xách Việt Nam"
               className="w-full h-auto rounded-lg"
+              loading="lazy"
             />
           </div>
 

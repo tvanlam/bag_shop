@@ -50,6 +50,7 @@ const Testimonial = () => {
                 src={testimonial.image}
                 alt={testimonial.name}
                 className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                loading="lazy"
               />
               <div className="space-y-2">
                 <p className="text-lg text-gray-700 leading-relaxed">

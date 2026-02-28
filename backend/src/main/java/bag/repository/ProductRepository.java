@@ -29,6 +29,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.images WHERE p.id = :productId")
     Optional<Product> findByIdWithImages(@Param("productId") int productId);
 
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.images LEFT JOIN FETCH p.productVariants")
+    List<Product> findAllWithImagesAndVariants();
+
     @Query("SELECT p FROM Product p WHERE p.basePrice BETWEEN :minPrice AND :maxPrice")
     List<Product> findByRangePrice(
             @Param("minPrice") double minPrice,
