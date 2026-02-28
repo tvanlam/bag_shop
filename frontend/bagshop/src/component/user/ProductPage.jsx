@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Product from "./Product";
 import { GoArrowRight } from "react-icons/go";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 
