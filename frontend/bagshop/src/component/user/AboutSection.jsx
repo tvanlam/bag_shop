@@ -2,14 +2,17 @@ import React from "react";
 
 const AboutSection = () => {
   return (
-    <div className="py-24 min-h-screen" style={{ backgroundColor: "#0C0600" }}>
-      <div className="container mx-auto px-20">
+    <div
+      className="py-16 md:py-24 min-h-[60vh]"
+      style={{ backgroundColor: "#0C0600" }}
+    >
+      <div className="container mx-auto px-4 md:px-20">
         {/* Header Section */}
-        <div className="mb-16">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl text-white mb-6">
+        <div className="mb-12 md:mb-16 text-center md:text-left">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl text-white mb-4 md:mb-6">
             Túi Xách Việt Nam
           </h1>
-          <p className="text-white/80 text-base md:text-lg max-w-2xl leading-relaxed">
+          <p className="text-white/80 text-sm md:text-lg max-w-2xl leading-relaxed mx-auto md:mx-0">
             Khám phá nghệ thuật thiết kế túi xách đầy sáng tạo, nơi mỗi đường
             chi tiết đều là câu chuyện của sự khéo léo và đam mê từ những bàn
             tay người thợ Việt Nam

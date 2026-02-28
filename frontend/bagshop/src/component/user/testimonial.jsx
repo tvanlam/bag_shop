@@ -30,10 +30,10 @@ const Testimonial = () => {
   ];
 
   return (
-    <div className="container px-20 py-24">
-      <div className="flex items-start justify-between gap-16">
-        <div className="flex-1">
-          <div className="text-5xl md:text-5xl lg:text-4xl text-black-700">
+    <div className="container px-4 sm:px-8 lg:px-20 py-16 md:py-24">
+      <div className="flex flex-col md:flex-row items-start justify-between gap-10 md:gap-16">
+        <div className="flex-1 mb-6 md:mb-0">
+          <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-800">
             Khách Hàng Nói Gì Về Chúng Tôi
           </div>
           <div className="py-6">

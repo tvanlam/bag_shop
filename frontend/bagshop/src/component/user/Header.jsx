@@ -16,12 +16,13 @@ import {
   SettingOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [openAuth, setOpenAuth] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const timeoutRef = useRef(null);
   const location = useLocation();
 
@@ -77,23 +78,26 @@ const Header = () => {
             : "bg-gray-500 shadow-lg"
         }`}
       >
-        <div className="container px-8 py-6 mx-auto flex items-center justify-center relative">
+        <div className="container px-4 py-2 md:px-8 md:py-3 lg:py-4 mx-auto flex items-center justify-between gap-4">
           {/* Logo */}
-          <div className="flex items-center absolute left-8">
-            <img
-              src={logoBag}
-              alt="Logo"
-              className="h-16 w-auto object-contain"
-            />
+          <div className="flex items-center flex-shrink-0">
+            <Link to="/" className="inline-flex items-center cursor-pointer">
+              <img
+                src={logoBag}
+                alt="BagShop logo"
+                className="h-12 w-auto object-contain md:h-16 lg:h-20"
+              />
+            </Link>
           </div>
 
-          <nav className="flex space-x-12">
+          {/* Menu desktop */}
+          <nav className="hidden md:flex space-x-8 lg:space-x-12 flex-1 justify-center">
             {menuItems.map((item) =>
               item.href.startsWith("#") ? (
                 <a
                   key={item.label}
                   href={item.href}
-                  className={`transition-colors duration-200 ${
+                  className={`whitespace-nowrap text-sm lg:text-base transition-colors duration-200 ${
                     isHomePage
                       ? isScrolled
                         ? "text-gray-600 hover:text-blue-600"
@@ -107,7 +111,7 @@ const Header = () => {
                 <Link
                   key={item.label}
                   to={item.href}
-                  className={`transition-colors duration-200 ${
+                  className={`whitespace-nowrap text-sm lg:text-base transition-colors duration-200 ${
                     isHomePage
                       ? isScrolled
                         ? "text-gray-600 hover:text-blue-600"
@@ -121,7 +125,8 @@ const Header = () => {
             )}
           </nav>
 
-          <div className="flex items-center absolute right-12 space-x-6">
+          {/* Icon + user */}
+          <div className="flex items-center space-x-4 md:space-x-6">
             <div
               className={`cursor-pointer transition-colors duration-200 ${
                 isHomePage
@@ -250,8 +255,51 @@ const Header = () => {
                 )}
               </div>
             )}
+
+            {/* Nút menu mobile */}
+            <button
+              className={`md:hidden inline-flex items-center justify-center p-1.5 rounded-md border border-transparent transition-colors duration-200 ${
+                isHomePage
+                  ? isScrolled
+                    ? "text-gray-800 hover:text-blue-600 hover:border-blue-200 bg-white/80"
+                    : "text-white hover:text-pink-300 hover:border-pink-200 bg-white/10"
+                  : "text-gray-800 hover:text-blue-600 hover:border-blue-200 bg-white"
+              }`}
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+            >
+              {isMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+            </button>
           </div>
         </div>
+
+        {/* Menu mobile */}
+        {isMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-sm">
+            <nav className="container mx-auto px-4 py-3 flex flex-col space-y-2">
+              {menuItems.map((item) =>
+                item.href.startsWith("#") ? (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.label}
+                    to={item.href}
+                    className="py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ),
+              )}
+            </nav>
+          </div>
+        )}
       </header>
 
       <AuthModal open={openAuth} onClose={() => setOpenAuth(false)} />

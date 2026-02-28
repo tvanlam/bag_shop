@@ -30,11 +30,11 @@ const ServicesSection = () => {
   };
 
   return (
-    <div className="  py-24">
-      <div className="container mx-auto px-52">
+    <div className="py-16 md:py-24">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-20 xl:px-52">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="px-20 text-4xl md:text-5xl  text-black mb-6">
+        <div className="text-center mb-12 md:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-black mb-6 max-w-4xl mx-auto px-2 sm:px-4">
             {services.title}
           </h2>
         </div>

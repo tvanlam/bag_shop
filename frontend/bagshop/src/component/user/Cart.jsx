@@ -260,56 +260,151 @@ const Cart = () => {
               <div className="text-center py-12">Đang tải...</div>
             ) : cartItems.length > 0 ? (
               <>
-                <table className="w-full table-auto border-collapse">
-                  <thead className="bg-gray-100">
-                    <tr className="text-gray-600 text-sm">
-                      <th className="px-4 py-3">Hình ảnh</th>
-                      <th className="px-4 py-3">Sản phẩm</th>
-                      <th className="px-4 py-3 text-center">Giá</th>
-                      <th className="px-4 py-3 text-center">Số lượng</th>
-                      <th className="px-4 py-3 text-center">Tổng</th>
-                      <th className="px-4 py-3 text-center">Xóa</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cartItems.map((item) => {
-                      const itemKey = item.itemId || item.id || item.productId;
-                      return (
-                        <tr key={itemKey} className="border-b">
-                          <td className="px-4 py-4 text-center">
-                            <img
-                              src={item.thumbnail || "default-image.jpg"}
-                              alt={item.productName}
-                              className="w-16 h-16 object-cover mx-auto rounded"
-                            />
-                          </td>
-                          <td className="px-4 py-4">
-                            <div className="flex flex-col">
-                              <span className="font-medium text-gray-800">
-                                {item.productName} <br />
-                                {/* Debug: Hiển thị tất cả các trường có thể */}
-                                <span className="text-sm text-gray-600">
-                                  {item.color &&
-                                    item.size &&
-                                    `${item.color} - ${item.size}`}
+                {/* Desktop table */}
+                <div className="hidden md:block">
+                  <table className="w-full table-auto border-collapse">
+                    <thead className="bg-gray-100">
+                      <tr className="text-gray-600 text-sm">
+                        <th className="px-4 py-3">Hình ảnh</th>
+                        <th className="px-4 py-3">Sản phẩm</th>
+                        <th className="px-4 py-3 text-center">Giá</th>
+                        <th className="px-4 py-3 text-center">Số lượng</th>
+                        <th className="px-4 py-3 text-center">Tổng</th>
+                        <th className="px-4 py-3 text-center">Xóa</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cartItems.map((item) => {
+                        const itemKey =
+                          item.itemId || item.id || item.productId;
+                        return (
+                          <tr key={itemKey} className="border-b">
+                            <td className="px-4 py-4 text-center">
+                              <img
+                                src={item.thumbnail || "default-image.jpg"}
+                                alt={item.productName}
+                                className="w-16 h-16 object-cover mx-auto rounded"
+                              />
+                            </td>
+                            <td className="px-4 py-4">
+                              <div className="flex flex-col">
+                                <span className="font-medium text-gray-800">
+                                  {item.productName} <br />
+                                  <span className="text-sm text-gray-600">
+                                    {item.color &&
+                                      item.size &&
+                                      `${item.color} - ${item.size}`}
 
-                                  {/* Fallback: Hiển thị SKU nếu có */}
-                                  {!item.color &&
-                                    !item.variantColor &&
-                                    !item.productVariant &&
-                                    item.sku &&
-                                    `SKU: ${item.sku}`}
+                                    {!item.color &&
+                                      !item.variantColor &&
+                                      !item.productVariant &&
+                                      item.sku &&
+                                      `SKU: ${item.sku}`}
+                                  </span>
                                 </span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 text-center">
+                              <span className="text-sm text-gray-600">
+                                {formatCurrency(parsePrice(item.priceAtAdd))}
                               </span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-4 text-center">
-                            <span className="text-sm text-gray-600">
-                              {formatCurrency(parsePrice(item.priceAtAdd))}
-                            </span>
-                          </td>
-                          <td className="px-4 py-4 text-center">
-                            <div className="flex items-center justify-center space-x-3">
+                            </td>
+                            <td className="px-4 py-4 text-center">
+                              <div className="flex items-center justify-center space-x-3">
+                                <button
+                                  onClick={() =>
+                                    handleQuantityChange(itemKey, -1)
+                                  }
+                                  disabled={
+                                    updating || (quantities[itemKey] || 1) <= 1
+                                  }
+                                  className={`w-10 h-10 rounded-full flex items-center justify-center ${"bg-gray-200 hover:bg-gray-300"}`}
+                                >
+                                  -
+                                </button>
+
+                                <p className="w-8 text-center font-semibold">
+                                  {quantities[itemKey] || item.quantity}
+                                </p>
+
+                                <button
+                                  onClick={() =>
+                                    handleQuantityChange(itemKey, 1)
+                                  }
+                                  disabled={updating}
+                                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                                    updating
+                                      ? "bg-gray-200 cursor-not-allowed"
+                                      : "bg-gray-200 hover:bg-gray-300"
+                                  }`}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 text-center">
+                              {calculateTotalPrice(item).toLocaleString(
+                                "vi-VN",
+                              )}{" "}
+                              ₫
+                            </td>
+                            <td className="px-4 py-4 text-center">
+                              <button
+                                onClick={() => handleDeleteClick(item)}
+                                disabled={updating}
+                                className="text-red-500 hover:text-red-700 p-1 disabled:opacity-50"
+                              >
+                                <FaTrashAlt />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile cards */}
+                <div className="space-y-4 md:hidden">
+                  {cartItems.map((item) => {
+                    const itemKey = item.itemId || item.id || item.productId;
+                    return (
+                      <div
+                        key={itemKey}
+                        className="bg-white rounded-lg shadow p-4 flex gap-4"
+                      >
+                        <div className="flex-shrink-0">
+                          <img
+                            src={item.thumbnail || "default-image.jpg"}
+                            alt={item.productName}
+                            className="w-20 h-20 object-cover rounded"
+                          />
+                        </div>
+                        <div className="flex-1 flex flex-col gap-2">
+                          <div>
+                            <p className="font-semibold text-gray-800 text-sm">
+                              {item.productName}
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              {item.color &&
+                                item.size &&
+                                `${item.color} - ${item.size}`}
+                              {!item.color &&
+                                !item.variantColor &&
+                                !item.productVariant &&
+                                item.sku &&
+                                `SKU: ${item.sku}`}
+                            </p>
+                            <p className="text-sm text-gray-700 mt-1">
+                              Giá:{" "}
+                              <span className="font-semibold">
+                                {formatCurrency(parsePrice(item.priceAtAdd))}
+                              </span>
+                            </p>
+                          </div>
+
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex items-center space-x-3">
                               <button
                                 onClick={() =>
                                   handleQuantityChange(itemKey, -1)
@@ -317,19 +412,17 @@ const Cart = () => {
                                 disabled={
                                   updating || (quantities[itemKey] || 1) <= 1
                                 }
-                                className={`w-10 h-10 rounded-full flex items-center justify-center ${"bg-gray-200 hover:bg-gray-300"}`}
+                                className={`w-9 h-9 rounded-full flex items-center justify-center ${"bg-gray-200 hover:bg-gray-300"}`}
                               >
                                 -
                               </button>
-
-                              <p className="w-8 text-center font-semibold">
+                              <p className="w-8 text-center font-semibold text-sm">
                                 {quantities[itemKey] || item.quantity}
                               </p>
-
                               <button
                                 onClick={() => handleQuantityChange(itemKey, 1)}
                                 disabled={updating}
-                                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                                className={`w-9 h-9 rounded-full flex items-center justify-center ${
                                   updating
                                     ? "bg-gray-200 cursor-not-allowed"
                                     : "bg-gray-200 hover:bg-gray-300"
@@ -338,28 +431,34 @@ const Cart = () => {
                                 +
                               </button>
                             </div>
-                          </td>
-                          <td className="px-4 py-4 text-center">
-                            {calculateTotalPrice(item).toLocaleString("vi-VN")}{" "}
-                            ₫
-                          </td>
-                          <td className="px-4 py-4 text-center">
-                            <button
-                              onClick={() => handleDeleteClick(item)}
-                              disabled={updating}
-                              className="text-red-500 hover:text-red-700 p-1 disabled:opacity-50"
-                            >
-                              <FaTrashAlt />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+
+                            <div className="flex flex-col items-end gap-1">
+                              <span className="text-sm text-gray-700">
+                                Tổng:{" "}
+                                <span className="font-semibold">
+                                  {calculateTotalPrice(item).toLocaleString(
+                                    "vi-VN",
+                                  )}{" "}
+                                  ₫
+                                </span>
+                              </span>
+                              <button
+                                onClick={() => handleDeleteClick(item)}
+                                disabled={updating}
+                                className="text-red-500 hover:text-red-700 text-sm disabled:opacity-50"
+                              >
+                                <FaTrashAlt />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
 
                 <hr className="my-6" />
-                <div className="flex justify-end">
+                <div className="flex justify-center md:justify-end">
                   <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-md">
                     <div className="flex justify-between mb-4 text-xl font-bold">
                       <span>Tổng cộng:</span>

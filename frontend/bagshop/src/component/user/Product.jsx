@@ -566,7 +566,10 @@ const Product = () => {
 
         {/* Sentinel cho lazy loading: khi div này lọt vào viewport sẽ gọi loadMore */}
         {!loading && !error && (products?.length ?? 0) > 0 && (
-          <div ref={sentinelRef} className="flex justify-center py-8 min-h-[60px]">
+          <div
+            ref={sentinelRef}
+            className="flex justify-center py-8 min-h-[60px]"
+          >
             {loadingMore && (
               <div className="flex items-center gap-2 text-gray-500">
                 <span className="inline-block w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
