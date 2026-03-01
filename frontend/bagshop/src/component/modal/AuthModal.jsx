@@ -31,6 +31,8 @@ const AuthModal = ({ open, onClose }) => {
   const [formLogin] = Form.useForm();
   const [formRegister] = Form.useForm();
 
+  console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID);
+
   const handleGoogleSuccess = async (tokenResponse) => {
     try {
       const response = await dispatch(
