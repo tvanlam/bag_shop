@@ -1,9 +1,9 @@
-import axiosClient from "./AxiosConfig"
+import axiosClient from "./AxiosConfig";
 
 const VerifyService = {
-    verify(request) {
-        return axiosClient.post("verify", request)
-    }
-}
+  verify(request) {
+    return axiosClient.post("verify", request);
+  },
+};
 
-export default VerifyService
+export default VerifyService;

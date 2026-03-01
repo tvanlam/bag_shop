@@ -75,7 +75,6 @@ public class AddressServiceImpl implements AddressService{
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new RuntimeException("Address not found with id: " + addressId));
 
-        // Bỏ default của tất cả địa chỉ khác trong cùng account
         List<Address> accountAddresses = addressRepository.findByAccountId(address.getAccount().getId());
         for (Address addr : accountAddresses) {
             if (addr.isDefault() && addr.getId() != addressId) {
