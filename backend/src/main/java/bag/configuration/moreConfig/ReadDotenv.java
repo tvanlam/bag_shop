@@ -29,7 +29,12 @@ public class ReadDotenv {
         setProp(dotenv, "SPRING_MAIL_PORT", "spring.mail.port");
         setProp(dotenv, "SPRING_MAIL_USERNAME", "spring.mail.username");
         setProp(dotenv, "SPRING_MAIL_PASSWORD", "spring.mail.password");
-
+        setProp(dotenv, "SPRING_MAIL_SMTP_AUTH", "spring.mail.properties.mail.smtp.auth");
+        setProp(dotenv, "SPRING_MAIL_SMTP_STARTTLS", "spring.mail.properties.mail.smtp.starttls.enable");
+        setProp(dotenv, "SPRING_MAIL_SMTP_STARTTLS_REQUIRED", "spring.mail.properties.mail.smtp.starttls.required");
+        setProp(dotenv, "SPRING_MAIL_SMTP_TIMEOUT", "spring.mail.properties.mail.smtp.timeout");
+        setProp(dotenv, "SPRING_MAIL_SMTP_CONNECTION_TIMEOUT", "spring.mail.properties.mail.smtp.connectiontimeout");
+        setProp(dotenv, "SPRING_MAIL_SMTP_WRITE_TIMEOUT", "spring.mail.properties.mail.smtp.writetimeout");
         // REDIS
         setProp(dotenv, "SPRING_DATA_REDIS_HOST", "spring.data.redis.host");
         setProp(dotenv, "SPRING_DATA_REDIS_PORT", "spring.data.redis.port");
