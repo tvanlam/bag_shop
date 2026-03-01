@@ -40,6 +40,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "https://bagshop-23df6.web.app",
                 "https://bagshop-23df6.firebaseapp.com",
+                "https://bag-shop-hcih.onrender.com",
                 "http://localhost:5173"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

@@ -4,9 +4,10 @@ import AuthService from "./AuthService";
 import { setAuth, clearAuth } from "../redux/slices/AuthSlice";
 
 const API_BASE_URL =
-  window.location.hostname === "localhost"
+  import.meta.env.VITE_API_URL ||
+  (window.location.hostname === "localhost"
     ? "http://localhost:8081"
-    : "https://bag-shop-g1i7.onrender.com";
+    : "https://bag-shop-hcih.onrender.com");
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
