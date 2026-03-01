@@ -131,6 +131,10 @@ public class SecurityConfig {
                                 "/address",
                                 "/address/create",
                                 "/address/update",
+                                "/address/{id}",
+                                "/address/account/{accountId}",
+                                "/address/account/{accountId}/default",
+                                "/address/{id}/default",
 
                                 // Payment
                                 "/vnpay-payment/**",

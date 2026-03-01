@@ -56,8 +56,45 @@ public class AddressServiceImpl implements AddressService{
         return new AddressDto(address);
     }
 
+@Override
+    public List<AddressDto> getAddressesByAccountId(int accountId) {
+        return addressRepository.findByAccountId(accountId).stream()
+                .map(AddressDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public AddressDto getDefaultAddress(int accountId) {
+        Address address = addressRepository.findByAccountIdAndIsDefaultTrue(accountId)
+                .orElseThrow(() -> new RuntimeException("Default address not found for account: " + accountId));
+        return new AddressDto(address);
+    }
+
+    @Override
+    public AddressDto setDefaultAddress(int addressId) {
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new RuntimeException("Address not found with id: " + addressId));
+
+        // Bỏ default của tất cả địa chỉ khác trong cùng account
+        List<Address> accountAddresses = addressRepository.findByAccountId(address.getAccount().getId());
+        for (Address addr : accountAddresses) {
+            if (addr.isDefault() && addr.getId() != addressId) {
+                addr.setDefault(false);
+                addressRepository.save(addr);
+            }
+        }
+
+        // Đặt địa chỉ này làm mặc định
+        address.setDefault(true);
+        addressRepository.save(address);
+        return new AddressDto(address);
+    }
+
     @Override
     public AddressDto deleteAddress(int id) {
-        return null;
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found with id: " + id));
+        addressRepository.delete(address);
+        return new AddressDto(address);
     }
 }
