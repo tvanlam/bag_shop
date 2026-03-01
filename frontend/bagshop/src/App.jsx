@@ -14,7 +14,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 function App() {
   const LoadingComponent = () => (
     <div className="flex items-center justify-center h-screen">
-      <div className="text-lg font-semibold text-gray-600">Đang tải...</div>
+      <div className="text-lg font-semibold text-gray-600">Đang tải...</div>;
     </div>
   );
 
