@@ -19,9 +19,9 @@ jobs:
         with:
           node-version: "20"
 
-	      - name: Install deps & build frontend
-	        working-directory: ./frontend/bagshop
-	        run: npm ci && npm run build
+      - name: Install deps & build frontend
+        working-directory: ./frontend/bagshop
+        run: npm ci && npm run build
 
       - name: Deploy preview to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
