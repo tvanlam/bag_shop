@@ -41,9 +41,10 @@ export const useProvinceData = () => {
       if (selectedProvinceCode) {
         setLoading((prev) => ({ ...prev, districts: true }));
         try {
-          const response = await ProvinceService.getDistrictsByProvinceCode(
-            selectedProvinceCode
-          );
+          const response =
+            await ProvinceService.getDistrictsByProvinceCode(
+              selectedProvinceCode,
+            );
           setDistricts(response.data.districts || []);
           setWards([]); // Reset wards khi đổi tỉnh
         } catch (error) {
@@ -66,9 +67,8 @@ export const useProvinceData = () => {
       if (selectedDistrictCode) {
         setLoading((prev) => ({ ...prev, wards: true }));
         try {
-          const response = await ProvinceService.getWardsByDistrictCode(
-            selectedDistrictCode
-          );
+          const response =
+            await ProvinceService.getWardsByDistrictCode(selectedDistrictCode);
           setWards(response.data.wards || []);
         } catch (error) {
           console.error("Lỗi khi tải danh sách phường/xã:", error);
@@ -95,7 +95,6 @@ export const useProvinceData = () => {
     return district?.name || "";
   };
 
-  // Reset tất cả selections
   const resetSelections = () => {
     setSelectedProvinceCode("");
     setSelectedDistrictCode("");
@@ -117,4 +116,3 @@ export const useProvinceData = () => {
     resetSelections,
   };
 };
-
