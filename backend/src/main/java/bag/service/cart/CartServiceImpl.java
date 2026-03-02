@@ -51,21 +51,22 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public CartDto addToCart(CartRequest request) {
-        Account account = accountRepository.findById(request.getAccountId())
-                .orElseThrow(() -> new RuntimeException("Account " + request.getAccountId() + " not found"));
-        Cart cart = account.getCart();
-        if (cart == null) {
-            cart = new Cart();
-            cart.setAccount(account);
-            account.setCart(cart);
-            cartRepository.save(cart);
-        }
+
+        Cart cart = cartRepository.findByAccountIdWithItems(request.getAccountId())
+                .orElseGet(() -> {
+                            Account account = accountRepository.findById(request.getAccountId())
+                                .orElseThrow(() -> new RuntimeException("Account " + request.getAccountId() + " not found"));
+                            Cart newCart = new Cart();
+                            newCart.setAccount(account);
+                            return cartRepository.save(newCart);
+                });
+
         Map<Integer, CartItem> cartItemMap = cart.getCartItems().stream()
-                .filter(ci -> ci.getProductVariant() != null && ci.getProductVariant().getId() > 0)
+                .filter(ci -> ci.getProductVariant() != null)
                 .collect(Collectors.toMap(
                         ci -> ci.getProductVariant().getId(),
                         ci -> ci,
-                        (old, neu) -> old   // xử lý trùng key nếu có
+                        (old, neu) -> old
                 ));
 
         for (CartItemRequest itemRequest : request.getItems()) {
@@ -100,39 +101,28 @@ public class CartServiceImpl implements CartService {
     public CartDto updateCartItem(CartRequest request) {
         Cart cart = cartRepository.findByAccountId(request.getAccountId())
                 .orElseThrow(() -> new IllegalArgumentException("Cart not found for account: " + request.getAccountId()));
-
-        // Map productId -> CartItem hiện có
-        Map<Integer, CartItem> itemMap = cart.getCartItems().stream()
+        List<CartItem> items = cartItemRepository.findAllByAccountId(request.getAccountId());
+        Map<Integer, CartItem> itemMap = items.stream()
                 .filter(ci -> ci.getProductVariant() != null)
-                .collect(Collectors.toMap(
-                        ci -> ci.getProductVariant().getId(),
-                        ci -> ci,
-                        (oldVal, newVal) -> oldVal
-                ));
+                .collect(Collectors.toMap(ci -> ci.getProductVariant().getId(), ci -> ci));
+
         for (CartItemRequest req : request.getItems()) {
             CartItem item = itemMap.get(req.getProductVariantId());
-            if (item == null) {
-                throw new IllegalArgumentException("Product " + req.getProductVariantId() + " not in cart");
-            }
-            ProductVariant variant = item.getProductVariant();
-            if (req.getQuantity() > 0 && req.getQuantity() > variant.getStockQuantity()) {
-                throw new IllegalArgumentException(
-                        "Số lượng yêu cầu (" + req.getQuantity() +
-                                ") vượt quá tồn kho (" + variant.getStockQuantity() +
-                                ") cho variant " + req.getProductVariantId()
-                );
-            }
+            if (item == null) throw new IllegalArgumentException("Product not in cart");
+
             if (req.getQuantity() <= 0) {
-                // XÓA ITEM
-                cart.getCartItems().remove(item);
-                cartItemRepository.delete(item);
+                cartItemRepository.deleteByCartItemId(item.getId());
             } else {
-                // GHI ĐÈ số lượng mới
+                if (req.getQuantity() > item.getProductVariant().getStockQuantity()) {
+                    throw new IllegalArgumentException("Vượt quá tồn kho");
+                }
                 item.setQuantity(req.getQuantity());
+                cartItemRepository.save(item);
             }
         }
-        cartRepository.save(cart);
-        return new CartDto(cart);
+
+        // Trả về cart sau khi update
+        return getCartByAccountId(request.getAccountId());
     }
 
     //admin operation

@@ -41,9 +41,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p ORDER BY p.basePrice DESC")
     List<Product> findAllPriceByDesc();
 
-    @Query("SELECT p FROM Product p ORDER BY p.basePrice DESC")
-    Page<Product> findAllByPriceDesc(Pageable pageable);
-
     //tìm sp theo variant
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.productVariants WHERE p.id = :productId")
     Optional<Product> findByIdWithVariants(@Param("productId") Integer productId);
