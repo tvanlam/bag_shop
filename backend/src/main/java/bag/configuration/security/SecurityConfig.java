@@ -82,8 +82,8 @@ public class SecurityConfig {
                                 // account
                                 "/account",
                                 "/account/register",
-                                "account/{id}",
-                                "account/information/{id}",
+                                "/account/{id}",
+                                "/account/information/{id}",
 
                                 //category
                                 "/category/**",
