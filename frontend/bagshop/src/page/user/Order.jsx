@@ -39,7 +39,6 @@ const TAB_ITEMS = [
   { key: "CANCELLED", label: "Đã hủy" },
 ];
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 const formatPrice = (price) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
     price || 0,
@@ -54,7 +53,6 @@ const formatDate = (dateStr) => {
   });
 };
 
-// ─── OrderCard ────────────────────────────────────────────────────────────────
 const OrderCard = ({ order, onViewDetail, onCancel }) => {
   const statusCfg = STATUS_CONFIG[order.status] || {
     label: order.status,
@@ -358,7 +356,7 @@ const OrderDetailModal = ({ visible, loading, order, onClose }) => {
       title={
         <div className="flex items-center gap-2">
           <ShoppingOutlined className="text-blue-500" />
-          <span className="font-bold">Chi tiết đơn hàng&nbsp;#{order?.id}</span>
+          <span className="font-bold">Chi tiết đơn hàng#{order?.id}</span>
         </div>
       }
     >
@@ -483,7 +481,6 @@ const OrderDetailModal = ({ visible, loading, order, onClose }) => {
   );
 };
 
-// ─── InfoItem helper ──────────────────────────────────────────────────────────
 const InfoItem = ({ icon, label, value }) => (
   <div className="flex items-start gap-2">
     <span className="text-gray-400 mt-0.5 text-base">{icon}</span>

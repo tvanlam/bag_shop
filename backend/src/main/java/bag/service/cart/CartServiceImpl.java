@@ -121,11 +121,9 @@ public class CartServiceImpl implements CartService {
             }
         }
 
-        // Trả về cart sau khi update
         return getCartByAccountId(request.getAccountId());
     }
 
-    //admin operation
     @Override
     @Transactional
     public void deleteCartItem(int accountId, int cartItemId) {
