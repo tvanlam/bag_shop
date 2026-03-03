@@ -7,7 +7,7 @@ const API_BASE_URL =
   import.meta.env.VITE_API_URL ||
   (window.location.hostname === "localhost"
     ? "http://localhost:8081"
-    : "https://bag-shop-hcih.onrender.com");
+    : "https://bag-shop-g1i7.onrender.com");
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
