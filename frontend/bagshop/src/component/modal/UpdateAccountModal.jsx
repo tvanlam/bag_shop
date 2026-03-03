@@ -100,7 +100,7 @@ const UpdateAccountModal = ({ open, onClose, account }) => {
       theme={{
         token: {
           colorPrimary: "#111", // đồng bộ nút đen
-          borderRadius: 12,
+          borderRadius: 14,
           controlHeight: 44,
         },
         components: {
